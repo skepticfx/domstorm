@@ -1,0 +1,131 @@
+<% include ../layouts/header.ejs %>
+<% include ../layouts/navbar.ejs %>
+
+
+<div class="container">
+
+<div class="jumbotron"> 
+<center>
+			<h1><%= module_name %></h1>
+			<p><%= module_description %></p>
+</center>
+		<div id="div-favorite" style="position: fixed; top:10%; left:15%; ">
+			<form id="favorite-module" action="/modules/favorite" method="POST" style="display: inline">
+			<input type="hidden" name="id" value="<%= module_id %>"/>
+			<a class="btn btn-info" title="Favorite this module" onClick="document.getElementById('favorite-module').submit();"><img src="/public/imgs/icons/favorite.png" /></a>
+			</form>
+		</div>
+
+		<div id="div-fork" style="position: fixed; top:16%; left:15%; ">		
+			<form id="fork-module" action="/modules/fork" method="GET" style="display: inline">
+			<input type="hidden" name="_id" value="<%= module_id %>"/>
+			<a class="btn btn-warning" title="Fork this module" onClick="document.getElementById('fork-module').submit();"><img src="/public/imgs/icons/fork.png"/></a>
+			</form>		
+		</div>
+
+		<div id="div-edit" style="position: fixed; top:10%; right:15%; ">		
+			<form id="edit-module" action="/modules/edit" method="GET" style="display: inline">
+			<input type="hidden" name="id" value="<%= module_id %>"/>
+			<a class="btn btn-success" title="Edit this module" onClick="document.getElementById('edit-module').submit();"><img src="/public/imgs/icons/edit.png" /></a>
+			</form>
+		</div>
+		
+		<div id="div-delete" style="position: fixed; top:16%; right:15%; ">		
+			<form id="delete-module" action="/modules/delete" method="POST" style="display: inline">
+			<input type="hidden" name="_id" value="<%= module_id %>"/>
+			<a class="btn btn-danger" title="Delete this module" onClick="ans = confirm('Are you sure you want to delete this module?'); if(ans)document.getElementById('delete-module').submit(); return;"><img src="/public/imgs/icons/delete.png"/></a>
+			</form>		
+		</div>
+		
+</div>
+
+
+		<div>
+		<input type="hidden" name="id" value="<%= module_id %>"/>
+		<center><a class="btn btn-primary" title="Run the Test now" onClick="window.open('/modules/run?id=<%= module_id %>')"><img src="/public/imgs/icons/run.png" /> Run this test now.</a></center>
+		</div>
+
+		<br/>
+
+  <div class="column"> 
+
+
+
+
+  
+	<div class="column">
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+				<h3 class="panel-title"><img src="/public/imgs/icons/results.png"/> Results</h3>
+			</div>
+			<div class="panel-body"> 
+				<% if(module_test.state == "NOT_STARTED"){ %>
+				This module appears to be new to the system. Please run the test, to view the results.
+				<% } if(module_test.state == "ERROR"){ %>
+				The last time this module was run, it ran in to an error. Please re-run the test to get some results. And yea, Good Luck with that.
+				<% } if(module_test.state == "COMPLETED"){%>
+				              <ul class="nav nav-pills">
+                <li class="active"><a href="#"><img src="/public/imgs/browser-logos/GOOGLE_CHROME.png"/> Chrome</a>
+							<%- module_results.raw %>
+							<% } %></li>
+               <!-- <li><a href="#"><img src="/public/imgs/browser-logos/MOZILLA_FIREFOX.png"/> Firefox</a></li>
+                <li class="disabled"><a href="#">Disabled</a></li>
+                <li class="dropdown">
+                  <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                    Dropdown <span class="caret"></span>
+                  </a>
+                  <ul class="dropdown-menu">
+                    <li><a href="#">Action</a></li>
+                    <li><a href="#">Another action</a></li>
+                    <li><a href="#">Something else here</a></li>
+                    <li class="divider"></li>
+                    <li><a href="#">Separated link</a></li>
+                  </ul>
+                </li> -->
+              </ul>
+
+				
+			</div>
+		</div>
+	</div>
+	
+	<div class="column">
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+				<h3 class="panel-title"><img src="/public/imgs/icons/script.png"/> User Script (<%=module_test._type%>) </h3>
+			</div>
+			<div class="panel-body">
+				<pre>
+					<code>
+<%= module_test.userScript %>
+					</code>
+				</pre>
+			</div>
+		</div>
+	</div>	
+
+	
+	<div class="column">
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+				<h3 class="panel-title"><img src="/public/imgs/icons/data.png"/> Enum Data (<%=module_test._type%>) </h3>
+			</div>
+			<div class="panel-body">
+				<pre>
+					<code>
+<%= module_test.enum_data %>
+					</code>
+				</pre>
+			</div>
+		</div>
+	</div>	
+
+	
+
+</div>
+
+</div><!-- /.container -->
+
+
+</body>	
+<% include ../layouts/footer.ejs %>

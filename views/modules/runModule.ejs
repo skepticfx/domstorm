@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>
+Testing <%= module_name %>
+</title>
+<script type="text/javascript" src="/public/js/results.js"> </script>
+</head>
+
+<body>
+<textarea id="user_script" style="display:none;">
+<html>
+<head>
+<title>
+Testing with IFRAME
+</title>
+<script src="/public/js/results.js"> </script>
+</head>
+<body>
+<h1>Testing</h1>
+</body>
+<script>
+// User script
+// This will be dynamically generated from the db
+
+// Hooks the getter of Obj.prop
+
+
+function hook(Obj, prop, newValue){
+try{
+	Object.defineProperty(Obj, prop, {
+		'get': function(){ return newValue;}
+	});
+}	
+	
+catch(err){
+	console.log(err, Obj, prop);
+}
+	
+}
+
+function test(x, y){
+	// We need to separate properties and access one by one.
+	var tmp;
+	var before = this[x];
+	
+	var prop = y.split('.');
+	
+	for(tmp in prop){
+		before = before[prop[tmp]]
+	}
+
+	
+	hook(this[x], y, 'test_xyz_value');
+	var after = this[x];
+	for(tmp in prop){
+		after = after[prop[tmp]]
+	}	
+
+	if(	before == after){
+		console.log(x + '.'+ y +' Not Changed');
+	} else {
+		console.log(x + '.'+ y +' Changed');
+	}
+}
+
+
+
+
+</textarea>
+
+<h1>Testing <%= module_name %> </h1>
+<script>
+var userScript = document.getElementById('user_script').innerText;
+
+function newIframe(injectMe){
+	var iframe = document.createElement('iframe');
+	iframe.onload = function(){ injectScript(this, injectMe)}
+	document.body.appendChild(iframe);
+	
+return iframe;
+}
+
+function removeMe(node){
+	return node.parentNode.removeChild(node);
+}
+
+function injectScript(iframe, inject){
+	iframe.contentWindow.document.write(inject);
+}
+
+var data = [['window', 'postMessage.name'], ['document', 'domain'], ['window', 'document.location'], ['location', 'href'], ['document', 'body.innerHTML'], ['document', 'location.origin'], ['window', 'location']];
+
+// Type = Data Enumeration using a test Function
+for(x in data){
+	var test_call = "test('"+ data[x][0];
+	var y;
+	for(y=1; y<data[x].length; y++)
+		test_call += "', '" + data[x][y] ;
+	test_call += "');";
+	new_iframe = newIframe(userScript+" " + test_call + "</scr" + "ipt></bod"+ "y></htm"+ "l>");
+}
+
+</script>
+
+</body>
+</html>

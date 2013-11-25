@@ -1,0 +1,148 @@
+<% include ../layouts/header.ejs %>
+<% include ../layouts/navbar.ejs %>
+
+<style>
+#userScript{
+    width: 100%;
+    height: 400px;
+}
+
+#enum_data{
+    width: 100%;
+    height: 100px;
+}
+
+</style>
+
+<script src="/public/js/vendor/ace/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+
+<div class="container">  
+	<h1><%= title %></h1>
+
+
+<div class="panel-heading">
+  <form class="bs-example form-horizontal" action="/modules/create" method="POST" id="createModule">
+	<fieldset>
+	  <legend>Create a new 'Enum Function' module</legend>
+	  <div class="form-group">
+		<label for="inputName" class="col-lg-2 control-label">Name</label>
+		<div class="col-lg-10">
+		  <input type="text" name="_name" class="form-control" id="inputName" placeholder="Properties of window.document">
+		</div>
+	  </div>
+	  <div class="form-group">
+		<label for="inputDesc" class="col-lg-2 control-label">Description</label>
+		<div class="col-lg-10">
+		  <input type="text" class="form-control" name="_desc" id="inputDesc" placeholder="Lists all the window.document properties">
+		</div>
+	  </div>
+
+	  <div class="form-group">
+		<label class="col-lg-2 control-label">Module Type</label>
+		<div class="col-lg-10">
+		  <div class="radio">
+			<label>
+			  <input type="radio" name="_module_type" id="optionsRadios1" value="ENUM_FUNCTION" checked="">
+			  Enumeration Functions
+			</label>
+		  </div>
+		  <div class="radio">
+			<label>
+			  <input type="radio" name="_module_type" id="optionsRadios2" value="FUZZER">
+			  Fuzzer
+			</label>
+		  </div>
+		</div>
+	  </div>
+
+	  <div class="form-group">
+		<label class="col-lg-2 control-label">Results Type</label>
+		<div class="col-lg-10">
+		  <div class="radio">
+			<label>
+			  <input type="radio" name="_results_type" id="optionsRadios1" value="SIMPLE_TABLE" checked="">
+			  Simple Table Format (Double Column Format)
+			</label>
+		  </div>
+		  <div class="radio">
+			<label>
+			  <input type="radio" name="_results_type" id="optionsRadios2" value="ENUM_LIST">
+			  Enumeration List
+			</label>
+		  </div>
+		</div>
+	  </div>	  
+	
+
+  
+	  <div class="form-group">
+		<label for="userScript" class="col-lg-2 control-label">User Script</label>
+		<div class="col-lg-10">
+		  <pre class="form-control" id="userScript">
+function test(data){
+	// We need to separate properties and access one by one.
+try{
+
+	if(	data.before == data.after){
+		console.log(data.before + '.'+ data.before +' Not Changed');
+                addResult(data.before + '.'+ data.before ,  'No');
+	} else {
+		console.log(data.before + '.'+ data.before +' Changed');
+                addResult(data.before + '.'+ data.before ,  'Yes');
+	}
+}
+
+catch(err){
+	addResult(data.before + '.'+ data.before ,  'Probably Not');
+}
+}
+</pre>
+		  <span class="help-block">Come up with your own script to do a Enumeration Function scan. Read more <u>here</u></span>
+		</div>
+	  </div>	  
+
+	  <div class="form-group">
+		<label for="enum_data" class="col-lg-2 control-label">Enumeration Data</label>
+		<div class="col-lg-10">
+	<pre class="form-control" rows="3" id="enum_data">
+var data = [{before: '1', after: '2'}, {before: '1', after: '1'}, {before: '2', after: '2'}];
+</pre>
+		  <span class="help-block">Specify your Enumeration Data here as a code. 
+			  <code>
+			  var data = [{before: '1', after: '2'}, {before: '1', after: '1'}, {before: '2', after: '2'}];
+			  </code>
+		  </span>
+		</div>
+	  </div>
+		<input type="hidden" name="_userScript" id="_userScript" value="" />
+		<input type="hidden" name="_enum_data" id="_enum_data" value="" />
+	  
+	  <div class="form-group">
+		<div class="col-lg-10 col-lg-offset-2">
+		  <button id="submitButton" type="button" class="btn btn-primary">Create Module</button> 
+		</div>
+	  </div>
+	</fieldset>
+  </form>
+</div>			
+</div>
+
+</body>	
+<script>
+var userScript = ace.edit("userScript");
+userScript.setTheme("ace/theme/github");
+userScript.getSession().setMode("ace/mode/javascript");
+
+var enum_data = ace.edit("enum_data");
+enum_data.setTheme("ace/theme/github");
+enum_data.getSession().setMode("ace/mode/javascript");		
+$(document).ready(function() {
+		$('#submitButton').click(function(){
+			$('#_userScript').val(userScript.getValue());
+			$('#_enum_data').val(enum_data.getValue());
+			$('#createModule').submit();
+		});
+	});
+</script>
+
+<% include ../layouts/footer.ejs %>			
