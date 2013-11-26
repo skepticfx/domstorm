@@ -161,7 +161,7 @@ exports.edit = function(app){
 		newModule.name = req.body._name;
 		newModule.description = req.body._desc;
 
-		Modules.findOneAndUpdate({'_id': module_id}, newModule, function(err, module){
+		Modules.findOneAndUpdate(module_id, newModule, function(err, module){
 			if(err){
 				res.render('misc/error', {'info': 'Something wrong happened, when we tried creating your new module.'});
 			} else {
