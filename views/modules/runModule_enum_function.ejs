@@ -95,7 +95,7 @@ function endTest(){
 	xhr.send('_module_id='+module_id+'&_browser='+browser+'&_results_raw='+encodeURIComponent(r.getHTML()));
 	
 	setTimeout(function(){
-		window.opener.location = '/update?module='+module_id;
+		window.opener.location.reload();
 		this.close();
 	}, 2000);
 }

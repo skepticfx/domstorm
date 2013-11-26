@@ -117,7 +117,7 @@ exports.edit = function(app){
 					res.end();				
 				} else {
 					module.remove();
-					res.redirect('/update');
+					res.redirect('/update?module='+req.body._id);
 				}
 			});
 		} else {
