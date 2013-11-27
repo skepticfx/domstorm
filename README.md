@@ -8,27 +8,25 @@ This project is pre-alpha. Nothing may work now. I'm spending my time to make su
 
 ![logo](https://raw.github.com/skepticfx/Dom-Storm/master/public/imgs/dom-storm-logo.png)
 
-###### TODO
+###### Milestones
 * Pre-Alpha Version
 	https://github.com/skepticfx/Dom-Storm/issues?milestone=1&state=open
 
 ###### Features 
-* Un-safe headers in xhr.setRequestHeader
-	http://www.w3.org/TR/XMLHttpRequest2/#the-setrequestheader-method
-* 
+* Allowed Request Headers by XHR
+* HTTP Methods Supported by XHR
+* Configurability of Location Properties
 
 
 ###### Framework
 
-* Add an awesome, easy to read reference to EcmaScript and Everything related to DOM from W3.
-* Object.defineProperty() fuzz.
-* Tags for modules.
-* User login system.
-* Easy to write scripts to automate tasks.
-* Support Firefox	
-* 
+* Create and run modules, to test DOM and JS behaviour.
 
 ###### Modules used
 
-* Express, Flatly, Mongoose and Awesomeness
+* Express, Flatly, Mongoose and a little bit of Awesomeness.
 
+###### Credits
+
+* Icons by iconmonstr - http://iconmonstr.com/
+* Browser Logos - https://github.com/paulirish/browser-logos

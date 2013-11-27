@@ -7,30 +7,30 @@
 <div class="jumbotron"> 
 <center>
 			<h1><%= module_name %></h1>
-			<p><%= module_description %></p>
+			<p><h5><%= module_description %></h5></p>
 </center>
-		<div id="div-favorite" style="position: fixed; top:10%; left:15%; ">
+		<div id="div-favorite" style="position: absolute; top:10%; left:15%; ">
 			<form id="favorite-module" action="/modules/favorite" method="POST" style="display: inline">
 			<input type="hidden" name="id" value="<%= module_id %>"/>
 			<a class="btn btn-info" title="Favorite this module" onClick="document.getElementById('favorite-module').submit();"><img src="/public/imgs/icons/favorite.png" /></a>
 			</form>
 		</div>
 
-		<div id="div-fork" style="position: fixed; top:16%; left:15%; ">		
+		<div id="div-fork" style="position: absolute; top:16%; left:15%; ">		
 			<form id="fork-module" action="/modules/fork" method="GET" style="display: inline">
 			<input type="hidden" name="_id" value="<%= module_id %>"/>
 			<a class="btn btn-warning" title="Fork this module" onClick="document.getElementById('fork-module').submit();"><img src="/public/imgs/icons/fork.png"/></a>
 			</form>		
 		</div>
 
-		<div id="div-edit" style="position: fixed; top:10%; right:15%; ">		
+		<div id="div-edit" style="position: absolute; top:10%; right:15%; ">		
 			<form id="edit-module" action="/modules/edit" method="GET" style="display: inline">
 			<input type="hidden" name="id" value="<%= module_id %>"/>
 			<a class="btn btn-success" title="Edit this module" onClick="document.getElementById('edit-module').submit();"><img src="/public/imgs/icons/edit.png" /></a>
 			</form>
 		</div>
 		
-		<div id="div-delete" style="position: fixed; top:16%; right:15%; ">		
+		<div id="div-delete" style="position: absolute; top:16%; right:15%; ">		
 			<form id="delete-module" action="/modules/delete" method="POST" style="display: inline">
 			<input type="hidden" name="_id" value="<%= module_id %>"/>
 			<a class="btn btn-danger" title="Delete this module" onClick="ans = confirm('Are you sure you want to delete this module?'); if(ans)document.getElementById('delete-module').submit(); return;"><img src="/public/imgs/icons/delete.png"/></a>

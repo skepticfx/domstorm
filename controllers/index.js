@@ -3,6 +3,7 @@
  */
 
 var modules = require(process.cwd()+'/controllers/modules.js'); 
+var helper = require(process.cwd()+'/controllers/helper.js'); 
  
 // All Local routing goes here. 
 exports.set = function(app){
@@ -17,5 +18,10 @@ exports.set = function(app){
 	modules.run(app);
 	modules.results(app);
 	modules.edit(app);
+
+	
+	// Request Modules
+	helper.index(app);
+	helper.headers(app);
 
 };

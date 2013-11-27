@@ -1,5 +1,5 @@
 // Routes for anything '/modules' related
-//528dd7c1c6bbedf415000002
+
 var fs = require('fs');
 var Modules = require(process.cwd()+'/models/Modules.js').Modules;
 
@@ -25,10 +25,16 @@ exports.index = function(app){
 				}
 			});
 		} else {
-			res.render('modules/index', {'title': 'Modules'});	
+			Modules.find({}, function(err, modules){
+				if(err){
+					console.log('There is some error populating the Modules List');
+				} else {
+					console.log(modules);
+					res.render('modules/index', {'title': 'Modules', 'modules': modules});	
+				}
+			});
 		}
 	});
-
 }
 
 // Loads and runs the module test page from /models/core/modules_test/

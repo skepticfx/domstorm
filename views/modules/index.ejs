@@ -1,6 +1,18 @@
 <% include ../layouts/header.ejs %>
 <% include ../layouts/navbar.ejs %>
 
-This will be populated with the complete list of Modules with tags and categories.
+</style>
+
+<div class="container">
+<div class="jumbotron"><h1><center>Modules</center></h1></div>
+	<div class="col-lg-4">
+	  <div class="list-group">
+		<% for(x in modules) {%>
+		<a href="/modules/?id=<%= modules[x]._id %>" class="list-group-item" title="<%= modules[x].description %>"><%= modules[x].name %></a>
+		<% } %>
+	  </div>
+	</div>  
+</div>
+
 </body>	
 <% include ../layouts/footer.ejs %>
