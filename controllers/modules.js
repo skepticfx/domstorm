@@ -29,7 +29,6 @@ exports.index = function(app){
 				if(err){
 					console.log('There is some error populating the Modules List');
 				} else {
-					console.log(modules);
 					res.render('modules/index', {'title': 'Modules', 'modules': modules});	
 				}
 			});
