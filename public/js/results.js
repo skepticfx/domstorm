@@ -9,7 +9,7 @@ function Results(type, result_object){
 }
 
 // Instantiates a new Simple Table Object.
-// var st = new simpleTable("document.domain test", 3, [{type: 'string', value: 'Property Tested'}, {type: 'boolean', value: 'Is Override-able?'}, {type: 'string', value: 'Result / Error'}]);
+// var st = new simpleTable(3, [{type: 'string', value: 'Property Tested'}, {type: 'boolean', value: 'Is Override-able?'}, {type: 'string', value: 'Result / Error'}]);
 function simpleTable(title, count, cols_arr){
 	var cols = [];
 	var i = 0;
@@ -18,7 +18,6 @@ function simpleTable(title, count, cols_arr){
 		cols[i] = cols_arr[i];
 	}
 	this.columns = cols;
-	this.title = title;
 	this.rows = []; // Initially the rows are empty. This will be a 2D array.
 	this.addResult = function(result){
 		this.rows.push(result);
@@ -27,7 +26,7 @@ function simpleTable(title, count, cols_arr){
 	// Creates and returns a HTML table format.
 	// TODO: Encoding of inputs.
 	this.getHTML = function(){
-		var table_html = '<div class="page-header"><h1 id="tables">' + this.title + '</h1></div><div class="bs-example table-responsive"><table class="table table-striped table-bordered table-hover"> <thead><tr>';
+		var table_html = '<div class="bs-example table-responsive"><table class="table table-striped table-bordered table-hover"> <thead><tr>';
 		// Iterate the columns
 		for(i=0; i<this.columns.length; i++){
 			table_html += '<th>'+ this.columns[i].value +'</th>'

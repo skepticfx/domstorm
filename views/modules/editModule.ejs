@@ -23,8 +23,7 @@
 <div class="panel-heading">
   <form class="bs-example form-horizontal" action="/modules/edit" method="POST" id="createModule">
   <input type="hidden" name= "_id" value="<%= module._id%>" />
-	<fieldset>
-	  <legend>Edit this module</legend>
+	  <div id="greenish_title">Module Details</div>
 	  <div class="form-group">
 		<label for="inputName" class="col-lg-2 control-label">Name</label>
 		<div class="col-lg-10">
@@ -68,14 +67,28 @@
 		  <div class="radio">
 			<label>
 			  <input type="radio" name="_results_type" id="optionsRadios2" value="ENUM_LIST">
-			  Enumeration List
+			  Enumeration List (Currently Not Supported)
 			</label>
 		  </div>
 		</div>
 	  </div>	  
 	
+<!-- Column Names et al -->
 
+	  <div id="greenish_title">Customize your column names</div>
+	  <div class="form-group">
+		<label for="num_cols" class="col-lg-2 control-label">Number of Columns</label>
+		<div class="col-lg-4">
+		  <input type="text" class="form-control" name="_num_cols" id="num_cols" placeholder="Any value between 1 to 5" value="<%= module.results.columns.length%>" title="Any value between 1 to 5" autocomplete="off" /> 
+		</div>
+	   </div>	
+	  <!-- The column names will be populated dynamically -->
+	<div id="div_cols" class="form-group">
+
+	</div>
+<!-- End of columns names et al -->	  
   
+    <div id="greenish_title">Test scripts</div> 
 	  <div class="form-group">
 		<label for="userScript" class="col-lg-2 control-label">User Script</label>
 		<div class="col-lg-10">
@@ -103,7 +116,6 @@
 		  <button id="submitButton" type="button" class="btn btn-primary">Edit Module</button> 
 		</div>
 	  </div>
-	</fieldset>
   </form>
 </div>			
 </div>
@@ -118,12 +130,37 @@ var enum_data = ace.edit("enum_data");
 enum_data.setTheme("ace/theme/github");
 enum_data.getSession().setMode("ace/mode/javascript");		
 $(document).ready(function() {
+
+		updateColumns($('#num_cols').val());
+		$('#num_cols').keyup(function(){
+			if(this.value>=1 && this.value<=5)
+				updateColumns(this.value);
+			else{
+				if(this.value != "")
+					this.value = 1;
+				updateColumns(1);
+			}	
+		});
+
 		$('#submitButton').click(function(){
 			$('#_userScript').val(userScript.getValue());
 			$('#_enum_data').val(enum_data.getValue());
 			$('#createModule').submit();
 		});
 	});
+	
+var updateColumns = function(num){
+	$('#div_cols').empty();
+	for(var i=1; i<=num; i++){
+		$('#div_cols').append('<label for="_cols_'+i+'" class="col-lg-2 control-label">Column '+i+'</label><div class="col-lg-4"><input type="text" name="_cols_'+i+'" class="form-control" id="cols_'+i+'" placeholder="'+getColumnName(i)+'" value="'+getColumnName(i)+'" autocomplete="off"></div>');
+	}
+}
+
+var column_names = <%- columns %>;
+
+var getColumnName = function(i){
+return column_names[i-1] || '';
+}	
 </script>
 
 <% include ../layouts/footer.ejs %>			

@@ -2,6 +2,11 @@
 
 /*! normalize.css v2.1.3 | MIT License | git.io/normalize */
 
+#greenish_title{
+color: #00bf5f;
+font-size: 2em;
+}
+
 .center-x{ text-align:center; } 
 .center-y{ vertical-align:middle; }
 
@@ -1816,6 +1821,32 @@ table th[class*="col-"] {
   background-color: #ecf0f1;
 }
 
+.table > thead > tr > td.TITLE,
+.table > tbody > tr > td.TITLE,
+.table > tfoot > tr > td.TITLE,
+.table > thead > tr > th.TITLE,
+.table > tbody > tr > th.TITLE,
+.table > tfoot > tr > th.TITLE,
+.table > thead > tr.TITLE > td,
+.table > tbody > tr.TITLE > td,
+.table > tfoot > tr.TITLE > td,
+.table > thead > tr.TITLE > th,
+.table > tbody > tr.TITLE > th,
+.table > tfoot > tr.TITLE > th {
+  background-color: #2c3e50;
+  color: #ffffff; 
+}
+
+.table-hover > tbody > tr > td.TITLE:hover,
+.table-hover > tbody > tr > th.TITLE:hover,
+.table-hover > tbody > tr.TITLE:hover > td,
+.table-hover > tbody > tr.TITLE:hover > th {
+  background-color: #2c3e50;
+  color: #ffffff;
+}
+
+
+
 .table > thead > tr > td.success,
 .table > tbody > tr > td.success,
 .table > tfoot > tr > td.success,
@@ -1835,6 +1866,28 @@ table th[class*="col-"] {
 .table-hover > tbody > tr > th.success:hover,
 .table-hover > tbody > tr.success:hover > td,
 .table-hover > tbody > tr.success:hover > th {
+  background-color: #15a589;
+}
+
+.table > thead > tr > td.SUCCESS,
+.table > tbody > tr > td.SUCCESS,
+.table > tfoot > tr > td.SUCCESS,
+.table > thead > tr > th.SUCCESS,
+.table > tbody > tr > th.SUCCESS,
+.table > tfoot > tr > th.SUCCESS,
+.table > thead > tr.SUCCESS > td,
+.table > tbody > tr.SUCCESS > td,
+.table > tfoot > tr.SUCCESS > td,
+.table > thead > tr.SUCCESS > th,
+.table > tbody > tr.SUCCESS > th,
+.table > tfoot > tr.SUCCESS > th {
+  background-color: #18bc9c;
+}
+
+.table-hover > tbody > tr > td.SUCCESS:hover,
+.table-hover > tbody > tr > th.SUCCESS:hover,
+.table-hover > tbody > tr.SUCCESS:hover > td,
+.table-hover > tbody > tr.SUCCESS:hover > th {
   background-color: #15a589;
 }
 
@@ -1860,6 +1913,31 @@ table th[class*="col-"] {
   background-color: #e43725;
 }
 
+.table > thead > tr > td.ERROR,
+.table > tbody > tr > td.ERROR,
+.table > tfoot > tr > td.ERROR,
+.table > thead > tr > th.ERROR,
+.table > tbody > tr > th.ERROR,
+.table > tfoot > tr > th.ERROR,
+.table > thead > tr.ERROR > td,
+.table > tbody > tr.ERROR > td,
+.table > tfoot > tr.ERROR > td,
+.table > thead > tr.ERROR > th,
+.table > tbody > tr.ERROR > th,
+.table > tfoot > tr.ERROR > th {
+  background-color: #e74c3c;
+  color: #ffffff;
+}
+
+.table-hover > tbody > tr > td.ERROR:hover,
+.table-hover > tbody > tr > th.ERROR:hover,
+.table-hover > tbody > tr.ERROR:hover > td,
+.table-hover > tbody > tr.ERROR:hover > th {
+  background-color: #e43725;
+  color: #ffffff;
+}
+
+
 .table > thead > tr > td.warning,
 .table > tbody > tr > td.warning,
 .table > tfoot > tr > td.warning,
@@ -1881,6 +1959,29 @@ table th[class*="col-"] {
 .table-hover > tbody > tr.warning:hover > th {
   background-color: #e08e0b;
 }
+
+.table > thead > tr > td.INFO,
+.table > tbody > tr > td.INFO,
+.table > tfoot > tr > td.INFO,
+.table > thead > tr > th.INFO,
+.table > tbody > tr > th.INFO,
+.table > tfoot > tr > th.INFO,
+.table > thead > tr.INFO > td,
+.table > tbody > tr.INFO > td,
+.table > tfoot > tr.INFO > td,
+.table > thead > tr.INFO > th,
+.table > tbody > tr.INFO > th,
+.table > tfoot > tr.INFO > th {
+  background-color: #f39c12;
+}
+
+.table-hover > tbody > tr > td.INFO:hover,
+.table-hover > tbody > tr > th.INFO:hover,
+.table-hover > tbody > tr.INFO:hover > td,
+.table-hover > tbody > tr.INFO:hover > th {
+  background-color: #e08e0b;
+}
+
 
 @media (max-width: 767px) {
   .table-responsive {

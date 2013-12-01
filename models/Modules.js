@@ -11,13 +11,17 @@ var modulesSchema = mongoose.Schema({
 			state: {type: String}
 		  },
 	results: {
-			_type: {type: String},
-			raw: {type: String},
-			browsers: [
-				{	name: String,
-					raw: String
-				}
-					]
+			_type: {type: String}, // [SIMPLE_TABLE]
+			columns: [],
+			raw: {type: String}, // Deprecated.
+			browsers:{
+						GOOGLE_CHROME: {rows: [], version: String},
+						MOZILLA_FIREFOX: {rows: [], version: String},
+						INTERNET_EXPLORER: {rows: [], version: String},
+						OPERA: {rows: [], version: String},
+						SAFARI: {rows: [], version: String},
+						OTHERS: {rows: [], version: String}
+					}
 		  },
 	
 	tags:  [],
@@ -34,6 +38,7 @@ modulesSchema.statics.add = function(obj, callback){
 	instance.test.userScript = obj.test.userScript;
 	instance.test.enum_data = obj.test.enum_data;
 	instance.results._type = obj.results.type;
+	instance.results.columns = obj.results.columns;
 	
 	instance.save(function (err){
 		callback(err, instance);		

@@ -65,11 +65,15 @@
 				The last time this module was run, it ran in to an error. Please re-run the test to get some results. And yea, Good Luck with that.
 				<% } if(module_test.state == "COMPLETED"){%>
 				              <ul class="nav nav-pills">
-                <li class="active"><a href="#"><img src="/public/imgs/browser-logos/GOOGLE_CHROME.png"/> Chrome</a>
-							<%- module_results.raw %>
-							<% } %></li>
-               <!-- <li><a href="#"><img src="/public/imgs/browser-logos/MOZILLA_FIREFOX.png"/> Firefox</a></li>
-                <li class="disabled"><a href="#">Disabled</a></li>
+                <li class="active"><a class="browser_tabs" href="#" id="chrome_tab"><img src="/public/imgs/browser-logos/GOOGLE_CHROME.png"/> Chrome</a></li>
+                <li><a class="browser_tabs" href="#" id="firefox_tab"><img src="/public/imgs/browser-logos/MOZILLA_FIREFOX.png"/> Firefox</a></li>
+                <li><a class="browser_tabs" href="#" id="ie_tab"><img src="/public/imgs/browser-logos/INTERNET_EXPLORER.png"/> Internet Explorer</a></li>
+                <li><a class="browser_tabs" href="#" id="safari_tab"><img src="/public/imgs/browser-logos/SAFARI.png"/> Safari</a></li>
+                <li><a class="browser_tabs" href="#" id="opera_tab"><img src="/public/imgs/browser-logos/OPERA.png"/> Opera</a></li>
+                <li><a class="browser_tabs" href="#" id="others_tab"><img src="/public/imgs/browser-logos/OTHERS.png"/> Others</a></li>
+			   
+			   
+                <!--<li class="disabled"><a href="#">Disabled</a></li>
                 <li class="dropdown">
                   <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                     Dropdown <span class="caret"></span>
@@ -83,6 +87,25 @@
                   </ul>
                 </li> -->
               </ul>
+			  <div id="chrome_results" class="browser_results">
+			  <%- browsers.GOOGLE_CHROME %>
+			  </div>
+			  <div id="firefox_results" class="browser_results">
+			  <%- browsers.MOZILLA_FIREFOX %>
+			  </div>
+			  <div id="ie_results" class="browser_results">
+			  <%- browsers.INTERNET_EXPLORER %>
+			  </div>			  
+			  <div id="opera_results" class="browser_results">
+			  <%- browsers.OPERA %>
+			  </div>
+			  <div id="safari_results" class="browser_results">
+			  <%- browsers.SAFARI %>
+			  </div>
+			  <div id="others_results" class="browser_results">
+			  <%- browsers.OTHERS %>
+			  </div>						  
+			  <% } %>
 
 				
 			</div>
@@ -126,6 +149,21 @@
 
 </div><!-- /.container -->
 
+<script>
+$(document).ready(function(){
+	$('.browser_results').hide();
+	$('.browser_tabs').click(function(){
+		$('.browser_results').hide();
+		$('.browser_tabs').parent().attr('class', '');
+		$(this).parent().attr('class', 'active');		
+		var browser_result = this.id.slice(0,-3);
+		$('#'+browser_result+'results').show();
+		
+	});
+	$('#chrome_tab').click();	
+});
+
+</script>
 
 </body>	
 <% include ../layouts/footer.ejs %>

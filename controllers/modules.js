@@ -19,7 +19,9 @@ exports.index = function(app){
 					'module_name': module.name,
 					'module_description': module.description,
 					'module_results': module.results,
-					'module_test': module.test
+					'module_test': module.test,
+					'browsers': getBrowserResults(module),
+					'module': module
 					};
 					res.render('modules/getModule', module_details);
 				}
@@ -82,8 +84,18 @@ exports.create = function(app){
 
 	// Form
 	app.post('/modules/create', function(req, res){
+		
 		var results = {};
 		results.type = req.body._results_type;
+		var columns = [];
+		if(results.type == 'SIMPLE_TABLE'){
+			var num_cols = req.body._num_cols;
+			for(var i=1;i <= num_cols; i++){
+				columns.push(req.body['_cols_'+i]);
+			}	
+		}
+		results.columns = columns;	
+
 		var test = {};
 		test.state = 'NOT_STARTED'; // ERROR, COMPLETE
 		test.type = req.body._module_type;
@@ -95,7 +107,6 @@ exports.create = function(app){
 		newModule.test = test;
 		newModule.name = req.body._name;
 		newModule.description = req.body._desc;
-
 		Modules.add(newModule, function(err, module){
 			if(err){
 				res.render('misc/error', {'info': 'Something wrong happened, when we tried creating your new module.'});
@@ -122,7 +133,7 @@ exports.edit = function(app){
 					res.end();				
 				} else {
 					module.remove();
-					res.redirect('/update?module='+req.body._id);
+					res.redirect('/update');
 				}
 			});
 		} else {
@@ -140,7 +151,7 @@ exports.edit = function(app){
 					res.render('misc/error', {'info': 'Apparently, the module is missing in our system.'});
 					res.end();
 				} else {
-					res.render('modules/editModule', {title: 'Edit this module', module: module});
+					res.render('modules/editModule', {'title': 'Edit this module', 'module': module, 'columns': JSON.stringify(module.results.columns)});
 				}
 			});
 		} else {
@@ -154,6 +165,14 @@ exports.edit = function(app){
 		var results = {};
 		results._type = req.body._results_type;
 		results.raw = "";
+		var columns = [];
+		if(results._type == 'SIMPLE_TABLE'){
+			var num_cols = req.body._num_cols;
+			for(var i=1;i <= num_cols; i++){
+				columns.push(req.body['_cols_'+i]);
+			}	
+		}
+		results.columns = columns;			
 		var test = {};
 		test.state = 'NOT_STARTED'; // ERROR, COMPLETE
 		test._type = req.body._module_type;
@@ -186,12 +205,15 @@ exports.results = function(app){
 		var results = {};
 		results.raw = req.body._results_raw;
 		var browser = {};
-		browser.name = req.body._browser;
-		browser.raw = '';
+		browser.rows = JSON.parse(req.body._rows);		
+		browser.version = "";
 		var test = {};
 		test.state = 'COMPLETED'; //  COMPLETE
+		var updateObj = {};
+		updateObj['test.state'] = test.state;
+		updateObj['results.browsers.'+req.body._browser] = browser;
 
-		Modules.findOneAndUpdate({'_id': module_id}, {'results.raw': results.raw, $push: {'results.browsers': browser}, 'test.state': test.state},  function(err, result){
+		Modules.findOneAndUpdate({'_id': module_id}, updateObj,  function(err, result){
 			if(err){
 				res.render('misc/error', {'info': 'Something wrong happened, when we tried creating your new module.'});
 			} else {
@@ -228,4 +250,36 @@ exports.results = function(app){
 			}
 		});
 	});		
+}
+
+
+// Supporting Functions, Don't know where the hell to put this in the MVC stuff :( Any suggestions?
+var getBrowserResults = function(module){
+	var browser_results = {};
+
+	var browser_list = ['GOOGLE_CHROME', 'MOZILLA_FIREFOX', 'OPERA', 'SAFARI', 'INTERNET_EXPLORER', 'OTHERS'];
+	for(var x in browser_list){
+		var browser_temp = module.results.browsers[browser_list[x]];
+		if(browser_temp.rows.length == 0){
+			browser_results[browser_list[x]] = "<h4> This module was never tested on this browser. Why don't you contribute? </h4>";
+			continue;
+		}
+		var table_html = '<div class="bs-example table-responsive"><table class="table table-striped table-bordered table-hover"> <thead><tr class="TITLE">';
+		// Iterate the columns
+		for(var i=0; i<module.results.columns.length; i++){
+			table_html += '<th>'+ module.results.columns[i] +'</th>'
+		}
+		table_html += '</tr></thead><tbody>';
+		// Iterate the Rows, PS: Its a 2D array
+		for(i=0; i<browser_temp.rows.length; i++){
+			table_html += '<tr class="'+browser_temp.rows[i].type+'">';
+			for(j=0; j<browser_temp.rows[i].data.length; j++){
+				table_html += '<td>'+ browser_temp.rows[i].data[j] +'</td>';
+			}
+			table_html += '</tr>';
+		}
+		table_html += '</tbody></table></div>';
+		browser_results[browser_list[x]] = table_html;
+	}
+return browser_results;	
 }

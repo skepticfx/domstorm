@@ -4,21 +4,54 @@
 <title>
 Testing <%= module_name %>
 </title>
-<script type="text/javascript" src="/public/js/results.js"> </script>
+
+<script type="text/javascript">
+var rows = [];
+var addResult = function(args, type){
+	var obj = {};
+	obj.data = [];
+	for(var x in args)
+		obj.data.push(args[x]);
+	obj.type = type;
+	rows.push(obj);
+}
+</script>
+
 </head>
 
 <body>
 <textarea id="user_script" style="display:none;">
 
 // Our code
+// API - addResult(), addError(), addSuccess(), addInfo()
+
 
 var Test = new Object();
 var theCallback = "";
 var addResult = function(){
-	top.window.st.addResult(arguments);
+	top.window.addResult(arguments, 'SUCCESS');
 	theCallback();
 return;
 }
+
+var addSuccess = function(){
+	top.window.addResult(arguments, 'SUCCESS');
+	theCallback();
+return;
+}
+
+var addError = function(){
+	top.window.addResult(arguments, 'ERROR');
+	theCallback();
+return;
+}
+
+var addInfo = function(){
+	top.window.addResult(arguments, 'INFO');
+	theCallback();
+return;
+}
+
 
 	
 var callTest = function(dataObj, callback){
@@ -37,16 +70,47 @@ var callTest = function(dataObj, callback){
 
 <h1>Testing <%= module_name %> </h1>
 <script>
+var getBrowser = function(){
+	var is_chrome = navigator.userAgent.toLowerCase().indexOf('chrome') > -1;
+	var is_safari = navigator.userAgent.toLowerCase().indexOf('safari') > -1;
+	var is_opera = navigator.userAgent.toLowerCase().indexOf('opr') > -1; // has Chrome & Safari as well.
+	var is_firefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+	var obj = {};
+	obj.browser = "OTHERS";
+	obj.browser_name = "Others";
 
-var browser = "undetected";
-var browser_name = "undetected";
-var is_chrome = navigator.userAgent.toLowerCase().indexOf('chrome') > -1;
-if (is_chrome){
-	browser = "GOOGLE_CHROME";
-	browser_name = "Google Chrome";
+	// Order is important, we already have to use a reliable user-agent detection.
+	if (is_opera){ // has Chrome & Safari as well.
+		obj.browser = "OPERA";
+		obj.browser_name = "Opera";
+		return obj;
+	}
+
+	if (is_chrome){ // has Safari as well.
+		obj.browser = "GOOGLE_CHROME";
+		obj.browser_name = "Google Chrome";
+		return obj;
+	}
+	
+	if (is_safari){ // Apple is badass, only has SAFARI in userAgent string \m/
+		obj.browser = "SAFARI";
+		obj.browser_name = "Safari";
+		return obj;
+	}
+
+	if (is_firefox){
+		obj.browser = "MOZILLA_FIREFOX";
+		obj.browser_name = "Mozilla Firefox";
+		return obj;
+	}
+	
+return obj;
 }
 
-var st = new simpleTable('' ,2, [{type: 'string', value: 'Property Tested'}, {type: 'boolean', value: 'Overriding/Hooking allowed?'}]);
+var browserObj = getBrowser();
+var browser = browserObj.browser;
+var browser_name = browserObj.browser_name;
+
 
 var userScript = document.getElementById('user_script').innerText;
 
@@ -85,18 +149,16 @@ var x = 0;
 
 
 function endTest(){
-	var r = new Results('SIMPLE_TABLE', st);
-	//document.body.innerHTML += r.getHTML();
 	document.body.innerHTML += '<h1>The test is complete now. </h1> <h2>This window will close right now.</h2>';
 	var module_id = '<%=module_id%>';
 	var xhr = new XMLHttpRequest();
 	xhr.open('POST', '/modules/results/update', true);
 	xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-	xhr.send('_module_id='+module_id+'&_browser='+browser+'&_results_raw='+encodeURIComponent(r.getHTML()));
+	xhr.send('_module_id='+module_id+'&_browser='+browser+'&_results_raw='+encodeURIComponent(1)+'&_rows='+encodeURIComponent(JSON.stringify(rows)));
 	
 	setTimeout(function(){
 		window.opener.location.reload();
-		this.close();
+		//this.close();
 	}, 2000);
 }
 

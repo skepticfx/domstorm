@@ -17,13 +17,12 @@
 <script src="/public/js/vendor/ace/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
 
 <div class="container">  
-	<h1><%= title %></h1>
+	<h1><center><%= title %></center></h1>
 
 
 <div class="panel-heading">
   <form class="bs-example form-horizontal" action="/modules/create" method="POST" id="createModule">
-	<fieldset>
-	  <legend>Create a new 'Enum Function' module</legend>
+	  <div id="greenish_title">Module Details</div>
 	  <div class="form-group">
 		<label for="inputName" class="col-lg-2 control-label">Name</label>
 		<div class="col-lg-10">
@@ -61,20 +60,34 @@
 		  <div class="radio">
 			<label>
 			  <input type="radio" name="_results_type" id="optionsRadios1" value="SIMPLE_TABLE" checked="">
-			  Simple Table Format (Double Column Format)
+			  Simple Table Format - Columns and Rows
 			</label>
 		  </div>
 		  <div class="radio">
 			<label>
 			  <input type="radio" name="_results_type" id="optionsRadios2" value="ENUM_LIST">
-			  Enumeration List
+			  Enumeration List (Currently Not Supported)
 			</label>
 		  </div>
 		</div>
 	  </div>	  
 	
+<!-- Column Names et al -->
 
+	  <div id="greenish_title">Customize your column names</div>
+	  <div class="form-group">
+		<label for="num_cols" class="col-lg-2 control-label">Number of Columns</label>
+		<div class="col-lg-4">
+		  <input type="text" class="form-control" name="_num_cols" id="num_cols" placeholder="Any value between 1 to 5" value="2" title="Any value between 1 to 5" autocomplete="off" /> 
+		</div>
+	   </div>	
+	  <!-- The column names will be populated dynamically -->
+	<div id="div_cols" class="form-group">
+
+	</div>
+<!-- End of columns names et al -->	  
   
+  <div id="greenish_title">Test scripts</div> 
 	  <div class="form-group">
 		<label for="userScript" class="col-lg-2 control-label">User Script</label>
 		<div class="col-lg-10">
@@ -122,7 +135,6 @@ var data = [{before: '1', after: '2'}, {before: '1', after: '1'}, {before: '2', 
 		  <button id="submitButton" type="button" class="btn btn-primary">Create Module</button> 
 		</div>
 	  </div>
-	</fieldset>
   </form>
 </div>			
 </div>
@@ -137,12 +149,37 @@ var enum_data = ace.edit("enum_data");
 enum_data.setTheme("ace/theme/github");
 enum_data.getSession().setMode("ace/mode/javascript");		
 $(document).ready(function() {
+
+		updateColumns($('#num_cols').val());
+		$('#num_cols').keyup(function(){
+			if(this.value>=1 && this.value<=5)
+				updateColumns(this.value);
+			else{
+				if(this.value != "")
+					this.value = 1;
+				updateColumns(1);
+			}	
+		});
+
 		$('#submitButton').click(function(){
 			$('#_userScript').val(userScript.getValue());
 			$('#_enum_data').val(enum_data.getValue());
 			$('#createModule').submit();
 		});
 	});
+	
+var updateColumns = function(num){
+	$('#div_cols').empty();
+	for(var i=1; i<=num; i++){
+		$('#div_cols').append('<label for="_cols_'+i+'" class="col-lg-2 control-label">Column '+i+'</label><div class="col-lg-4"><input type="text" name="_cols_'+i+'" class="form-control" id="cols_'+i+'" placeholder="'+getRandomColumnName()+'" value="" autocomplete="off"></div>');
+	}
+}
+
+var getRandomColumnName = function(){
+	var x = parseInt(Math.random()*10);
+	var column_names = ['Test Passed?', 'Test Type', 'Name', 'Propery Tested', 'Fuzzed Characters', 'True / False', 'Vulnerable', 'Overridding Allowed?', 'List of properties', 'Property Name'];
+return column_names[x];
+}	
 </script>
 
 <% include ../layouts/footer.ejs %>			
