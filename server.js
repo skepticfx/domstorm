@@ -2,7 +2,7 @@
  * Dom Storm. Built using Express, EJS, Mongoose, ACE
  */
 
- console.log('Starting server.js');
+console.log('Starting server.js');
 var express = require('express');
 var controllers = require('./controllers');
 var modules = require('./controllers/modules.js');
