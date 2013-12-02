@@ -112,7 +112,7 @@ var browser = browserObj.browser;
 var browser_name = browserObj.browser_name;
 
 
-var userScript = document.getElementById('user_script').innerText;
+var userScript = document.getElementById('user_script').textContent;
 
 function newIframe(injectMe, iframeCreated){
 	var iframe = document.createElement('iframe');
