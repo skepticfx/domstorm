@@ -4,7 +4,7 @@
 
 <div class="container">
 
-<div class="jumbotron">
+<div class="jumbotron" >
 
 
 <center>
@@ -46,7 +46,7 @@
 </div>
 
 
-		<div>
+		<div  id="results-bar">
 		<input type="hidden" name="id" value="<%= module_id %>"/>
 		<center><a class="btn btn-primary" title="Run the Test now" onClick="window.open('/modules/run?id=<%= module_id %>')"><img src="/public/imgs/icons/run.png" /> Run this test now.</a></center>
 		</div>
@@ -57,7 +57,7 @@
 
 
 
-	<div class="column" id="results-bar">
+	<div class="column">
 		<div class="panel panel-primary">
 			<div class="panel-heading">
 				<h3 class="panel-title"><img src="/public/imgs/icons/results.png"/> Results</h3>
