@@ -8,7 +8,8 @@ var modulesSchema = mongoose.Schema({
 			_type: {type: String},
 			enum_data: {type: String},
 			userScript: {type: String},
-			state: {type: String}
+			state: {type: String},
+			timeout: {type: String}
 		  },
 	results: {
 			_type: {type: String}, // [SIMPLE_TABLE]
@@ -39,6 +40,7 @@ modulesSchema.statics.add = function(obj, callback){
 	instance.test.enum_data = obj.test.enum_data;
 	instance.results._type = obj.results.type;
 	instance.results.columns = obj.results.columns;
+	instance.tags = obj.tags;
 	
 	instance.save(function (err){
 		callback(err, instance);		

@@ -21,7 +21,7 @@ exports.index = function(app){
 					'module_results': module.results,
 					'module_test': module.test,
 					'browsers': getBrowserResults(module),
-					'module': module
+					'module': module.toObject()
 					};
 					res.render('modules/getModule', module_details);
 				}
@@ -95,7 +95,11 @@ exports.create = function(app){
 			}	
 		}
 		results.columns = columns;	
-
+		
+		var tags = req.body._tags;
+		tags = tags.replace(/ /g,'');
+		tags = tags.split(',');
+		
 		var test = {};
 		test.state = 'NOT_STARTED'; // ERROR, COMPLETE
 		test.type = req.body._module_type;
@@ -107,6 +111,8 @@ exports.create = function(app){
 		newModule.test = test;
 		newModule.name = req.body._name;
 		newModule.description = req.body._desc;
+		newModule.tags = tags;
+		
 		Modules.add(newModule, function(err, module){
 			if(err){
 				res.render('misc/error', {'info': 'Something wrong happened, when we tried creating your new module.'});
@@ -121,7 +127,7 @@ exports.create = function(app){
 
 }
 
-// Creates a new module
+// Edits a module
 exports.edit = function(app){
 
 	// Deletes a module
@@ -151,7 +157,13 @@ exports.edit = function(app){
 					res.render('misc/error', {'info': 'Apparently, the module is missing in our system.'});
 					res.end();
 				} else {
-					res.render('modules/editModule', {'title': 'Edit this module', 'module': module, 'columns': JSON.stringify(module.results.columns)});
+					var module_tags_parsed = "";
+					module = module.toObject();
+					for(var x in module.tags)
+						module_tags_parsed += module.tags[x] + ",";
+					if(module_tags_parsed !== "")
+						module_tags_parsed = module_tags_parsed.slice(0, -1);	
+					res.render('modules/editModule', {'title': 'Edit this module', 'module': module, 'columns': JSON.stringify(module.results.columns), 'module_tags_parsed': module_tags_parsed});
 				}
 			});
 		} else {
@@ -161,39 +173,43 @@ exports.edit = function(app){
 	});
 
 	// Form
+	// Get the already existing document and update as required. Can also be used for changes.
 	app.post('/modules/edit', function(req, res){
-		var results = {};
-		results._type = req.body._results_type;
-		results.raw = "";
-		var columns = [];
-		if(results._type == 'SIMPLE_TABLE'){
-			var num_cols = req.body._num_cols;
-			for(var i=1;i <= num_cols; i++){
-				columns.push(req.body['_cols_'+i]);
-			}	
-		}
-		results.columns = columns;			
-		var test = {};
-		test.state = 'NOT_STARTED'; // ERROR, COMPLETE
-		test._type = req.body._module_type;
-		test.userScript = req.body._userScript;
-		test.enum_data = req.body._enum_data;
-		var module_id = req.body._id;
-		var newModule = {};
-		newModule.results = results;
-		newModule.test = test;
-		newModule.name = req.body._name;
-		newModule.description = req.body._desc;
-
-		Modules.findOneAndUpdate({'_id': module_id}, newModule, function(err, module){
-			if(err){
-				res.render('misc/error', {'info': 'Something wrong happened, when we tried creating your new module.'});
-			} else {
-				res.redirect('/modules/?id='+ module._id);
+		Modules.find({'_id': req.body._id}, function(err, modules){//console.log(modules[0]);
+			modules = modules.pop();
+			modules.results._type = req.body._results_type;
+			modules.results.columns = [];
+			if(modules.results._type == 'SIMPLE_TABLE'){
+				var num_cols = req.body._num_cols;
+				for(var i=1;i <= num_cols; i++){
+					modules.results.columns.push(req.body['_cols_'+i]);
+				}
 			}
-		});
+		
+			var module_id = modules._id;
+			var newModule = modules.toObject();
+			newModule.name = req.body._name;
+			newModule.description = req.body._desc;
+			newModule.test._type = req.body._module_type;
+			newModule.test.userScript = req.body._userScript;
+			newModule.test.enum_data = req.body._enum_data;
+			newModule.results.columns = modules.results.columns;
+			
+			var tags = req.body._tags;
+			tags = tags.replace(/ /g,'');
+			tags = tags.split(',');
+			newModule.tags = tags;
+			
+			delete newModule._id;
+			Modules.findOneAndUpdate({'_id': modules._id}, newModule, {'upsert': true}, function(err, module){
+				if(err){
+					res.render('misc/error', {'info': err+'Something wrong happened, when we tried creating your new module.'});
+				} else {
+					res.redirect('/modules/?id='+ module._id);
+				}
+			});
+		});	
 	});	
-
 }
 
 
@@ -235,7 +251,7 @@ exports.results = function(app){
 					obj.id = modules[x]._id;
 					modulesList.push(obj);
 				}
-				fs.writeFile(process.cwd()+'/public/js/modulesList.js', 'var topModules = '+ JSON.stringify(modulesList) + ' ;', function(err){
+				fs.writeFile(process.cwd()+'/dynamic/js/modulesList.js', 'var topModules = '+ JSON.stringify(modulesList) + ' ;', function(err){
 					if(err){
 						console.log('There is some error in writing the list to modulesList.js');
 					} else {
@@ -282,4 +298,28 @@ var getBrowserResults = function(module){
 		browser_results[browser_list[x]] = table_html;
 	}
 return browser_results;	
+}
+
+
+
+// Forks a new module
+exports.fork = function(app){
+
+	// The UI
+	app.get('/modules/fork', function(req, res){
+		if(typeof req.query.id != 'undefined'){
+			var module_id = req.query.id;
+			var module = Modules.getModuleById(module_id, function(err, module){
+				if(err){
+					res.render('misc/error', {'info': 'Fork you ! Apparently, the module is missing in our system. Cannot Fork now !'});
+					res.end();
+				} else {
+					res.render('modules/forkModule', {'title': 'Fork this module', 'module': module, 'columns': JSON.stringify(module.results.columns)});
+				}
+			});
+		} else {
+			res.render('misc/error', {'info': 'Apparently, the module is missing in our system.'});
+			res.end();
+		}
+	});
 }

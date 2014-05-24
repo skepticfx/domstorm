@@ -18,6 +18,7 @@ exports.set = function(app){
 	modules.run(app);
 	modules.results(app);
 	modules.edit(app);
+	modules.fork(app);
 
 	
 	// Request Modules
