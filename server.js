@@ -11,8 +11,9 @@ var path = require('path');
 var fs = require('fs');
 var config = require('./config.js').config;
 
-var ipaddress = '';
-var port      = process.env.PORT || 8080;
+
+var ipaddress  = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
+var port    = process.env.OPENSHIFT_NODEJS_PORT || 8080;
 
 var oneDay = '86400000';
 
