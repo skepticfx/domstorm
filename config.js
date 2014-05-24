@@ -2,9 +2,8 @@ var config = {};
 
 exports.config = config;
 
-// Replace this with OPenshift's Mongo ENV variables.
-if(process.env.OPENSHIFT_APP_NAME === 'domstorm')
-  config.DB_URL = 'mongodb://admin:4fcnQu43EG3n@127.12.118.130:27017/domstorm';
+if(process.env.OPENSHIFT_MONGODB_DB_URL)
+  config.DB_URL = process.env.OPENSHIFT_MONGODB_DB_URL + 'domstorm';
 else
   config.DB_URL = 'mongodb://fx:fx@127.0.0.1/domstorm'; // Local Mongo Instance
 
