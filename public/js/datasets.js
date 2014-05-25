@@ -1,0 +1,2 @@
+var DOMSTORM = {};
+var x ={};
