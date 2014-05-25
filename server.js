@@ -34,6 +34,14 @@ db.once('open', function () {
 	app.set('views', path.join(__dirname, 'views'));
 	app.set('view engine', 'ejs');
 
+
+function myMiddleware (req, res, next) {
+  res.locals.user = req.user;
+  next();
+}
+
+
+
 	// middleware stack
 	app.use(express.favicon());
 	app.use(express.logger('dev'));
@@ -43,10 +51,12 @@ db.once('open', function () {
   app.use(passport.initialize());
   app.use(passport.session());
 	app.use(express.urlencoded());
+  app.use(myMiddleware);
+
+  app.use(express.compress());
 	app.use(app.router);
 	app.use("/dynamic",express.static(path.join(__dirname, '/dynamic')));
 
-	app.use(express.compress());
 	app.use("/public",express.static(path.join(__dirname, '/public'), {maxAge: oneDay} ));
 	app.use("/bower_components",express.static(path.join(__dirname, '/bower_components'), {maxAge: oneDay} ));
 

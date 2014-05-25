@@ -10,7 +10,10 @@ var auth = require(process.cwd()+'/controllers/auth.js');
 exports.set = function(app){
 	// Home page
 	app.get('/', function(req, res){
-		res.render('index', {'title': 'Home Page'});
+    var authError = 0;
+    if(typeof req.query.authError != 'undefined' && req.query.authError == 1)
+      authError = 1;
+		res.render('index', {'title': 'Home Page', 'authError': authError});
 	});
 
 	// Modules

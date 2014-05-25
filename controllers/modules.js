@@ -3,6 +3,12 @@
 var fs = require('fs');
 var Modules = require(process.cwd()+'/models/Modules.js').Modules;
 
+// test authentication
+function ensureAuthenticated(req, res, next) {
+	if (req.isAuthenticated()) { return next(); }
+		res.redirect('/?authError=1');
+}
+
 // Loads the module home and individual modules
 exports.index = function(app){
 
@@ -41,7 +47,7 @@ exports.index = function(app){
 // Loads and runs the module test page from /models/core/modules_test/
 exports.run = function(app){
 
-	app.get('/modules/run', function(req, res){
+	app.get('/modules/run', ensureAuthenticated, function(req, res){
 		if(typeof req.query.id != 'undefined'){
 			var module_id = req.query.id;
 			var module = Modules.getModuleById(module_id, function(err, module){
@@ -78,12 +84,12 @@ exports.run = function(app){
 exports.create = function(app){
 
 	// The UI
-	app.get('/modules/create', function(req, res){
+	app.get('/modules/create', ensureAuthenticated, function(req, res){
 		res.render('modules/createModule', {'title':'Create a new Module'});
 	});
 
 	// Form
-	app.post('/modules/create', function(req, res){
+	app.post('/modules/create', ensureAuthenticated, function(req, res){
 
 		var results = {};
 		results.type = req.body._results_type;
@@ -131,7 +137,7 @@ exports.create = function(app){
 exports.edit = function(app){
 
 	// Deletes a module
-	app.post('/modules/delete', function(req, res){
+	app.post('/modules/delete', ensureAuthenticated, function(req, res){
 		if(typeof req.body._id != 'undefined'){
 			Modules.findOne({_id: req.body._id}, function(err, module){
 				if(err){
@@ -149,7 +155,7 @@ exports.edit = function(app){
 	});
 
 	// The UI
-	app.get('/modules/edit', function(req, res){
+	app.get('/modules/edit', ensureAuthenticated, function(req, res){
 		if(typeof req.query.id != 'undefined'){
 			var module_id = req.query.id;
 			var module = Modules.getModuleById(module_id, function(err, module){
@@ -174,7 +180,7 @@ exports.edit = function(app){
 
 	// Form
 	// Get the already existing document and update as required. Can also be used for changes.
-	app.post('/modules/edit', function(req, res){
+	app.post('/modules/edit', ensureAuthenticated, function(req, res){
 		Modules.find({'_id': req.body._id}, function(err, modules){
 			modules = modules.pop();
 			modules.results._type = req.body._results_type;
@@ -216,7 +222,7 @@ exports.edit = function(app){
 exports.results = function(app){
 
 	// Can be Ajax
-	app.post('/modules/results/update', function(req, res){
+	app.post('/modules/results/update', ensureAuthenticated, function(req, res){
 		var module_id = req.body._module_id;
 		var results = {};
 		results.raw = req.body._results_raw;
@@ -239,7 +245,7 @@ exports.results = function(app){
 	});
 
 	// Hackish to Update the stuff.
-	app.get('/update', function(req, res){
+	app.get('/update', ensureAuthenticated, function(req, res){
 		Modules.find({}, function(err, modules){
 			if(err){
 				console.log('There is some error populating the Modules List');
@@ -306,7 +312,7 @@ return browser_results;
 exports.fork = function(app){
 
 	// The UI
-	app.get('/modules/fork', function(req, res){
+	app.get('/modules/fork', ensureAuthenticated, function(req, res){
 		if(typeof req.query.id != 'undefined'){
 			var module_id = req.query.id;
 			var module = Modules.getModuleById(module_id, function(err, module){

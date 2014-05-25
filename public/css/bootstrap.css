@@ -5,7 +5,11 @@
   color: #00bf5f;
 }
 
+#authError{
+  width: 33%;
+  margin-left: 33%;
 
+}
 
 @import url("//fonts.googleapis.com/css?family=Lato:400,700,900,400italic");
 

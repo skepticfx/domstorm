@@ -2,6 +2,12 @@
 
 <% include layouts/navbar.ejs %>
 
+<% if(authError == 1){ %>
+<div id="authError" class="alert alert-dismissable alert-danger">
+  <button type="button" class="close" data-dismiss="alert">×</button>
+  <strong>Oh snap! Please </strong> <a href="/auth/twitter" class="alert-link">Sign In</a>  to continue.
+</div>
+<% } %>
 
     <div class="container">
 		  <center><img src="/public/imgs/dom-storm-logo.png" alt="Dom Storm"/> <br/>
@@ -9,12 +15,12 @@
 		<h4>Use it to check, how browsers deviates from the original specifications. </h4>
       </center>
 	  <div class="column">
-        <div class="col-lg">      
+        <div class="col-lg">
 	  </div>
       </div>
 
     </div><!-- /.container -->
 
 
-</body>	
+</body>
 <% include layouts/footer.ejs %>

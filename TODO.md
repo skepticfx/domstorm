@@ -18,3 +18,5 @@
 * CORS policies.
 * Erland Oftedal's CSP check.
 *
+
+#2c3e50
