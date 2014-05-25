@@ -2,14 +2,15 @@
  * Controllers. This routes everything under the sun.
  */
 
-var modules = require(process.cwd()+'/controllers/modules.js'); 
-var helper = require(process.cwd()+'/controllers/helper.js'); 
- 
-// All Local routing goes here. 
+var modules = require(process.cwd()+'/controllers/modules.js');
+var helper = require(process.cwd()+'/controllers/helper.js');
+var auth = require(process.cwd()+'/controllers/auth.js');
+
+// All Local routing goes here.
 exports.set = function(app){
 	// Home page
-	app.get('/', function(req, res){ 
-		res.render('index', {'title': 'Home Page'});	
+	app.get('/', function(req, res){
+		res.render('index', {'title': 'Home Page'});
 	});
 
 	// Modules
@@ -20,9 +21,13 @@ exports.set = function(app){
 	modules.edit(app);
 	modules.fork(app);
 
-	
+
 	// Request Modules
 	helper.index(app);
 	helper.headers(app);
+
+  // Auth Modules
+  auth.index(app);
+  auth.twitter(app);
 
 };

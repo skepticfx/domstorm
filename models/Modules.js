@@ -1,5 +1,13 @@
 var mongoose = require('mongoose');
 
+var UserSchema = mongoose.Schema({
+  provider: String,
+  uid: String,
+  name: String,
+  image: String,
+  created: {type: Date, default: Date.now}
+});
+
 
 var modulesSchema = mongoose.Schema({
 	name: String,
@@ -24,9 +32,9 @@ var modulesSchema = mongoose.Schema({
 						OTHERS: {rows: [], version: String}
 					}
 		  },
-	
+
 	tags:  [],
-	created: { type: Date, default: Date.now }	
+	created: { type: Date, default: Date.now }
 
 });
 
@@ -41,11 +49,11 @@ modulesSchema.statics.add = function(obj, callback){
 	instance.results._type = obj.results.type;
 	instance.results.columns = obj.results.columns;
 	instance.tags = obj.tags;
-	
+
 	instance.save(function (err){
-		callback(err, instance);		
+		callback(err, instance);
 	});
-};	
+};
 
 modulesSchema.statics.getModuleById = function(id, callback){
 	this.findOne({_id: id}, function(err, module){
@@ -54,5 +62,9 @@ modulesSchema.statics.getModuleById = function(id, callback){
 	});
 }
 
+mongoose.model('User', UserSchema);
 var Modules = mongoose.model('Modules', modulesSchema);
+var User = mongoose.model('User');
+
 exports.Modules = Modules;
+exports.User = User;

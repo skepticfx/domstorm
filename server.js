@@ -9,8 +9,11 @@ var modules = require('./controllers/modules.js');
 var http = require('http');
 var path = require('path');
 var fs = require('fs');
+var passport = require('passport');
+var TwitterStrategy = require('passport-twitter').Strategy;
 var config = require('./config.js').config;
-
+var User = require(process.cwd()+'/models/Modules.js').User;
+var Modules = require(process.cwd()+'/models/Modules.js').Modules;
 
 var ipaddress  = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
 var port    = process.env.OPENSHIFT_NODEJS_PORT || 8080;
@@ -24,7 +27,6 @@ var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function () {
 	console.log('Alright ! Connected to the database.');
-	var Modules = require(process.cwd()+'/models/Modules.js').Modules;
 
 	var app = express();
 
@@ -36,12 +38,52 @@ db.once('open', function () {
 	app.use(express.favicon());
 	app.use(express.logger('dev'));
 	app.use(express.json());
+  app.use(express.cookieParser());
+  app.use(express.session({ secret: 'xss 123' }));
+  app.use(passport.initialize());
+  app.use(passport.session());
 	app.use(express.urlencoded());
 	app.use(app.router);
 	app.use("/dynamic",express.static(path.join(__dirname, '/dynamic')));
 
 	app.use(express.compress());
 	app.use("/public",express.static(path.join(__dirname, '/public'), {maxAge: oneDay} ));
+	app.use("/bower_components",express.static(path.join(__dirname, '/bower_components'), {maxAge: oneDay} ));
+
+passport.use(new TwitterStrategy({
+    consumerKey: config.TWITTER_CONSUMER_KEY,
+    consumerSecret: config.TWITTER_CONSUMER_SECRET,
+    callbackURL: "http://127.0.0.1:8080/auth/twitter/callback"
+  },
+  function(token, tokenSecret, profile, done) {
+    User.findOne({uid: profile.id}, function(err, user) {
+      if(user) {
+        done(null, user);
+      } else {
+        var user = new User();
+        user.provider = "twitter";
+        user.uid = profile.id;
+        user.name = profile.displayName;
+        user.image = profile._json.profile_image_url;
+        user.save(function(err) {
+          if(err) { throw err; }
+          done(null, user);
+        });
+      }
+    })
+  }
+));
+
+
+passport.serializeUser(function(user, done) {
+  done(null, user.uid);
+});
+
+passport.deserializeUser(function(uid, done) {
+  User.findOne({uid: uid}, function (err, user) {
+    done(err, user);
+  });
+});
 
 
 	// development only
