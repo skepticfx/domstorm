@@ -63,7 +63,7 @@ function myMiddleware (req, res, next) {
 passport.use(new TwitterStrategy({
     consumerKey: config.TWITTER_CONSUMER_KEY,
     consumerSecret: config.TWITTER_CONSUMER_SECRET,
-    callbackURL: "http://127.0.0.1:8080/auth/twitter/callback"
+    callbackURL: "http://domstorm.skeptifx.com/auth/twitter/callback"
   },
   function(token, tokenSecret, profile, done) {
     User.findOne({uid: profile.id}, function(err, user) {
