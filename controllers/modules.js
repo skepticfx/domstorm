@@ -5,8 +5,9 @@ var Modules = require(process.cwd()+'/models/Modules.js').Modules;
 
 // test authentication
 function ensureAuthenticated(req, res, next) {
+	return next();
 	if (req.isAuthenticated()) { return next(); }
-		res.redirect('/?authError=1');
+		// res.redirect('/?authError=1');
 }
 
 // Loads the module home and individual modules

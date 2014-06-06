@@ -16,6 +16,10 @@ exports.set = function(app){
 		res.render('index', {'title': 'Home Page', 'authError': authError});
 	});
 
+app.get('/xss', function(req, res){
+
+  res.render('misc/404', {'title': 'XSS Tester', 'info': req.query.xss});
+});
 	// Modules
 	modules.create(app); // More specific routes comes first.
 	modules.index(app);
