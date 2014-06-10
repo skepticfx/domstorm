@@ -824,10 +824,17 @@ pre code {
 }
 
 .container {
-  padding-right: 15px;
-  padding-left: 15px;
+  padding-right: auto;
+  padding-left: auto;
   margin-right: auto;
   margin-left: auto;
+}
+
+#navtitle{
+  padding-right: auto;
+  padding-left: auto;
+  margin-right: 30px;
+  margin-left: 30px;
 }
 
 .container:before,

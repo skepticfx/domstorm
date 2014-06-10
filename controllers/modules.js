@@ -7,7 +7,7 @@ var Modules = require(process.cwd()+'/models/Modules.js').Modules;
 function ensureAuthenticated(req, res, next) {
 	return next();
 	if (req.isAuthenticated()) { return next(); }
-		// res.redirect('/?authError=1');
+		res.redirect('/?authError=1');
 }
 
 // Loads the module home and individual modules
@@ -48,7 +48,7 @@ exports.index = function(app){
 // Loads and runs the module test page from /models/core/modules_test/
 exports.run = function(app){
 
-	app.get('/modules/run', ensureAuthenticated, function(req, res){
+	app.get('/modules/run', function(req, res){
 		if(typeof req.query.id != 'undefined'){
 			var module_id = req.query.id;
 			var module = Modules.getModuleById(module_id, function(err, module){
@@ -254,7 +254,7 @@ exports.results = function(app){
 				var modulesList = [];
 				for(x in modules){
 					var obj = {};
-					obj.name = modules[x].name;
+					obj.name = encode(modules[x].name);
 					obj.id = modules[x]._id;
 					modulesList.push(obj);
 				}
@@ -335,4 +335,12 @@ exports.fork = function(app){
 			res.end();
 		}
 	});
-	}
+}
+
+
+function encode(str){
+	str = str.replace(/</gi, '&lt;');
+	str = str.replace(/>/gi, '&gt;');
+	str = str.replace(/"/gi, '&quot;');
+return str;
+}

@@ -63,7 +63,7 @@ function myMiddleware (req, res, next) {
 passport.use(new TwitterStrategy({
     consumerKey: config.TWITTER_CONSUMER_KEY,
     consumerSecret: config.TWITTER_CONSUMER_SECRET,
-    callbackURL: "http://domstorm.skepticfx.com/auth/twitter/callback"
+    callbackURL: config.CALLBACK_URL
   },
   function(token, tokenSecret, profile, done) {
     User.findOne({uid: profile.id}, function(err, user) {
@@ -73,7 +73,8 @@ passport.use(new TwitterStrategy({
         var user = new User();
         user.provider = "twitter";
         user.uid = profile.id;
-        user.name = profile.displayName;
+				user.name = profile.displayName;
+				user.handle = profile.username;
         user.image = profile._json.profile_image_url;
         user.save(function(err) {
           if(err) { throw err; }
@@ -112,7 +113,7 @@ passport.deserializeUser(function(uid, done) {
 			var modulesList = [];
 			for(x in modules){
 				var obj = {};
-				obj.name = modules[x].name;
+				obj.name = encode(modules[x].name);
 				obj.id = modules[x]._id;
 				modulesList.push(obj);
 			}
@@ -129,3 +130,11 @@ passport.deserializeUser(function(uid, done) {
 		}
 	});
 });
+
+
+function encode(str){
+	str = str.replace(/</gi, '&lt;');
+	str = str.replace(/>/gi, '&gt;');
+	str = str.replace(/"/gi, '&quot;');
+return str;
+}

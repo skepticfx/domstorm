@@ -10,3 +10,4 @@ else
 
 config.TWITTER_CONSUMER_KEY = "4BA67Z9R1y42ulAR0RnU7rbWb";
 config.TWITTER_CONSUMER_SECRET = "8AbsSbAQx4SEPcl8A3jkWdoXBjQu2x2VH6Z6xowSBI8OdIFn6a";
+config.CALLBACK_URL = "http://localhost:8080/auth/twitter/callback";

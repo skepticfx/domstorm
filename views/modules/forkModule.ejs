@@ -123,8 +123,6 @@
   </form>
 </div>
 </div>
-
-</body>
 <script>
 var userScript = ace.edit("userScript");
 userScript.setTheme("ace/theme/github");
@@ -135,29 +133,29 @@ enum_data.setTheme("ace/theme/github");
 enum_data.getSession().setMode("ace/mode/javascript");
 $(document).ready(function() {
 
-		updateColumns($('#num_cols').val());
-		$('#num_cols').keyup(function(){
-			if(this.value>=1 && this.value<=5)
-				updateColumns(this.value);
-			else{
-				if(this.value != "")
-					this.value = 1;
-				updateColumns(1);
-			}
-		});
+    updateColumns($('#num_cols').val());
+    $('#num_cols').keyup(function(){
+      if(this.value>=1 && this.value<=5)
+        updateColumns(this.value);
+      else{
+        if(this.value != "")
+          this.value = 1;
+        updateColumns(1);
+      }
+    });
 
-		$('#submitButton').click(function(){
-			$('#_userScript').val(userScript.getValue());
-			$('#_enum_data').val(enum_data.getValue());
-			$('#forkModule').submit();
-		});
-	});
+    $('#submitButton').click(function(){
+      $('#_userScript').val(userScript.getValue());
+      $('#_enum_data').val(enum_data.getValue());
+      $('#forkModule').submit();
+    });
+  });
 
 var updateColumns = function(num){
-	$('#div_cols').empty();
-	for(var i=1; i<=num; i++){
-		$('#div_cols').append('<label for="_cols_'+i+'" class="col-lg-2 control-label">Column '+i+'</label><div class="col-lg-4"><input type="text" name="_cols_'+i+'" class="form-control" id="cols_'+i+'" placeholder="'+getColumnName(i)+'" value="'+getColumnName(i)+'" autocomplete="off"></div>');
-	}
+  $('#div_cols').empty();
+  for(var i=1; i<=num; i++){
+    $('#div_cols').append('<label for="_cols_'+i+'" class="col-lg-2 control-label">Column '+i+'</label><div class="col-lg-4"><input type="text" name="_cols_'+i+'" class="form-control" id="cols_'+i+'" placeholder="'+getColumnName(i)+'" value="'+getColumnName(i)+'" autocomplete="off"></div>');
+  }
 }
 
 var column_names = <%- columns %>;
@@ -166,5 +164,7 @@ var getColumnName = function(i){
 return column_names[i-1] || '';
 }
 </script>
+
+</body>
 
 <% include ../layouts/footer.ejs %>

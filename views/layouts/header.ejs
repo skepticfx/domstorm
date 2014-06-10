@@ -2,6 +2,21 @@
 <html lang="en">
   <head>
  	<script src="/public/js/jquery.js"></script>
+   <script src="/public/js/bootstrap.js"></script>
+   <script src="/dynamic/js/modulesList.js"> </script>
+   <script>
+   $(document).ready(function(){
+     for(x in topModules){
+       console.log(x);
+       var li = document.createElement('li');
+       var a = document.createElement('a');;
+       a.href = '/modules?id='+topModules[x].id;
+       a.innerHTML = topModules[x].name;
+       li.appendChild(a)
+       document.getElementById('modulesListNode').appendChild(li);
+     }
+   });
+   </script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="A framework for testing anything Document Object Model (DOM).">

@@ -1,18 +1,6 @@
 	<!-- Bootstrap core JavaScript -->
 	<!-- Placed at the end of the document so the pages load faster -->
 	<!-- Make sure to add jQuery - download the most recent version at http://jquery.com/ -->
-	<script src="/public/js/bootstrap.js"></script>
-	<!-- Load Modules List -->
-	<script type="text/javascript" src="/dynamic/js/modulesList.js"> </script>
-	<script>
-	for(x in topModules){
-		var li = document.createElement('li');
-		var a = document.createElement('a');;
-		a.href = '/modules?id='+topModules[x].id;
-		a.innerText = topModules[x].name;
-		li.appendChild(a)
-		document.getElementById('modulesListNode').appendChild(li);
-	}
-	</script>	
 
+	<!-- Load Modules List -->
 </html>
