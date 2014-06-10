@@ -207,7 +207,7 @@ exports.edit = function(app){
 	// Get the already existing document and update as required. Can also be used for changes.
 	app.post('/modules/edit', ensureAuthenticated, function(req, res){
 		Modules.find({'_id': req.body._id}, function(err, modules){
-			if(module.owner != req.currentUser){
+			if(modules.owner != req.currentUser){
 				res.render('misc/userError', {'info': 'You must be the owner of this module to edit it. You can fork this module though !'});
 				res.end();
 			}
