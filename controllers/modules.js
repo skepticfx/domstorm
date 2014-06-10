@@ -252,7 +252,7 @@ exports.edit = function(app){
 exports.results = function(app){
 
 	// Can be Ajax
-	app.post('/modules/results/update', ensureAuthenticated, function(req, res){
+	app.post('/modules/results/update', function(req, res){
 		var module_id = req.body._module_id;
 		var results = {};
 		results.raw = req.body._results_raw;
