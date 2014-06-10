@@ -207,43 +207,46 @@ exports.edit = function(app){
 	// Get the already existing document and update as required. Can also be used for changes.
 	app.post('/modules/edit', ensureAuthenticated, function(req, res){
 		Modules.find({'_id': req.body._id}, function(err, modules){
-			if(modules.owner != req.currentUser){
-				res.render('misc/userError', {'info': 'You must be the owner of this module to edit it. You can fork this module though !'});
-				res.end();
-			}
 			modules = modules.pop();
-			modules.results._type = req.body._results_type;
-			modules.results.columns = [];
-			if(modules.results._type == 'SIMPLE_TABLE'){
-				var num_cols = req.body._num_cols;
-				for(var i=1;i <= num_cols; i++){
-					modules.results.columns.push(req.body['_cols_'+i]);
+			if(modules.owner != req.currentUser){
+				res.render('misc/userError', {'info': 'You must be the owner of this module to edit it. You can fork this module though !'+ modules.owner + req.currentUser});
+				res.end();
+			} else {
+				modules.results._type = req.body._results_type;
+				modules.results.columns = [];
+				if(modules.results._type == 'SIMPLE_TABLE'){
+					var num_cols = req.body._num_cols;
+					for(var i=1;i <= num_cols; i++){
+						modules.results.columns.push(req.body['_cols_'+i]);
+					}
 				}
+
+				var module_id = modules._id;
+				var newModule = modules.toObject();
+				newModule.name = req.body._name;
+				newModule.description = req.body._desc;
+				newModule.test._type = req.body._module_type;
+				newModule.test.userScript = req.body._userScript;
+				newModule.test.enum_data = req.body._enum_data;
+				newModule.results.columns = modules.results.columns;
+
+				var tags = req.body._tags;
+				tags = tags.replace(/ /g,'');
+				tags = tags.split(',');
+				newModule.tags = tags;
+
+				newModule.owner = req.currentUser;
+
+				delete newModule._id;
+				Modules.findOneAndUpdate({'_id': modules._id}, newModule, {'upsert': true}, function(err, module){
+					if(err){
+						res.render('misc/error', {'info': err+'Something wrong happened, when we tried editing your module.'});
+						res.end();
+					} else {
+						res.redirect('/modules/?id='+ module._id);
+					}
+				});
 			}
-
-			var module_id = modules._id;
-			var newModule = modules.toObject();
-			newModule.name = req.body._name;
-			newModule.description = req.body._desc;
-			newModule.test._type = req.body._module_type;
-			newModule.test.userScript = req.body._userScript;
-			newModule.test.enum_data = req.body._enum_data;
-			newModule.results.columns = modules.results.columns;
-
-			var tags = req.body._tags;
-			tags = tags.replace(/ /g,'');
-			tags = tags.split(',');
-			newModule.tags = tags;
-
-			delete newModule._id;
-			Modules.findOneAndUpdate({'_id': modules._id}, newModule, {'upsert': true}, function(err, module){
-				if(err){
-					res.render('misc/error', {'info': err+'Something wrong happened, when we tried editing your module.'});
-					res.end();
-				} else {
-					res.redirect('/modules/?id='+ module._id);
-				}
-			});
 		});
 	});
 }
