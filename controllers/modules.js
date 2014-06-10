@@ -34,6 +34,7 @@ exports.index = function(app){
 					'module': module.toObject()
 					};
 					res.render('modules/getModule', module_details);
+					res.end();
 				}
 			});
 		} else {
@@ -42,6 +43,7 @@ exports.index = function(app){
 					console.log('There is some error populating the Modules List');
 				} else {
 					res.render('modules/index', {'title': 'Modules', 'modules': modules});
+					res.end();
 				}
 			});
 		}
@@ -58,6 +60,7 @@ exports.run = function(app){
 			var module = Modules.getModuleById(module_id, function(err, module){
 				if(err){
 					res.render('misc/error', {'info': 'Oops ! The test module is missing.'});
+					res.end();
 				} else{
 					var module_details = {
 					'module_id': module._id,
@@ -70,16 +73,19 @@ exports.run = function(app){
 					switch(module_details.module_test._type){
 					case "ENUM_FUNCTION":
 					res.render('modules/runModule_enum_function', module_details);
+					res.end();
 					break;
 
 					default:
 					res.render('misc/error', {'info': 'The Test Type is not defined yet'});
+					res.end();
 					}
 				}
 			});
 		} else {
 			res.status(404);
 			res.render('misc/404', {'info': 'Missing module id.' });
+			res.end();
 		}
 	});
 
@@ -91,6 +97,7 @@ exports.create = function(app){
 	// The UI
 	app.get('/modules/create', ensureAuthenticated, function(req, res){
 		res.render('modules/createModule', {'title':'Create a new Module'});
+		res.end();
 	});
 
 	// Form
@@ -128,6 +135,7 @@ exports.create = function(app){
 		Modules.add(newModule, function(err, module){
 			if(err){
 				res.render('misc/error', {'info': 'Something wrong happened, when we tried creating your new module.'});
+				res.end();
 			} else {
 				var Obj = {}
 				Obj.name = module.name;
@@ -155,6 +163,7 @@ exports.edit = function(app){
 						res.redirect('/');
 					} else {
 						res.render('misc/userError', {'info': 'You must be the owner of this module to delete it.'});
+						res.end();
 					}
 				}
 			});
@@ -173,13 +182,19 @@ exports.edit = function(app){
 					res.render('misc/error', {'info': 'Apparently, the module is missing in our system.'});
 					res.end();
 				} else {
-					var module_tags_parsed = "";
-					module = module.toObject();
-					for(var x in module.tags)
-						module_tags_parsed += module.tags[x] + ",";
-					if(module_tags_parsed !== "")
-						module_tags_parsed = module_tags_parsed.slice(0, -1);
-					res.render('modules/editModule', {'title': 'Edit this module', 'module': module, 'columns': JSON.stringify(module.results.columns), 'module_tags_parsed': module_tags_parsed});
+					if(module.owner != req.currentUser){
+						res.render('misc/userError', {'info': 'You must be the owner of this module to edit it. You can fork this module though !'});
+						res.end();
+					} else {
+						var module_tags_parsed = "";
+						module = module.toObject();
+						for(var x in module.tags)
+							module_tags_parsed += module.tags[x] + ",";
+						if(module_tags_parsed !== "")
+							module_tags_parsed = module_tags_parsed.slice(0, -1);
+						res.render('modules/editModule', {'title': 'Edit this module', 'module': module, 'columns': JSON.stringify(module.results.columns), 'module_tags_parsed': module_tags_parsed});
+						res.end();
+					}
 				}
 			});
 		} else {
@@ -192,6 +207,10 @@ exports.edit = function(app){
 	// Get the already existing document and update as required. Can also be used for changes.
 	app.post('/modules/edit', ensureAuthenticated, function(req, res){
 		Modules.find({'_id': req.body._id}, function(err, modules){
+			if(module.owner != req.currentUser){
+				res.render('misc/userError', {'info': 'You must be the owner of this module to edit it. You can fork this module though !'});
+				res.end();
+			}
 			modules = modules.pop();
 			modules.results._type = req.body._results_type;
 			modules.results.columns = [];
@@ -219,7 +238,8 @@ exports.edit = function(app){
 			delete newModule._id;
 			Modules.findOneAndUpdate({'_id': modules._id}, newModule, {'upsert': true}, function(err, module){
 				if(err){
-					res.render('misc/error', {'info': err+'Something wrong happened, when we tried creating your new module.'});
+					res.render('misc/error', {'info': err+'Something wrong happened, when we tried editing your module.'});
+					res.end();
 				} else {
 					res.redirect('/modules/?id='+ module._id);
 				}
@@ -248,6 +268,7 @@ exports.results = function(app){
 		Modules.findOneAndUpdate({'_id': module_id}, updateObj,  function(err, result){
 			if(err){
 				res.render('misc/error', {'info': 'Something wrong happened, when we tried creating your new module.'});
+				res.end();
 			} else {
 				res.redirect('/modules/?id='+ result._id);
 			}
@@ -337,6 +358,7 @@ exports.fork = function(app){
 					if(module_tags_parsed !== "")
 						module_tags_parsed = module_tags_parsed.slice(0, -1);
 					res.render('modules/forkModule', {'title': 'Fork this module', 'module': module, 'columns': JSON.stringify(module.results.columns), 'module_tags_parsed': module_tags_parsed});
+					res.end();
 				}
 			});
 		} else {

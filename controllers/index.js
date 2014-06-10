@@ -5,6 +5,7 @@
 var modules = require(process.cwd()+'/controllers/modules.js');
 var helper = require(process.cwd()+'/controllers/helper.js');
 var auth = require(process.cwd()+'/controllers/auth.js');
+var datasets = require(process.cwd()+'/controllers/datasets.js');
 
 // All Local routing goes here.
 exports.set = function(app){
@@ -36,5 +37,8 @@ app.get('/xss', function(req, res){
   // Auth Modules
   auth.index(app);
   auth.twitter(app);
+
+	// Dataset
+	datasets.index(app);
 
 };
