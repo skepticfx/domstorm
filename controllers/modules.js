@@ -5,10 +5,12 @@ var Modules = require(process.cwd()+'/models/Modules.js').Modules;
 
 // test authentication
 function ensureAuthenticated(req, res, next) {
-	return next();
-	if (req.isAuthenticated()) { return next(); }
-		res.redirect('/?authError=1');
+	if (req.isAuthenticated()) {req.currentUser = req.user.handle; return next(); }
+	req.currentUser = 'Anonymous';
+	res.redirect('/?authError=1');
+	//return next();
 }
+
 
 // Loads the module home and individual modules
 exports.index = function(app){
@@ -28,6 +30,7 @@ exports.index = function(app){
 					'module_results': module.results,
 					'module_test': module.test,
 					'browsers': getBrowserResults(module),
+					'module_owner': module.owner || 'Anonymous',
 					'module': module.toObject()
 					};
 					res.render('modules/getModule', module_details);
@@ -46,6 +49,7 @@ exports.index = function(app){
 }
 
 // Loads and runs the module test page from /models/core/modules_test/
+// Anyone can RUN a module to test it. No Auth required.
 exports.run = function(app){
 
 	app.get('/modules/run', function(req, res){
@@ -119,6 +123,7 @@ exports.create = function(app){
 		newModule.name = req.body._name;
 		newModule.description = req.body._desc;
 		newModule.tags = tags;
+		newModule.owner = req.user.handle || 'Anonymous';
 
 		Modules.add(newModule, function(err, module){
 			if(err){
@@ -145,8 +150,12 @@ exports.edit = function(app){
 					res.render('misc/error', {'info': 'Apparently, the module is missing in our system.'});
 					res.end();
 				} else {
-					module.remove();
-					res.redirect('/update');
+					if(module.owner == req.currentUser){
+						module.remove();
+						res.redirect('/');
+					} else {
+						res.render('misc/userError', {'info': 'You must be the owner of this module to delete it.'});
+					}
 				}
 			});
 		} else {
