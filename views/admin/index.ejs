@@ -1,0 +1,28 @@
+<% include ../layouts/header.ejs %>
+<% include ../layouts/navbar.ejs %>
+<div class="container">
+<center>
+      <h1>Admin Dashboard</h1>
+</center>
+<br/>
+<br/>
+</div>
+
+<div class="container">
+    <div class="col-lg-3">
+      <center><div class="jumbotron"><h3>Users</h3></div></center>
+        <% for(x in users) {%>
+        <a href="/profile/?id=<%= users[x]._id %>" class="list-group-item" title="<%= users[x].handle %>"><%= users[x].handle %></a>
+        <% } %>
+    </div>
+
+    <div class="col-lg-7">
+      <center><div class="jumbotron"><h3>Modules</h3></div></center>
+        <% for(x in modules) {%>
+        <a href="/profile/?id=<%= modules[x]._id %>" class="list-group-item" title="<%= modules[x].name %>"><b><%= modules[x].name %> </b> - By <i><%= modules[x].owner %> </i></a>
+        <% } %>
+    </div>
+</div>
+
+</body>
+<% include ../layouts/footer.ejs %>
