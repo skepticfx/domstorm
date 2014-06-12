@@ -8,41 +8,51 @@
 
 
 <center>
-			<h1><%= module_name %></h1> <span class="label">By <%= module_owner %></span>
+			<h1><%= module_name %></h1>
 			<p><h5><%= module_description %></h5></p>
+ 			<span class="label label-user">By <%= module_owner %></span>
+			<span id='fav_count' class='label label-favs'> <img src="/public/imgs/icons/favs_small.png"> <%= module_favs %></span>
+			<br/>
+
 			<% for(tags in module.tags){ %>
-			<span class="label label-danger"><%= module.tags[tags] %></span>
+			<span class="label label-tags"><%= module.tags[tags] %></span>
 			<% } %>
 <br/>
-<div id="div-favorite" style="display: inline">
-	<form id="favorite-module" action="/modules/favorite" method="POST" style="display: inline">
-	<input type="hidden" name="id" value="<%= module_id %>"/>
-	<a class="btn btn-info" title="Favorite this module" onClick="document.getElementById('favorite-module').submit();"><img src="/public/imgs/icons/favorite.png" /></a>
-	</form>
-</div>
+<% if(userOptions.status == "enabled"){ %>
 
-<div id="div-fork" style="display: inline">
-	<form id="fork-module" action="/modules/fork" method="GET" style="display: inline">
-	<input type="hidden" name="id" value="<%= module_id %>"/>
-	<a class="btn btn-warning" title="Fork this module" onClick="document.getElementById('fork-module').submit();"><img src="/public/imgs/icons/fork.png"/></a>
-	</form>
-</div>
+	<% if(userOptions.showFav){ %>
+		<div id="div-favorite" style="display: inline">
+			<form id="favorite-module" action="/modules/favorite" method="POST" style="display: inline">
+			<input type="hidden" name="id" value="<%= module_id %>"/>
+			<a class="btn btn-info" title="Favorite this module" onClick="document.getElementById('favorite-module').submit();"><img src="/public/imgs/icons/favorite.png" /></a>
+			</form>
+		</div>
+	<% } %>
 
-<div id="div-edit" style="display: inline">
-	<form id="edit-module" action="/modules/edit" method="GET" style="display: inline">
-	<input type="hidden" name="id" value="<%= module_id %>"/>
-	<a class="btn btn-success" title="Edit this module" onClick="document.getElementById('edit-module').submit();"><img src="/public/imgs/icons/edit.png" /></a>
-	</form>
-</div>
+	<div id="div-fork" style="display: inline">
+		<form id="fork-module" action="/modules/fork" method="GET" style="display: inline">
+		<input type="hidden" name="id" value="<%= module_id %>"/>
+		<a class="btn btn-warning" title="Fork this module" onClick="document.getElementById('fork-module').submit();"><img src="/public/imgs/icons/fork.png"/></a>
+		</form>
+	</div>
 
-<div id="div-delete" style="display: inline">
-	<form id="delete-module" action="/modules/delete" method="POST" style="display: inline">
-	<input type="hidden" name="_id" value="<%= module_id %>"/>
-	<a class="btn btn-danger" title="Delete this module" onClick="ans = confirm('Are you sure you want to delete this module?'); if(ans)document.getElementById('delete-module').submit(); return;"><img src="/public/imgs/icons/delete.png"/></a>
-	</form>
-</div>
+	<div id="div-edit" style="display: inline">
+		<form id="edit-module" action="/modules/edit" method="GET" style="display: inline">
+		<input type="hidden" name="id" value="<%= module_id %>"/>
+		<a class="btn btn-success" title="Edit this module" onClick="document.getElementById('edit-module').submit();"><img src="/public/imgs/icons/edit.png" /></a>
+		</form>
+	</div>
+
+	<div id="div-delete" style="display: inline">
+		<form id="delete-module" action="/modules/delete" method="POST" style="display: inline">
+		<input type="hidden" name="_id" value="<%= module_id %>"/>
+		<a class="btn btn-danger" title="Delete this module" onClick="ans = confirm('Are you sure you want to delete this module?'); if(ans)document.getElementById('delete-module').submit(); return;"><img src="/public/imgs/icons/delete.png"/></a>
+		</form>
+	</div>
+
+<% } %>
+
 </center>
-
 </div>
 
 
@@ -153,6 +163,11 @@
 
 <script>
 $(document).ready(function(){
+	<% if(userOptions.blinkFav) { %>
+	$('#fav_count').fadeOut(500);
+	$('#fav_count').fadeIn(1000);
+	<% } %>
+
 	$('.browser_results').hide();
 	$('.browser_tabs').click(function(){
 		$('.browser_results').hide();

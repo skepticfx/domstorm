@@ -2,20 +2,42 @@
 
 var fs = require('fs');
 var Modules = require(process.cwd()+'/models/Modules.js').Modules;
+var admin = require('../config.js').config.admin;
 
-// test authentication
-function ensureAuthenticated(req, res, next) {
-	if (req.isAuthenticated()) {req.currentUser = req.user.handle; return next(); }
-	req.currentUser = 'Anonymous';
-	res.redirect('/?authError=1');
-	//return next();
+function ensureAdmin(req, res, next) {
+
+	if (req.isAuthenticated() && req.user.handle === admin) {
+		return next();
+	} else {
+		res.render('misc/userError', {info: 'You must be an Admin to do this action.'});
+		res.end();
+	}
 }
 
+// Auth Middleware and sets the logged in user to req.currentUser;
+function ensureAuthenticated(req, res, next) {
+
+	if (req.isAuthenticated()) {
+		req.currentUser = req.user.handle;
+		return next();
+	}
+	req.currentUser = 'Anonymous';
+	res.redirect('/?authError=1');
+}
+
+function populateUser(req, res, next){
+	if(req.isAuthenticated()){
+		req.currentUser = req.user.handle;
+	} else {
+		req.currentUser = 'Anonymous';
+	}
+return next();
+}
 
 // Loads the module home and individual modules
 exports.index = function(app){
 
-	app.get('/modules', function(req, res){
+	app.get('/modules', populateUser, function(req, res){
 		if(typeof req.query.id != 'undefined'){
 			var module_id = req.query.id;
 			var module = Modules.getModuleById(module_id, function(err, module){
@@ -23,6 +45,22 @@ exports.index = function(app){
 					res.render('misc/error', {'info': 'Apparently, the module is missing in our system.'});
 					res.end();
 				} else {
+
+					var userOptions = {};
+					userOptions.blinkFav = false;
+					if(req.query && req.query.info && req.query.info === 'fav_success')
+						userOptions.blinkFav = true;
+					if(req.currentUser !== 'Anonymous'){
+						userOptions.status = 'enabled';
+						userOptions.showFav = true;
+						if(module.favs)
+							if(module.favs.indexOf(req.currentUser) >= 0)
+								userOptions.showFav = false;
+
+					} else {
+						userOptions.status ='disabled';
+					}
+
 					var module_details = {
 					'module_id': module._id,
 					'module_name': module.name,
@@ -31,6 +69,8 @@ exports.index = function(app){
 					'module_test': module.test,
 					'browsers': getBrowserResults(module),
 					'module_owner': module.owner || 'Anonymous',
+					'userOptions': userOptions,
+					'module_favs': (module.favs && module.favs.length) || 0,
 					'module': module.toObject()
 					};
 					res.render('modules/getModule', module_details);
@@ -279,7 +319,7 @@ exports.results = function(app){
 	});
 
 	// Hackish to Update the stuff.
-	app.get('/update', ensureAuthenticated, function(req, res){
+	app.get('/update', ensureAuthenticated, ensureAdmin, function(req, res){
 		Modules.find({}, function(err, modules){
 			if(err){
 				console.log('There is some error populating the Modules List');
@@ -370,6 +410,40 @@ exports.fork = function(app){
 		}
 	});
 }
+
+// Favorites a given module by a logged in User.
+exports.favorite = function(app){
+
+	// The UI
+	app.post('/modules/favorite', ensureAuthenticated, function(req, res){
+		if(typeof req.body.id != 'undefined'){
+			var module_id = req.body.id;
+			var module = Modules.getModuleById(module_id, function(err, module){
+				if(err){
+					res.render('misc/error', {'info': 'Apparently, the module is missing in our system.'});
+					res.end();
+				} else {
+					module = module.toObject();
+					module.favs.push(req.currentUser);
+					var id = module._id;
+					delete module._id;
+					Modules.findOneAndUpdate({'_id': id}, module, function(err, module){
+						if(err){
+							res.render('misc/error', {'info': err+'Something wrong happened, when we tried favoriting this module.'});
+							res.end();
+						} else {
+							res.redirect('/modules/?id='+ module._id+'&info=fav_success');
+						}
+					});
+				}
+			});
+		} else {
+			res.render('misc/error', {'info': 'Apparently, the module is missing in our system.'});
+			res.end();
+		}
+	});
+}
+
 
 
 function encode(str){

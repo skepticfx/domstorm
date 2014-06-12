@@ -36,6 +36,7 @@ var modulesSchema = mongoose.Schema({
 
 	tags:  [],
   owner: String,
+  favs: [],
 	created: { type: Date, default: Date.now }
 
 });
@@ -52,6 +53,7 @@ modulesSchema.statics.add = function(obj, callback){
 	instance.results.columns = obj.results.columns;
 	instance.tags = obj.tags;
 	instance.owner = obj.owner;
+	instance.favs = new Array();
 
 	instance.save(function (err){
 		callback(err, instance);

@@ -28,6 +28,7 @@ app.get('/xss', function(req, res){
 	modules.results(app);
 	modules.edit(app);
 	modules.fork(app);
+	modules.favorite(app);
 
 
 	// Request Modules
@@ -40,5 +41,8 @@ app.get('/xss', function(req, res){
 
 	// Dataset
 	datasets.index(app);
+
+	// Profile
+
 
 };
