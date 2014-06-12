@@ -198,7 +198,7 @@ exports.edit = function(app){
 					res.render('misc/error', {'info': 'Apparently, the module is missing in our system.'});
 					res.end();
 				} else {
-					if(module.owner == req.currentUser){
+					if(module.owner == req.currentUser || req.currentUser == admin){
 						module.remove();
 						res.redirect('/');
 					} else {
@@ -248,7 +248,7 @@ exports.edit = function(app){
 	app.post('/modules/edit', ensureAuthenticated, function(req, res){
 		Modules.find({'_id': req.body._id}, function(err, modules){
 			modules = modules.pop();
-			if(modules.owner != req.currentUser){
+			if(modules.owner != req.currentUser || req.currentUser != admin){
 				res.render('misc/userError', {'info': 'You must be the owner of this module to edit it. You can fork this module though !'+ modules.owner + req.currentUser});
 				res.end();
 			} else {
