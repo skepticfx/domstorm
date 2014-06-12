@@ -319,7 +319,7 @@ exports.results = function(app){
 	});
 
 	// Hackish to Update the stuff.
-	app.get('/update', ensureAuthenticated, ensureAdmin, function(req, res){
+	app.get('/update', ensureAuthenticated, function(req, res){
 		Modules.find({}, function(err, modules){
 			if(err){
 				console.log('There is some error populating the Modules List');
