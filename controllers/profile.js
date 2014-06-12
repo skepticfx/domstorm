@@ -31,24 +31,25 @@ exports.index = function(app){
       Users.findOne({'_id': req.query.id}, function(err, user){
         if(err){
           res.redirect('misc/404', {'info': 'This user profile does not exist'});
-        }
-        var username = user.handle;
-        var userModules = [];
-        var favModules = [];
-        Modules.find({}, function(err, modules){
-          for(x in modules){
-            if(modules[x].owner === username){
-              userModules.push(modules[x]);
-            } else {
-              if(modules[x].tags.indexOf(username) >= 0){
-                favModules[x].push(modules[x]);
+        } else {
+          var username = user.handle;
+          var userModules = [];
+          var favModules = [];
+          Modules.find({}, function(err, modules){
+            for(x in modules){
+              if(modules[x].owner === username){
+                userModules.push(modules[x]);
+              } else {
+                if(modules[x].favs.indexOf(username) >= 0){
+                  favModules[x].push(modules[x]);
+                }
               }
             }
-          }
 
-          res.render('profile/index', {'title': username, 'user': user, 'userModules': userModules, 'favModules': favModules});
+            res.render('profile/index', {'title': username, 'user': user, 'userModules': userModules, 'favModules': favModules});
+          });
         });
-      });
+      }
     } else {
       res.redirect('misc/404', {'info': 'Cannot find that page'});
     }
