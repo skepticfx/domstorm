@@ -50,6 +50,11 @@ exports.index = function(app){
 					userOptions.blinkFav = false;
 					if(req.query && req.query.info && req.query.info === 'fav_success')
 						userOptions.blinkFav = true;
+
+					userOptions.owner = false;
+					if(module.owner == req.currentUser || req.currentUser == admin)
+						userOptions.owner = true;
+
 					if(req.currentUser !== 'Anonymous'){
 						userOptions.status = 'enabled';
 						userOptions.showFav = true;
