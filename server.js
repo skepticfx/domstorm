@@ -73,6 +73,7 @@ passport.use(new TwitterStrategy({
         var user = new User();
         user.provider = "twitter";
         user.uid = profile.id;
+				user.id = profile._id;
 				user.name = profile.displayName;
 				user.handle = profile.username;
         user.image = profile._json.profile_image_url;

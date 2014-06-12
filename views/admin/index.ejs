@@ -19,7 +19,7 @@
     <div class="col-lg-7">
       <center><div class="jumbotron"><h3>Modules</h3></div></center>
         <% for(x in modules) {%>
-        <a href="/profile/?id=<%= modules[x]._id %>" class="list-group-item" title="<%= modules[x].name %>"><b><%= modules[x].name %> </b> - By <i><%= modules[x].owner %> </i></a>
+        <a  href="/modules/?id=<%= modules[x]._id %>" class="list-group-item" title="By @<%= modules[x].owner %>"><b><%= modules[x].name %> </b></a>
         <% } %>
     </div>
 </div>
