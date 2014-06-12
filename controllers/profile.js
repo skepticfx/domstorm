@@ -45,11 +45,10 @@ exports.index = function(app){
                 }
               }
             }
-
             res.render('profile/index', {'title': username, 'user': user, 'userModules': userModules, 'favModules': favModules});
           });
-        });
-      }
+        }
+      });
     } else {
       res.redirect('misc/404', {'info': 'Cannot find that page'});
     }
