@@ -41,7 +41,7 @@ exports.index = function(app){
                 userModules.push(modules[x]);
               } else {
                 if(modules[x].favs.indexOf(username) >= 0){
-                  favModules[x].push(modules[x]);
+                  favModules.push(modules[x]);
                 }
               }
             }
