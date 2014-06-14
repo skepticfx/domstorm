@@ -10,7 +10,7 @@
 </div>
 
 <div class="container">
-    <div class="col-lg-6">
+    <div class="col-lg-6 scrollme">
       <center><div class="jumbotron"><h3>Modules Created</h3></div></center>
         <% for(x in userModules) {%>
         <a href="/modules/?id=<%= userModules[x]._id %>" class="list-group-item" title="<%= userModules[x].description %>"><%= userModules[x].name %></a>
@@ -20,7 +20,7 @@
     <div class="col-lg-6">
       <center><div class="jumbotron"><h3>Other Favorite Modules</h3></div></center>
         <% for(x in favModules) {%>
-        <a href="/modules/?id=<%= favModules[x]._id %>" class="list-group-item" title="<%= favModules[x].description %>"><%= favModules[x].name %></a>
+        <a href="/modules/?id=<%= favModules[x]._id %>" class="list-group-item" title="<%= favModules[x].description %>"><%= favModules[x].name %> - By @<%= favModules[x].owner%></a>
         <% } %>
     </div>
 

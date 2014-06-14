@@ -23,17 +23,8 @@ var modulesSchema = mongoose.Schema({
 	results: {
 			_type: {type: String}, // [SIMPLE_TABLE]
 			columns: [],
-			raw: {type: String}, // Deprecated.
-			browsers:{
-						GOOGLE_CHROME: {rows: [], version: String},
-						MOZILLA_FIREFOX: {rows: [], version: String},
-						INTERNET_EXPLORER: {rows: [], version: String},
-						OPERA: {rows: [], version: String},
-						SAFARI: {rows: [], version: String},
-						OTHERS: {rows: [], version: String}
-					}
+			browsers: {}
 		  },
-
 	tags:  [],
   owner: String,
   favs: [],

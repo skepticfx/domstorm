@@ -60,73 +60,44 @@
 </div>
 
 
-		<div  id="results-bar">
-		<input type="hidden" name="id" value="<%= module_id %>"/>
-		<center><a class="btn btn-primary" title="Run the Test now" onClick="window.open('/modules/run?id=<%= module_id %>')"><img src="/public/imgs/icons/run.png" /> Run this test now.</a></center>
+<div id="results-bar">
+	<input type="hidden" name="id" value="<%= module_id %>"/>
+	<center><a class="btn btn-primary" id='run-test-href' title="Run the Test now" onClick="window.open('/modules/run?id=<%= module_id %>')"><img src="/public/imgs/icons/run.png" /> Run this test now.</a></center>
+</div>
+
+<br/>
+
+<div class="column">
+
+<div class="column">
+	<div class="panel panel-primary">
+		<div class="panel-heading">
+			<h3 class="panel-title"><img src="/public/imgs/icons/results.png"/> Results</h3>
 		</div>
-
-		<br/>
-
-  <div class="column">
-
-	<div class="column">
-		<div class="panel panel-primary">
-			<div class="panel-heading">
-				<h3 class="panel-title"><img src="/public/imgs/icons/results.png"/> Results</h3>
-			</div>
-			<div class="panel-body">
-				<% if(module_test.state == "NOT_STARTED"){ %>
-				This module appears to be new to the system. Please run the test, to view the results.
-				<% } if(module_test.state == "ERROR"){ %>
-				The last time this module was run, it ran in to an error. Please re-run the test to get some results. And yea, Good Luck with that.
-				<% } if(module_test.state == "COMPLETED"){%>
-				              <ul class="nav nav-pills">
-                <li class="active"><a class="browser_tabs" href="#results-bar" id="chrome_tab"><img src="/public/imgs/browser-logos/GOOGLE_CHROME.png"/> Chrome</a></li>
-                <li><a class="browser_tabs" href="#results-bar" id="firefox_tab"><img src="/public/imgs/browser-logos/MOZILLA_FIREFOX.png"/> Firefox</a></li>
-                <li><a class="browser_tabs" href="#results-bar" id="ie_tab"><img src="/public/imgs/browser-logos/INTERNET_EXPLORER.png"/> Internet Explorer</a></li>
-                <li><a class="browser_tabs" href="#results-bar" id="safari_tab"><img src="/public/imgs/browser-logos/SAFARI.png"/> Safari</a></li>
-                <li><a class="browser_tabs" href="#results-bar" id="opera_tab"><img src="/public/imgs/browser-logos/OPERA.png"/> Opera</a></li>
-                <li><a class="browser_tabs" href="#results-bar" id="others_tab"><img src="/public/imgs/browser-logos/OTHERS.png"/> Others</a></li>
-
-
-                <!--<li class="disabled"><a href="#">Disabled</a></li>
-                <li class="dropdown">
-                  <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                    Dropdown <span class="caret"></span>
-                  </a>
-                  <ul class="dropdown-menu">
-                    <li><a href="#">Action</a></li>
-                    <li><a href="#">Another action</a></li>
-                    <li><a href="#">Something else here</a></li>
-                    <li class="divider"></li>
-                    <li><a href="#">Separated link</a></li>
-                  </ul>
-                </li> -->
-              </ul>
-			  <div id="chrome_results" class="browser_results">
-			  <%- browsers.GOOGLE_CHROME %>
-			  </div>
-			  <div id="firefox_results" class="browser_results">
-			  <%- browsers.MOZILLA_FIREFOX %>
-			  </div>
-			  <div id="ie_results" class="browser_results">
-			  <%- browsers.INTERNET_EXPLORER %>
-			  </div>
-			  <div id="opera_results" class="browser_results">
-			  <%- browsers.OPERA %>
-			  </div>
-			  <div id="safari_results" class="browser_results">
-			  <%- browsers.SAFARI %>
-			  </div>
-			  <div id="others_results" class="browser_results">
-			  <%- browsers.OTHERS %>
-			  </div>
-			  <% } %>
-
-
-			</div>
+		<div class="panel-body">
+		<% if(module_test.state == "NOT_STARTED"){ %>
+			This module appears to be new to the system. Please run the test, to view the results.
+			<% } if(module_test.state == "ERROR"){ %>
+			The last time this module was run, it ran in to an error. Please re-run the test to get some results.
+			<% } if(module_test.state == "COMPLETED"){ %>
+				<ul class="nav nav-pills">
+				<% for(var x in browsers){ %>
+					<li style="cursor: pointer;">
+						<a class="browser_tabs" id="<%= x.trim().toLowerCase() %>">
+							<img src="/public/imgs/browser-logos/<%= x.trim().toLowerCase() %>.png"/> <%= x %>
+						</a>
+					</li>
+				<% } %>
+				</ul>
+				<% for(var x in browsers) { %>
+					<div id="<%= x.trim().toLowerCase() %>_results" class="browser_results">
+						<%- browsers[x] %>
+					</div>
+				<% } %>
+		<% } %>
 		</div>
 	</div>
+</div>
 
 	<div class="column">
 		<div class="panel panel-primary">
@@ -172,15 +143,18 @@ $(document).ready(function(){
 	$('#fav_count').fadeIn(1000);
 	<% } %>
 
+	// Highlight the fist browser tab and show only the results for that.
+	$('.browser_tabs').parent()[0].setAttribute('class', 'active');
 	$('.browser_results').hide();
+	$('.browser_results')[0].style.display = 'block';
+
 	$('.browser_tabs').click(function(){
 		$('.browser_results').hide();
 		$('.browser_tabs').parent().attr('class', '');
 		$(this).parent().attr('class', 'active');
-		var browser_result = this.id.slice(0,-3);
-		$('#'+browser_result+'results').show();
+		var browser_result = this.id;
+		$('#'+browser_result+'_results').show();
 	});
-	$('#chrome_tab').click();
 });
 
 </script>

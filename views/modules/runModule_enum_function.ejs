@@ -53,7 +53,7 @@ return;
 }
 
 
-	
+
 var callTest = function(dataObj, callback){
 	theCallback = function(){callback();};
 	test(dataObj);
@@ -69,56 +69,9 @@ var callTest = function(dataObj, callback){
 </textarea>
 
 <h1>Testing <%= module_name %> </h1>
+<script src="/public/js/detect.js"></script>
 <script>
-var getBrowser = function(){
-	var is_chrome = navigator.userAgent.toLowerCase().indexOf('chrome') > -1;
-	var is_safari = navigator.userAgent.toLowerCase().indexOf('safari') > -1;
-	var is_opera = (navigator.userAgent.toLowerCase().indexOf('opr') > -1) || (navigator.userAgent.toLowerCase().indexOf('opera') > -1) ; // has Chrome & Safari as well.
-	var is_firefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
-	var is_ie = navigator.userAgent.toLowerCase().indexOf('.net clr') > -1;
-	var obj = {};
-	obj.browser = "OTHERS";
-	obj.browser_name = "Others";
-
-	// Order is important, we already have to use a reliable user-agent detection.
-	if (is_ie){ // has .NET CLR
-		obj.browser = "INTERNET_EXPLORER";
-		obj.browser_name = "Internet Explorer";
-		return obj;
-	}	
-	
-	// Order is important, we already have to use a reliable user-agent detection.
-	if (is_opera){ // has Chrome & Safari as well.
-		obj.browser = "OPERA";
-		obj.browser_name = "Opera";
-		return obj;
-	}
-
-	if (is_chrome){ // has Safari as well.
-		obj.browser = "GOOGLE_CHROME";
-		obj.browser_name = "Google Chrome";
-		return obj;
-	}
-	
-	if (is_safari){ // Apple is badass, only has SAFARI in userAgent string \m/
-		obj.browser = "SAFARI";
-		obj.browser_name = "Safari";
-		return obj;
-	}
-
-	if (is_firefox){
-		obj.browser = "MOZILLA_FIREFOX";
-		obj.browser_name = "Mozilla Firefox";
-		return obj;
-	}
-	
-return obj;
-}
-
-var browserObj = getBrowser();
-var browser = browserObj.browser;
-var browser_name = browserObj.browser_name;
-
+var ua = detect.parse(navigator.userAgent);
 
 var userScript = document.getElementById('user_script').textContent;
 
@@ -162,8 +115,8 @@ function endTest(){
 	var xhr = new XMLHttpRequest();
 	xhr.open('POST', '/modules/results/update', true);
 	xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-	xhr.send('_module_id='+module_id+'&_browser='+browser+'&_results_raw='+encodeURIComponent(1)+'&_rows='+encodeURIComponent(JSON.stringify(rows)));
-	
+	xhr.send('_module_id='+module_id+'&_browser='+ua.browser.family+'&_os='+ua.os.family+'&_version='+ua.browser.version+'&_results_raw='+encodeURIComponent(1)+'&_rows='+encodeURIComponent(JSON.stringify(rows)));
+
 	setTimeout(function(){
 		window.opener.location.reload();
 		this.close();

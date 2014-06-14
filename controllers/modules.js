@@ -302,11 +302,11 @@ exports.results = function(app){
 	// Can be Ajax
 	app.post('/modules/results/update', function(req, res){
 		var module_id = req.body._module_id;
-		var results = {};
-		results.raw = req.body._results_raw;
 		var browser = {};
+		browser.name = req.body._browser;
 		browser.rows = JSON.parse(req.body._rows);
-		browser.version = "";
+		browser.version = req.body._version;
+		browser.os = req.body._os;
 		var test = {};
 		test.state = 'COMPLETED'; //  COMPLETE
 		var updateObj = {};
@@ -315,7 +315,7 @@ exports.results = function(app){
 
 		Modules.findOneAndUpdate({'_id': module_id}, updateObj,  function(err, result){
 			if(err){
-				res.render('misc/error', {'info': 'Something wrong happened, when we tried creating your new module.'});
+				res.render('misc/error', {'info': 'Something wrong happened, when we tried updating the results'});
 				res.end();
 			} else {
 				res.redirect('/modules/?id='+ result._id);
@@ -354,37 +354,33 @@ exports.results = function(app){
 }
 
 
-// Supporting Functions, Don't know where the hell to put this in the MVC stuff :( Any suggestions?
 var getBrowserResults = function(module){
-	var browser_results = {};
 
-	var browser_list = ['GOOGLE_CHROME', 'MOZILLA_FIREFOX', 'OPERA', 'SAFARI', 'INTERNET_EXPLORER', 'OTHERS'];
-	for(var x in browser_list){
-		var browser_temp = module.results.browsers[browser_list[x]];
-		if(browser_temp.rows.length == 0){
-			browser_results[browser_list[x]] = "<h4> This module was never tested on this browser. Why don't you contribute? </h4>";
-			continue;
-		}
-		var table_html = '<div class="bs-example table-responsive"><table class="table table-striped table-bordered table-hover"> <thead><tr class="TITLE">';
-		// Iterate the columns
-		for(var i=0; i<module.results.columns.length; i++){
-			table_html += '<th>'+ module.results.columns[i] +'</th>'
-		}
-		table_html += '</tr></thead><tbody>';
-		// Iterate the Rows, PS: Its a 2D array
-		for(i=0; i<browser_temp.rows.length; i++){
-			table_html += '<tr class="'+browser_temp.rows[i].type+'">';
-			for(j=0; j<browser_temp.rows[i].data.length; j++){
-				table_html += '<td>'+ browser_temp.rows[i].data[j] +'</td>';
+	var browser_results = {};
+	var browsers = module.results.browsers;
+	for(var x in browsers){
+		var browser_temp = browsers[x];
+		if(browser_temp.rows.length > 0){
+			var table_html = '<div class="bs-example table-responsive"><table class="table table-striped table-bordered table-hover"> <thead><tr class="TITLE">';
+			// Iterate the columns
+			for(var i=0; i<module.results.columns.length; i++){
+				table_html += '<th>'+ module.results.columns[i] +'</th>'
 			}
-			table_html += '</tr>';
+			table_html += '</tr></thead><tbody>';
+			// Iterate the Rows, PS: Its a 2D array
+			for(i=0; i<browser_temp.rows.length; i++){
+				table_html += '<tr class="'+browser_temp.rows[i].type+'">';
+				for(j=0; j<browser_temp.rows[i].data.length; j++){
+					table_html += '<td>'+ browser_temp.rows[i].data[j] +'</td>';
+				}
+				table_html += '</tr>';
+			}
+			table_html += '</tbody></table></div>';
+			browser_results[browser_temp.name] = table_html;
 		}
-		table_html += '</tbody></table></div>';
-		browser_results[browser_list[x]] = table_html;
 	}
 return browser_results;
 }
-
 
 
 // Forks a new module

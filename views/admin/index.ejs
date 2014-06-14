@@ -10,14 +10,14 @@
 
 <div class="container">
     <div class="col-lg-3">
-      <center><div class="jumbotron"><h3>Users</h3></div></center>
+      <center><div class="jumbotron"><h3>Users - <%= users.length %></h3></div></center>
         <% for(x in users) {%>
         <a href="/profile/?id=<%= users[x]._id %>" class="list-group-item" title="<%= users[x].handle %>"><%= users[x].handle %></a>
         <% } %>
     </div>
 
     <div class="col-lg-7">
-      <center><div class="jumbotron"><h3>Modules</h3></div></center>
+      <center><div class="jumbotron"><h3>Modules - <%= modules.length %></h3></div></center>
         <% for(x in modules) {%>
         <a  href="/modules/?id=<%= modules[x]._id %>" class="list-group-item" title="By @<%= modules[x].owner %>"><b><%= modules[x].name %> </b></a>
         <% } %>
