@@ -361,7 +361,10 @@ var getBrowserResults = function(module){
 	for(var x in browsers){
 		var browser_temp = browsers[x];
 		if(browser_temp.rows.length > 0){
-			var table_html = '<div class="bs-example table-responsive"><table class="table table-striped table-bordered table-hover"> <thead><tr class="TITLE">';
+			if(browser_temp.name === undefined || browser_temp.name === '')	browser_temp.name = 'Unknown Browser';
+			if(browser_temp.version === undefined || browser_temp.version === '')	browser_temp.version = 'Unknown Version';
+			if(browser_temp.os === undefined || browser_temp.os === '')	browser_temp.os = 'Unknown OS';
+			var table_html = '<div class="table-responsive">Tested on <div class="label label-info">'+browser_temp.name +' - '+ browser_temp.version+' - '+ browser_temp.os+'</div><table class="table table-striped table-bordered table-hover"> <thead><tr class="TITLE">';
 			// Iterate the columns
 			for(var i=0; i<module.results.columns.length; i++){
 				table_html += '<th>'+ module.results.columns[i] +'</th>'
@@ -378,7 +381,7 @@ var getBrowserResults = function(module){
 			table_html += '</tbody></table></div>';
 			browser_results[browser_temp.name] = table_html;
 		}
-	}
+	}process.stdout.write(JSON.stringify(browser_results));
 return browser_results;
 }
 

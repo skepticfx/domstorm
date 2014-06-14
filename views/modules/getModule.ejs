@@ -83,14 +83,14 @@
 				<ul class="nav nav-pills">
 				<% for(var x in browsers){ %>
 					<li style="cursor: pointer;">
-						<a class="browser_tabs" id="<%= x.trim().toLowerCase() %>">
-							<img src="/public/imgs/browser-logos/<%= x.trim().toLowerCase() %>.png"/> <%= x %>
+						<a class="browser_tabs" id="<%= x.trim().replace(/ /gi, '').toLowerCase() %>">
+							<img src="/public/imgs/browser-logos/<%= x.trim().replace(/ /gi, '').toLowerCase() %>.png"/> <%= x %>
 						</a>
 					</li>
 				<% } %>
 				</ul>
 				<% for(var x in browsers) { %>
-					<div id="<%= x.trim().toLowerCase() %>_results" class="browser_results">
+					<div id="<%= x.trim().replace(/ /gi, '').toLowerCase() %>_results" class="browser_results">
 						<%- browsers[x] %>
 					</div>
 				<% } %>
