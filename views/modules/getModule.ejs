@@ -149,6 +149,7 @@ $(document).ready(function(){
 	$('.browser_results')[0].style.display = 'block';
 
 	$('.browser_tabs').click(function(){
+		$('#results-bar').scrollTop();
 		$('.browser_results').hide();
 		$('.browser_tabs').parent().attr('class', '');
 		$(this).parent().attr('class', 'active');
