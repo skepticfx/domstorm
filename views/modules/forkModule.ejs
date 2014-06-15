@@ -124,6 +124,7 @@
 </div>
 </div>
 <script>
+$(document).ready(function() {
 var userScript = ace.edit("userScript");
 userScript.setTheme("ace/theme/github");
 userScript.getSession().setMode("ace/mode/javascript");
@@ -131,7 +132,7 @@ userScript.getSession().setMode("ace/mode/javascript");
 var enum_data = ace.edit("enum_data");
 enum_data.setTheme("ace/theme/github");
 enum_data.getSession().setMode("ace/mode/javascript");
-$(document).ready(function() {
+
 
     updateColumns($('#num_cols').val());
     $('#num_cols').keyup(function(){
@@ -149,7 +150,9 @@ $(document).ready(function() {
       $('#_enum_data').val(enum_data.getValue());
       $('#forkModule').submit();
     });
-  });
+
+});
+
 
 var updateColumns = function(num){
   $('#div_cols').empty();
@@ -165,6 +168,5 @@ return column_names[i-1] || '';
 }
 </script>
 
-</body>
 
 <% include ../layouts/footer.ejs %>

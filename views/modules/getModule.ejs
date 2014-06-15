@@ -144,22 +144,22 @@ $(document).ready(function(){
 	<% } %>
 
 	// Highlight the fist browser tab and show only the results for that.
-	$('.browser_tabs').parent()[0].setAttribute('class', 'active');
-	$('.browser_results').hide();
-	$('.browser_results')[0].style.display = 'block';
-
-	$('.browser_tabs').click(function(){
-		$('#results-bar').scrollTop();
+	if(typeof $('.browser_tabs').parent()[0] !== 'undefined'){
+		$('.browser_tabs').parent()[0].setAttribute('class', 'active');
 		$('.browser_results').hide();
-		$('.browser_tabs').parent().attr('class', '');
-		$(this).parent().attr('class', 'active');
-		var browser_result = this.id;
-		$('#'+browser_result+'_results').show();
+		$('.browser_results')[0].style.display = 'block';
 
-	});
+		$('.browser_tabs').click(function(){
+			$('#results-bar').scrollTop();
+			$('.browser_results').hide();
+			$('.browser_tabs').parent().attr('class', '');
+			$(this).parent().attr('class', 'active');
+			var browser_result = this.id;
+			$('#'+browser_result+'_results').show();
+		});
+	}
 });
 
 </script>
 
-</body>
 <% include ../layouts/footer.ejs %>

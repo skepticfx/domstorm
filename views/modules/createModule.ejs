@@ -146,47 +146,47 @@ var data = [{before: '1', after: '2'}, {before: '1', after: '1'}, {before: '2', 
 </div>
 </div>
 
-</body>
 <script>
-var userScript = ace.edit("userScript");
-userScript.setTheme("ace/theme/github");
-userScript.getSession().setMode("ace/mode/javascript");
-
-var enum_data = ace.edit("enum_data");
-enum_data.setTheme("ace/theme/github");
-enum_data.getSession().setMode("ace/mode/javascript");
 $(document).ready(function() {
+  var userScript = ace.edit("userScript");
+  userScript.setTheme("ace/theme/github");
+  userScript.getSession().setMode("ace/mode/javascript");
 
-		updateColumns($('#num_cols').val());
-		$('#num_cols').keyup(function(){
-			if(this.value>=1 && this.value<=5)
-				updateColumns(this.value);
-			else{
-				if(this.value != "")
-					this.value = 1;
-				updateColumns(1);
-			}
-		});
+  var enum_data = ace.edit("enum_data");
+  enum_data.setTheme("ace/theme/github");
+  enum_data.getSession().setMode("ace/mode/javascript");
 
-		$('#submitButton').click(function(){
-			$('#_userScript').val(userScript.getValue());
-			$('#_enum_data').val(enum_data.getValue());
-			$('#createModule').submit();
-		});
-	});
+  updateColumns($('#num_cols').val());
+  $('#num_cols').keyup(function(){
+    if(this.value>=1 && this.value<=5)
+      updateColumns(this.value);
+    else{
+      if(this.value != "")
+      this.value = 1;
+      updateColumns(1);
+    }
+  });
 
+  $('#submitButton').click(function(){
+    $('#_userScript').val(userScript.getValue());
+    $('#_enum_data').val(enum_data.getValue());
+    $('#createModule').submit();
+  });
+
+});
 var updateColumns = function(num){
-	$('#div_cols').empty();
-	for(var i=1; i<=num; i++){
-		$('#div_cols').append('<label for="_cols_'+i+'" class="col-lg-2 control-label">Column '+i+'</label><div class="col-lg-4"><input type="text" name="_cols_'+i+'" class="form-control" id="cols_'+i+'" placeholder="'+getRandomColumnName()+'" value="" autocomplete="off"></div>');
-	}
+  $('#div_cols').empty();
+  for(var i=1; i<=num; i++){
+  $('#div_cols').append('<label for="_cols_'+i+'" class="col-lg-2 control-label">Column '+i+'</label><div class="col-lg-4"><input type="text" name="_cols_'+i+'" class="form-control" id="cols_'+i+'" placeholder="'+getRandomColumnName()+'" value="" autocomplete="off"></div>');
+  }
 }
 
 var getRandomColumnName = function(){
-	var x = parseInt(Math.random()*10);
-	var column_names = ['Test Passed?', 'Test Type', 'Name', 'Propery Tested', 'Fuzzed Characters', 'True / False', 'Vulnerable', 'Overridding Allowed?', 'List of properties', 'Property Name'];
-return column_names[x];
+  var x = parseInt(Math.random()*10);
+  var column_names = ['Test Passed?', 'Test Type', 'Name', 'Propery Tested', 'Fuzzed Characters', 'True / False', 'Vulnerable', 'Overridding Allowed?', 'List of properties', 'Property Name'];
+  return column_names[x];
 }
+
 </script>
 
 <% include ../layouts/footer.ejs %>
