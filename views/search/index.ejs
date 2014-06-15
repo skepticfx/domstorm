@@ -1,17 +1,25 @@
 <% include ../layouts/header.ejs %>
 <% include ../layouts/navbar.ejs %>
 <div class="container">
+
 <center>
-      <h1>Search Results</h1>
+<span>
+  <form action="/search" method="GET">
+    <input type="text" class="form-control" autofocus name="q" id="search-box" placeholder="Search" value="<%= q %>" />
+    <input type="submit" id="search-button" value="Go" class="btn btn-primary" />
+  </form>
+</span>
 </center>
+
+
 <br/>
-<br/>
+
 </div>
 
 <div class="container">
 
   <% if(modules.length === 0){ %>
-    Search returned no results.
+    <h3><center>Search returned no results.</center></h3>
     <% } else {%>
       <% for(x in modules) {%>
         <div class="col-lg-4 module-block">

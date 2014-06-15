@@ -1,5 +1,14 @@
-body {
 
+#search-box{
+  display: inline;
+  width: 40%;
+  margin-right: 0%;
+}
+
+#search-button{
+  display: inline;
+  position: relative;
+  margin-left: 0%;
 }
 
 div.col-lg-4 a.list-group-item{
