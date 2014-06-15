@@ -360,7 +360,7 @@ var getBrowserResults = function(module){
 	var browsers = module.results.browsers;
 	for(var x in browsers){
 		var browser_temp = browsers[x];
-		if(browser_temp.rows.length > 0){
+		if(browser_temp.rows && browser_temp.rows.length > 0){
 			if(browser_temp.name === undefined || browser_temp.name === '')	browser_temp.name = 'Unknown Browser';
 			if(browser_temp.version === undefined || browser_temp.version === '')	browser_temp.version = 'Unknown Version';
 			if(browser_temp.os === undefined || browser_temp.os === '')	browser_temp.os = 'Unknown OS';
@@ -381,7 +381,7 @@ var getBrowserResults = function(module){
 			table_html += '</tbody></table></div>';
 			browser_results[browser_temp.name] = table_html;
 		}
-	}process.stdout.write(JSON.stringify(browser_results));
+	}
 return browser_results;
 }
 

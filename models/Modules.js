@@ -10,7 +10,7 @@ var UserSchema = mongoose.Schema({
 });
 
 
-var modulesSchema = mongoose.Schema({
+var ModulesSchema = mongoose.Schema({
 	name: String,
 	description: String,
 	test: {
@@ -32,7 +32,7 @@ var modulesSchema = mongoose.Schema({
 
 });
 
-modulesSchema.statics.add = function(obj, callback){
+ModulesSchema.statics.add = function(obj, callback){
 	var instance = new Modules();
 	instance.name = obj.name;
 	instance.description = obj.description;
@@ -51,16 +51,51 @@ modulesSchema.statics.add = function(obj, callback){
 	});
 };
 
-modulesSchema.statics.getModuleById = function(id, callback){
+ModulesSchema.statics.getModuleById = function(id, callback){
 	this.findOne({_id: id}, function(err, module){
 		if (!module) return callback(new Error('The module is not found'));
 		return callback(null, module);
 	});
 }
 
-mongoose.model('User', UserSchema);
-var Modules = mongoose.model('Modules', modulesSchema);
-var User = mongoose.model('User');
+// Search by Name, Description and also by tags if starts with [tags]:
+ModulesSchema.statics.searchAll = function(str, cb){
+  var query = {};
+  str = str.toLowerCase().trim();
+  if(str.indexOf('[tags]:') === 0){
+    var tags = str.substr(7).split(' ');
+    query.tags = {};
+    query.tags.$in = tags;
+    console.log(tags);
+  } else {
+    query.$or = [];
+    var obj = {};
+    obj.name = {};
+    obj.name.$regex = '.*' + str +'.*';
+    obj.name.$options = 'i';
+
+    query.$or.push(obj);
+    obj = {};
+    obj.description = {};
+    obj.description.$regex = '.*' + str +'.*';
+    obj.description.$options = 'i';
+    query.$or.push(obj);
+  }
+
+  this.find(query, function(err, modules){
+      if(err)
+        console.log(err);
+
+      modules.forEach(function(module){
+        module.browsers_tested = Object.keys(module.results.browsers).length;
+      });
+      cb(err, modules);
+  });
+}
+
+
+var Modules = mongoose.model('Modules', ModulesSchema);
+var User = mongoose.model('User', UserSchema);
 
 exports.Modules = Modules;
 exports.User = User;

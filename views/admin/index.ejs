@@ -12,7 +12,7 @@
     <div class="col-lg-3">
       <center><div class="jumbotron"><h3>Users - <%= users.length %></h3></div></center>
         <% for(x in users) {%>
-        <a href="/profile/?id=<%= users[x]._id %>" class="list-group-item" title="<%= users[x].handle %>"><%= users[x].handle %></a>
+        <a href="/profile/<%= users[x].handle %>" class="list-group-item" title="<%= users[x].handle %>"><%= users[x].handle %></a>
         <% } %>
     </div>
 

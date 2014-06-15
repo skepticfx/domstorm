@@ -26,11 +26,12 @@ function ensureAuthenticated(req, res, next) {
 }
 
 exports.index = function(app){
-  app.get('/profile', function(req, res){
-    if(req.query && req.query.id){
-      Users.findOne({'_id': req.query.id}, function(err, user){
-        if(err){
-          res.redirect('misc/404', {'info': 'This user profile does not exist'});
+  app.get('/profile/:handle', function(req, res){
+    if(req.params && req.params.handle){
+      Users.findOne({'handle': req.params.handle}, function(err, user){
+        if(err || user === null){
+          res.render('misc/404', {'info': 'This user profile does not exist'});
+          res.end();
         } else {
           var username = user.handle;
           var userModules = [];
@@ -50,7 +51,8 @@ exports.index = function(app){
         }
       });
     } else {
-      res.redirect('misc/404', {'info': 'Cannot find that page'});
+      res.render('misc/404', {'info': 'Cannot find that profile'});
+      res.end();
     }
   });
 }

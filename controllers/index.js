@@ -8,6 +8,7 @@ var auth = require(process.cwd()+'/controllers/auth.js');
 var datasets = require(process.cwd()+'/controllers/datasets.js');
 var admin = require(process.cwd()+'/controllers/admin.js');
 var profile = require(process.cwd()+'/controllers/profile.js');
+var search = require(process.cwd()+'/controllers/search.js');
 
 // All Local routing goes here.
 exports.set = function(app){
@@ -48,7 +49,9 @@ app.get('/xss', function(req, res){
 	profile.index(app);
 
 	// Add Admin Features
-
 	admin.index(app);
+
+	// All things Search
+	search.index(app);
 
 };

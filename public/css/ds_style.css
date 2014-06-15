@@ -1,0 +1,38 @@
+body {
+
+}
+
+div.col-lg-4 a.list-group-item{
+  background-color: #18bc9c;
+  margin-top: 1%;
+}
+
+div.col-lg-4 a.list-group-item:hover{
+  text-decoration: none;
+  background-color: #3498db;
+  color: #ffffff;
+}
+
+.tags-link:hover{
+  text-decoration: none;
+}
+
+.tags-link-span{
+  text-decoration: none;
+  background-color: #e74c3c;
+  color: #ffffff;
+  border-radius: 0.0em;
+}
+
+
+.tags-link-span:hover{
+  text-decoration: none;
+  background-color: #f39c12;
+  color: #ffffff;
+  border-radius: 0.2em;
+}
+
+#items-title{
+  display: inline;
+  font-family: 'Courier';
+}

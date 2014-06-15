@@ -1,3 +1,8 @@
+#qs{
+  margin-left: 20%;
+
+}
+
 #auth-twitter {
   padding: 0px 20px;
   font-size: 13px;
@@ -2883,6 +2888,12 @@ font-family: ChunkFive;
 src: url(../fonts/ChunkFive/ChunkFive.otf);
 }
 
+@font-face
+{
+font-family: ChunkFive;
+src: url(../fonts/ChunkFive/ChunkFive.otf);
+}
+
 .glyphicon {
   position: relative;
   top: 1px;
@@ -4887,7 +4898,9 @@ textarea.input-group-sm > .input-group-btn > .btn {
 
 .navbar-fixed-top,
 .navbar-fixed-bottom {
-  position: fixed;
+  position: relative;
+  top: 0;
+  margin-top: 0px;
   right: 0;
   left: 0;
   z-index: 1030;
@@ -5623,7 +5636,7 @@ textarea.input-group-sm > .input-group-btn > .btn {
 
 .label-tags {
   background-color: #e74c3c;
-  border-radius: 10em;
+  border-radius: 0em;
   display: inline;
 }
 

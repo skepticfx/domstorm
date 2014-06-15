@@ -1,0 +1,31 @@
+<% include ../layouts/header.ejs %>
+<% include ../layouts/navbar.ejs %>
+<div class="container">
+<center>
+      <h1>Search Results</h1>
+</center>
+<br/>
+<br/>
+</div>
+
+<div class="container">
+
+  <% if(modules.length === 0){ %>
+    Search returned no results.
+    <% } else {%>
+      <% for(x in modules) {%>
+        <div class="col-lg-4 module-block">
+          <a href="/modules/?id=<%= modules[x]._id %>" class="list-group-item" title="<%= modules[x].description %>">
+            <b><%= modules[x].name %></b> <br/>
+            <%= modules[x].description %> <br/>
+            By <%= modules[x].owner %> <br/>
+            Tested on <%= modules[x].browsers_tested %> browsers<br/>
+            </a>
+        </div>
+    <% } %>
+  <% } %>
+
+</div>
+
+</body>
+<% include ../layouts/footer.ejs %>

@@ -10,12 +10,12 @@
 <center>
 			<h1><%= module_name %></h1>
 			<p><h5><%= module_description %></h5></p>
- 			<span class="label label-user">By <%= module_owner %></span>
-			<span id='fav_count' class='label label-favs'> <img src="/public/imgs/icons/favs_small.png"> <%= module_favs %></span>
+ 		 <div id='items-title'>By </div><a href="/profile/<%= module_owner %>/" class='tags-link'><span class="tags-link-span label label-user"><%= module_owner %></span></a>
+			<span id='fav_count' class='label label-favs'> <img src="/public/imgs/icons/favs_small-red.png"> <%= module_favs %></span>
 			<br/>
-
+			<div id='items-title'>Tags</div>
 			<% for(tags in module.tags){ %>
-			<span class="label label-tags"><%= module.tags[tags] %></span>
+			<a href="/search?q=[tags]:<%= module.tags[tags]%>" class='tags-link'><span class="tags-link-span label label-tags"><%= module.tags[tags] %></span></a>
 			<% } %>
 <br/>
 <% if(userOptions.status == "enabled"){ %>
