@@ -281,7 +281,7 @@ exports.edit = function(app){
 				newModule.tags = tags;
 
 				// The old owner should be the owner always !
-				newModule.owner = modules.owner;
+				// DO NOT CHANGE modules.owner
 
 				delete newModule._id;
 				Modules.findOneAndUpdate({'_id': modules._id}, newModule, {'upsert': true}, function(err, module){
