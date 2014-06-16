@@ -4,12 +4,12 @@
 <style>
 #userScript{
     width: 100%;
-    height: 400px;
+    height: 300px;
 }
 
 #enum_data{
     width: 100%;
-    height: 100px;
+    height: 300px;
 }
 
 </style>
@@ -46,86 +46,153 @@
 	  <div class="form-group">
 		<label class="col-lg-2 control-label">Module Type</label>
 		<div class="col-lg-10">
+      <div class="radio">
+      <label>
+        <input type="radio" name="_module_type" id="optionsRadios1" value="TESTHARNESS" checked="">
+        W3C TestHarness (<a href="http://darobin.github.io/test-harness-tutorial/docs/using-testharness.html" target="_blank">Read more here</a>)
+      </label>
+      </div>
 		  <div class="radio">
 			<label>
-			  <input type="radio" name="_module_type" id="optionsRadios1" value="ENUM_FUNCTION" checked="">
+			  <input type="radio" name="_module_type" id="optionsRadios2" value="ENUM_FUNCTION">
 			  Enumeration Functions
 			</label>
 		  </div>
 		  <div class="radio">
 			<label>
-			  <input disabled type="radio" name="_module_type" id="optionsRadios2" value="FUZZER">
+			  <input disabled type="radio" name="_module_type" id="optionsRadios3" value="FUZZER">
 			  Fuzzer
 			</label>
 		  </div>
 		</div>
 	  </div>
 
-	  <div class="form-group">
-		<label class="col-lg-2 control-label">Results Type</label>
-		<div class="col-lg-10">
-		  <div class="radio">
-			<label>
-			  <input type="radio" name="_results_type" id="optionsRadios1" value="SIMPLE_TABLE" checked="">
-			  Simple Table Format - Columns and Rows
-			</label>
-		  </div>
-		  <div class="radio">
-			<label>
-			  <input disabled type="radio" name="_results_type" id="optionsRadios2" value="ENUM_LIST">
-			  Enumeration List (Currently Not Supported)
-			</label>
-		  </div>
-		</div>
-	  </div>
+    <script>
+      $(document).ready(function(){
+        $('.enum_stuff').hide();
+        var userScript = ace.edit("userScript");
+        userScript.setTheme("ace/theme/github");
+        userScript.getSession().setMode("ace/mode/javascript");
+        userScript.getSession().setValue($('#userScript_testharness').text());
 
-<!-- Column Names et al -->
+        // Test Harness
+        $('#optionsRadios1').change(function(){
+          $('.enum_stuff').hide();
+          userScript.getSession().setValue($('#userScript_testharness').text());
+        });
 
-	  <div id="greenish_title">Customize your column names</div>
-	  <div class="form-group">
-		<label for="num_cols" class="col-lg-2 control-label">Number of Columns</label>
-		<div class="col-lg-4">
-		  <input type="text" class="form-control" name="_num_cols" id="num_cols" placeholder="Any value between 1 to 5" value="2" title="Any value between 1 to 5" autocomplete="off" />
-		</div>
-	   </div>
-	  <!-- The column names will be populated dynamically -->
-	<div id="div_cols" class="form-group">
+        // Enum_function
+        $('#optionsRadios2').change(function(){
+          $('.enum_stuff').show();
+          userScript.getSession().setValue($('#userScript_enum_function').text());
+        });
 
-	</div>
-<!-- End of columns names et al -->
+        // Fuzzer
+        $('#optionsRadios3').change(function(){
+          alert('Not supported yet');
+        });
+      });
+    </script>
+
+<div class="enum_stuff">
+  	  <div class="form-group">
+  		<label class="col-lg-2 control-label">Results Type</label>
+  		<div class="col-lg-10">
+  		  <div class="radio">
+  			<label>
+  			  <input type="radio" name="_results_type" id="optionsRadios1" value="SIMPLE_TABLE" checked="">
+  			  Simple Table Format - Columns and Rows
+  			</label>
+  		  </div>
+  		  <div class="radio">
+  			<label>
+  			  <input disabled type="radio" name="_results_type" id="optionsRadios2" value="ENUM_LIST">
+  			  Enumeration List (Currently Not Supported)
+  			</label>
+  		  </div>
+  		</div>
+  	  </div>
+
+  <!-- Column Names et al -->
+
+  	  <div id="greenish_title">Customize your column names</div>
+  	  <div class="form-group">
+  		<label for="num_cols" class="col-lg-2 control-label">Number of Columns</label>
+  		<div class="col-lg-4">
+  		  <input type="text" class="form-control" name="_num_cols" id="num_cols" placeholder="Any value between 1 to 5" value="2" title="Any value between 1 to 5" autocomplete="off" />
+  		</div>
+  	   </div>
+  	  <!-- The column names will be populated dynamically -->
+  	<div id="div_cols" class="form-group">
+
+  	</div>
+  <!-- End of columns names et al -->
+</div>
 
   <div id="greenish_title">Test scripts</div>
 	  <div class="form-group">
 		<label for="userScript" class="col-lg-2 control-label">User Script</label>
 		<div class="col-lg-10">
-		  <pre class="form-control" id="userScript">
-function test(data){
-	// We need to separate properties and access one by one.
-try{
-
-	if(	data.before == data.after){
-		console.log(data.before + '.'+ data.before +' Not Changed');
-                addResult(data.before + '.'+ data.before ,  'No');
-	} else {
-		console.log(data.before + '.'+ data.before +' Changed');
-                addResult(data.before + '.'+ data.before ,  'Yes');
-	}
-}
-
-catch(err){
-	addResult(data.before + '.'+ data.before ,  'Probably Not');
-}
-}
+<pre class="form-control" id="userScript">
 </pre>
-		  <span class="help-block">Come up with your own script to do a Enumeration Function scan. Read more <u>here</u></span>
+
+<pre class="form-control hide_me" id="userScript_enum_function">
+function test(data){
+// data is the input variable that is supplied from the Enumeration List.
+
+// For this module, we don't process the input data.
+  addResult(data.prop, data.val);
+
+}
+
+</pre>
+<pre class="form-control hide_me" id="userScript_testharness">
+// W3C Testharness.js
+// Turotial: http://darobin.github.io/test-harness-tutorial/docs/using-testharness.html
+// W3c Platform Tests: https://github.com/w3c/web-platform-tests
+
+function testXHRMethod(method) {
+  test(function() {
+      var client = new XMLHttpRequest();
+      assert_throws("SyntaxError", function() { client.open(method, "...") });
+    }, 'Checking XHR for bogus Methods: ' + " (" + method + ")");
+  }
+
+testXHRMethod("");
+testXHRMethod(">");
+testXHRMethod("'hjs'");
+testXHRMethod("'/@");
+testXHRMethod(" GET");
+testXHRMethod("G T");
+testXHRMethod("G T");
+testXHRMethod("GORT_IT");
+</pre>
 		</div>
 	  </div>
 
-	  <div class="form-group">
+	  <div class="form-group enum_stuff">
+      <center><span class="help-block">Come up with your own script to do a Enumeration Function scan. Read more <u>here</u></span></center>
 		<label for="enum_data" class="col-lg-2 control-label">Enumeration Data</label>
 		<div class="col-lg-10">
-	<pre class="form-control" rows="3" id="enum_data">
-var data = [{before: '1', after: '2'}, {before: '1', after: '1'}, {before: '2', after: '2'}];
+<pre class="form-control" id="enum_data">
+var data = []; // This Array is going to be populated with our enumeration result.
+var x;
+for(x in window){
+  if(typeof window[x] == "number"){
+    var obj = {};
+    obj.prop = x;
+    obj.val = window[x];
+    data.push(obj);
+  }
+}
+
+// what if the array is empty now?
+if(data.length === 0){
+    var obj = {};
+    obj.prop = 'This browser doesn\'t have any Number properties on the Window Object';
+    obj.val = ''; // Empty data
+    data.push(obj);
+}
 </pre>
 		  <span class="help-block">Specify your Enumeration Data here as a code.
 			  <code>
@@ -148,9 +215,6 @@ var data = [{before: '1', after: '2'}, {before: '1', after: '1'}, {before: '2', 
 
 <script>
 $(document).ready(function() {
-  var userScript = ace.edit("userScript");
-  userScript.setTheme("ace/theme/github");
-  userScript.getSession().setMode("ace/mode/javascript");
 
   var enum_data = ace.edit("enum_data");
   enum_data.setTheme("ace/theme/github");

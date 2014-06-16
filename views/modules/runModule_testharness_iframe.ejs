@@ -1,0 +1,28 @@
+
+<html>
+<head>
+
+<script src="/public/js/testharness.js"></script>
+
+<script>
+
+// Our code
+// API - addResult()
+
+function completion_callback (allRes, status) {
+    console.log("Test run completed", allRes, status);
+    parent.harnessFinished(allRes);
+}
+
+// The userScript for the Module
+
+<%- module_test.userScript %>
+
+
+</script>
+
+</head>
+<body>
+
+</body>
+</html>

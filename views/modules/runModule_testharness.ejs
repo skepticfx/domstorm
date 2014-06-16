@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>
+Testing <%= module_name %>
+</title>
+<link href="/public/css/ds_style.css" rel="stylesheet">
+<script src="/public/js/detect.js"></script>
+<script>
+var ua = detect.parse(navigator.userAgent);
+var rows = [];
+var msg_status = ['PASS', 'FAIL', 'TIMEOUT', 'NOTRUN'];
+var res_status = ['SUCCESS', 'ERROR', 'INFO', 'INFO'];
+
+var harnessFinished = function(allRes){
+  allRes.forEach(function(x){
+    var obj = {};
+    obj.data = [];
+    obj.data.push(msg_status[x.status]);
+    obj.data.push(x.name);
+    obj.data.push(x.message || "");
+    obj.type = res_status[x.status];
+    rows.push(obj);
+  });
+  endTest();
+}
+
+
+var endTest = function(){
+  document.getElementById('test_done').innerHTML += '<h1>The test is complete now. </h1> <h2>This window will close right now.</h2>';
+  var module_id = '<%=module_id%>';
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', '/modules/results/update', true);
+  xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+  xhr.send('_module_id='+module_id+'&_browser='+ua.browser.family+'&_os='+ua.os.family+'&_version='+ua.browser.version+'&_rows='+encodeURIComponent(JSON.stringify(rows)));
+
+  setTimeout(function(){
+    window.opener.location.reload();
+    this.close();
+  }, 3000);
+}
+
+function newIframe(iframeCreated){
+  var iframe = document.createElement('iframe');
+  iframe.src = '/modules/run?iframe=1&id=<%= module_id%>';
+  iframe.onload = function(){ iframeCreated(iframe);}
+  iframe.className = 'iframe_test';
+  iframe.height = document.body.scrollHeight + "px";
+  document.body.appendChild(iframe);
+}
+
+window.onload = function(){
+    newIframe(function(testNode){ console.log('testNode created and testing'); });
+}
+
+
+</script>
+
+</head>
+
+<body>
+<center>
+  <h1>Testing <%= module_name %> </h1>
+</center>
+<div id="test_done"></div>
+</body>
+</html>

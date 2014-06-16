@@ -34,17 +34,21 @@ var ModulesSchema = mongoose.Schema({
 
 ModulesSchema.statics.add = function(obj, callback){
 	var instance = new Modules();
+
 	instance.name = obj.name;
 	instance.description = obj.description;
-	instance.test._type = obj.test.type;
+	instance.test._type = obj.test._type;
 	instance.test.state = obj.test.state;
 	instance.test.userScript = obj.test.userScript;
-	instance.test.enum_data = obj.test.enum_data;
-	instance.results._type = obj.results.type;
-	instance.results.columns = obj.results.columns;
+  if(obj.test.enum_data)
+	 instance.test.enum_data = obj.test.enum_data;
+	instance.results._type = obj.results._type;
+  if(obj.results.columns)
+	 instance.results.columns = obj.results.columns;
 	instance.tags = obj.tags;
 	instance.owner = obj.owner;
 	instance.favs = new Array();
+
 
 	instance.save(function (err){
 		callback(err, instance);

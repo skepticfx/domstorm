@@ -4,12 +4,12 @@
 <style>
 #userScript{
     width: 100%;
-    height: 400px;
+    height: 300px;
 }
 
 #enum_data{
     width: 100%;
-    height: 100px;
+    height: 300px;
 }
 
 </style>
@@ -48,21 +48,43 @@
 	  <div class="form-group">
 		<label class="col-lg-2 control-label">Module Type</label>
 		<div class="col-lg-10">
-		  <div class="radio">
-			<label>
-			  <input type="radio" name="_module_type" id="optionsRadios1" value="ENUM_FUNCTION" checked="">
-			  Enumeration Functions
-			</label>
-		  </div>
-		  <div class="radio">
-			<label>
-			  <input disabled type="radio" name="_module_type" id="optionsRadios2" value="FUZZER">
-			  Fuzzer
-			</label>
-		  </div>
+      <div class="radio">
+      <label>
+
+        <input type="radio" name="_module_type" id="optionsRadios1" value="<%= module.test._type%>" checked="">
+        <% if(module.test._type === 'ENUM_FUNCTION') {%>
+         Enumeration Function
+        <% } %>
+        <% if(module.test._type === 'TESTHARNESS') {%>
+         W3C Test Harness
+        <% } %>
+        <% if(module.test._type === 'FUZZER') {%>
+         Fuzzer
+        <% } %>
+      </label>
+      </div>
+
 		</div>
 	  </div>
 
+<script>
+  $(document).ready(function(){
+    $('.enum_stuff').hide();
+
+    $('#optionsRadios1').change(function(){
+      $('.enum_stuff').hide();
+    });
+
+    $('#optionsRadios2').change(function(){
+      $('.enum_stuff').show();
+    });
+
+    $('#optionsRadios3').change(function(){
+      alert('Not supported yet');
+    });
+  });
+</script>
+  <div class='enum_stuff'>
 	  <div class="form-group">
 		<label class="col-lg-2 control-label">Results Type</label>
 		<div class="col-lg-10">
@@ -82,7 +104,6 @@
 	  </div>
 
 <!-- Column Names et al -->
-
 	  <div id="greenish_title">Customize your column names</div>
 	  <div class="form-group">
 		<label for="num_cols" class="col-lg-2 control-label">Number of Columns</label>
@@ -94,6 +115,7 @@
 	<div id="div_cols" class="form-group">
 
 	</div>
+</div>
 <!-- End of columns names et al -->
 
     <div id="greenish_title">Test scripts</div>
@@ -105,6 +127,7 @@
 		</div>
 	  </div>
 
+  <div class='enum_stuff'>
 	  <div class="form-group">
 		<label for="enum_data" class="col-lg-2 control-label">Enumeration Data</label>
 		<div class="col-lg-10">
@@ -116,6 +139,7 @@
 		  </span>
 		</div>
 	  </div>
+  </div>
 		<input type="hidden" name="_userScript" id="_userScript" value="" />
 		<input type="hidden" name="_enum_data" id="_enum_data" value="" />
 

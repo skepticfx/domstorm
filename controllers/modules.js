@@ -116,14 +116,22 @@ exports.run = function(app){
 					};
 
 					switch(module_details.module_test._type){
-					case "ENUM_FUNCTION":
-					res.render('modules/runModule_enum_function', module_details);
-					res.end();
-					break;
+						case "TESTHARNESS":
+							if(req.query.iframe && req.query.iframe === '1')
+								res.render('modules/runModule_testharness_iframe', module_details);
+							else
+								res.render('modules/runModule_testharness', module_details);
+							res.end();
+						break;
 
-					default:
-					res.render('misc/error', {'info': 'The Test Type is not defined yet'});
-					res.end();
+						case "ENUM_FUNCTION":
+							res.render('modules/runModule_enum_function', module_details);
+							res.end();
+						break;
+
+						default:
+							res.render('misc/error', {'info': 'The Test Type is not defined yet'});
+							res.end();
 					}
 				}
 			});
@@ -147,17 +155,25 @@ exports.create = function(app){
 
 	// Form
 	app.post('/modules/create', ensureAuthenticated, function(req, res){
-
+		var type = req.body._module_type;
 		var results = {};
-		results.type = req.body._results_type;
-		var columns = [];
-		if(results.type == 'SIMPLE_TABLE'){
-			var num_cols = req.body._num_cols;
-			for(var i=1;i <= num_cols; i++){
-				columns.push(req.body['_cols_'+i]);
+// Fuzzer remaining
+		if(type === 'ENUM_FUNCTION'){
+			results._type = req.body._results_type;
+			var columns = [];
+			if(results._type == 'SIMPLE_TABLE'){
+				var num_cols = req.body._num_cols;
+				for(var i=1;i <= num_cols; i++){
+					columns.push(req.body['_cols_'+i]);
+				}
 			}
+			results.columns = columns;
 		}
-		results.columns = columns;
+
+		if(type === 'TESTHARNESS'){
+			results._type = 'testharness';
+			results.columns = ['Result', 'Test Name', 'Message'];
+		}
 
 		var tags = req.body._tags;
 		tags = tags.replace(/ /g,'');
@@ -165,9 +181,11 @@ exports.create = function(app){
 
 		var test = {};
 		test.state = 'NOT_STARTED'; // ERROR, COMPLETE
-		test.type = req.body._module_type;
+		test._type = req.body._module_type;
 		test.userScript = req.body._userScript;
-		test.enum_data = req.body._enum_data;
+
+		if(type === 'ENUM_FUNCTION')
+			test.enum_data = req.body._enum_data;
 
 		var newModule = {};
 		newModule.results = results;
@@ -176,6 +194,7 @@ exports.create = function(app){
 		newModule.description = req.body._desc;
 		newModule.tags = tags;
 		newModule.owner = req.user.handle || 'Anonymous';
+		newModule.favs = [];
 
 		Modules.add(newModule, function(err, module){
 			if(err){
@@ -257,13 +276,22 @@ exports.edit = function(app){
 				res.render('misc/userError', {'info': 'You must be the owner of this module to edit it. You can fork this module though !'+ modules.owner + req.currentUser});
 				res.end();
 			} else {
-				modules.results._type = req.body._results_type;
-				modules.results.columns = [];
-				if(modules.results._type == 'SIMPLE_TABLE'){
-					var num_cols = req.body._num_cols;
-					for(var i=1;i <= num_cols; i++){
-						modules.results.columns.push(req.body['_cols_'+i]);
+
+				var type = req.body._module_type;
+				if(type === 'ENUM_FUNCTION'){
+					modules.results._type = req.body._results_type;
+					modules.results.columns = [];
+					if(modules.results._type == 'SIMPLE_TABLE'){
+						var num_cols = req.body._num_cols;
+						for(var i=1;i <= num_cols; i++){
+							modules.results.columns.push(req.body['_cols_'+i]);
+						}
 					}
+				}
+
+				if(type === 'TESTHARNESS'){
+					modules.results._type = 'testharness';
+					modules.results.columns = ['Result', 'Test Name', 'Message'];
 				}
 
 				var module_id = modules._id;
@@ -272,9 +300,11 @@ exports.edit = function(app){
 				newModule.description = req.body._desc;
 				newModule.test._type = req.body._module_type;
 				newModule.test.userScript = req.body._userScript;
-				newModule.test.enum_data = req.body._enum_data;
-				newModule.results.columns = modules.results.columns;
-
+				if(type === 'ENUM_FUNCTION'){
+					newModule.test.enum_data = req.body._enum_data;
+					newModule.results.columns = modules.results.columns;
+				}
+				
 				var tags = req.body._tags;
 				tags = tags.replace(/ /g,'');
 				tags = tags.split(',');

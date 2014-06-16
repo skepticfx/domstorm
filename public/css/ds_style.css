@@ -1,3 +1,15 @@
+.iframe_test{
+  width: 100%;
+}
+
+.hide_me{
+  display: none;
+}
+
+.show_me{
+  display: none;
+}
+
 #favs-img{
   position: relative;
   top:-3px;
