@@ -70,7 +70,7 @@
     <script>
       $(document).ready(function(){
         $('.enum_stuff').hide();
-        var userScript = ace.edit("userScript");
+        userScript = ace.edit("userScript");
         userScript.setTheme("ace/theme/github");
         userScript.getSession().setMode("ace/mode/javascript");
         userScript.getSession().setValue($('#userScript_testharness').text());
