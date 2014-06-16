@@ -122,7 +122,7 @@
     <div class="form-group">
     <label for="userScript" class="col-lg-2 control-label">User Script</label>
     <div class="col-lg-10">
-      <pre class="form-control" id="userScript"><%= module.test.userScript%></pre>
+      <div class="form-control" id="userScript"><%= module.test.userScript%></div>
       <span class="help-block">Come up with your own script to do a Enumeration Function scan. Read more <u>here</u></span>
     </div>
     </div>
@@ -155,11 +155,11 @@
 <script>
 $(document).ready(function() {
   var userScript = ace.edit("userScript");
-  userScript.setTheme("ace/theme/github");
-  userScript.getSession().setMode("ace/mode/javascript");
+  userScript.setTheme("ace/theme/chrome");
+  userScript.getSession().setMode("ace/mode/html");
 
   var enum_data = ace.edit("enum_data");
-  enum_data.setTheme("ace/theme/github");
+  enum_data.setTheme("ace/theme/chrome");
   enum_data.getSession().setMode("ace/mode/javascript");
 
 

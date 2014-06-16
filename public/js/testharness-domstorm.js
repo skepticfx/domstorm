@@ -1924,3 +1924,16 @@ policies and contribution forms [3].
     }
 })();
 // vim: set expandtab shiftwidth=4 tabstop=4:
+
+
+
+// DomStorm Specific Overrides.
+
+// Our code
+// API - addResult()
+// Logs as 'testharness' result type to DomStorm, in the parent.
+
+function completion_callback (allRes, status) {
+    console.log("Test run completed", allRes, status);
+    parent.harnessFinished(allRes);
+}

@@ -71,8 +71,8 @@
       $(document).ready(function(){
         $('.enum_stuff').hide();
         userScript = ace.edit("userScript");
-        userScript.setTheme("ace/theme/github");
-        userScript.getSession().setMode("ace/mode/javascript");
+        userScript.setTheme("ace/theme/chrome");
+        userScript.getSession().setMode("ace/mode/html");
         userScript.getSession().setValue($('#userScript_testharness').text());
 
         // Test Harness
@@ -133,8 +133,9 @@
 	  <div class="form-group">
 		<label for="userScript" class="col-lg-2 control-label">User Script</label>
 		<div class="col-lg-10">
-<pre class="form-control" id="userScript">
-</pre>
+
+<div class="form-control" id="userScript">
+</div>
 
 <pre class="form-control hide_me" id="userScript_enum_function">
 function test(data){
@@ -146,7 +147,14 @@ function test(data){
 }
 
 </pre>
-<pre class="form-control hide_me" id="userScript_testharness">
+<textarea class="form-control hide_me" id="userScript_testharness">
+<html>
+<head>
+<script src="/public/js/testharness-domstorm.js"></script>
+
+
+<script>
+// The userScript for the Module
 // W3C Testharness.js
 // Turotial: http://darobin.github.io/test-harness-tutorial/docs/using-testharness.html
 // W3c Platform Tests: https://github.com/w3c/web-platform-tests
@@ -166,7 +174,16 @@ testXHRMethod(" GET");
 testXHRMethod("G T");
 testXHRMethod("G T");
 testXHRMethod("GORT_IT");
-</pre>
+
+</script>
+
+</head>
+<body>
+Testing using W3C TestHarness.js for XHR MEthods
+</body>
+</html>
+
+</textarea>
 		</div>
 	  </div>
 
@@ -217,7 +234,7 @@ if(data.length === 0){
 $(document).ready(function() {
 
   var enum_data = ace.edit("enum_data");
-  enum_data.setTheme("ace/theme/github");
+  enum_data.setTheme("ace/theme/chrome");
   enum_data.getSession().setMode("ace/mode/javascript");
 
   updateColumns($('#num_cols').val());
