@@ -46,7 +46,7 @@ exports.index = function(app){
                 }
               }
             }
-            res.render('profile/index', {'title': username, 'user': user, 'userModules': userModules, 'favModules': favModules});
+            res.render('profile/index', {'title': username, 'profile': user, 'userModules': userModules, 'favModules': favModules});
           });
         }
       });
