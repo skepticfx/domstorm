@@ -49,13 +49,13 @@
       <div class="radio">
       <label>
         <input type="radio" name="_module_type" id="optionsRadios1" value="TESTHARNESS" checked="">
-        W3C TestHarness (<a href="http://darobin.github.io/test-harness-tutorial/docs/using-testharness.html" target="_blank">Read more here</a>)
+        W3C TestHarness (Read more <a href="http://darobin.github.io/test-harness-tutorial/docs/using-testharness.html" target="_blank">here</a>)
       </label>
       </div>
 		  <div class="radio">
 			<label>
 			  <input type="radio" name="_module_type" id="optionsRadios2" value="ENUM_FUNCTION">
-			  Enumeration Functions
+        Enumeration Functions (Read more <a href="https://github.com/skepticfx/domstorm/wiki/Creating-a-Simple-Module" target="_blank">here</a>)
 			</label>
 		  </div>
 		  <div class="radio">
@@ -125,6 +125,12 @@
 
   <div id="greenish_title">Test scripts</div>
 	  <div class="form-group">
+<div class="enum_stuff">
+<center><span class="help-block">Come up with your own script to do a Enumeration Function scan. Read more <a href="https://github.com/skepticfx/domstorm/wiki/Creating-a-Simple-Module" target="_blank">here</a></span></center>
+<center><span class="help-block">Use, <code>addResult()</code>,  <code>addSuccess()</code>, <code>addError() </code>, <code>addInfo()</code></span></center>
+<center><span class="help-block">Defne your code inside the test() function - Each enumeration data is passed to it. (See below)</span></center>
+<center><span class="help-block">Note: Every time the test() function is invoked in an isolated Iframe.</span></center>
+</div>
 		<label for="userScript" class="col-lg-2 control-label">User Script</label>
 		<div class="col-lg-10">
 
@@ -182,7 +188,16 @@ Testing using W3C TestHarness.js for XHR MEthods
 	  </div>
 
 	  <div class="form-group enum_stuff">
-      <center><span class="help-block">Come up with your own script to do a Enumeration Function scan. Read more <u>here</u></span></center>
+      <center>
+      <span class="help-block">Specify your Enumeration Data here. Something like,
+        <code>
+        var data = ['a', 'script', 'img'];
+        </code>
+        <code>
+        var data = Object.getOwnPropertyNames(window);
+        </code>
+      </span>
+    </center>
 		<label for="enum_data" class="col-lg-2 control-label">Enumeration Data</label>
 		<div class="col-lg-10">
 <pre class="form-control" id="enum_data">
@@ -205,11 +220,6 @@ if(data.length === 0){
     data.push(obj);
 }
 </pre>
-		  <span class="help-block">Specify your Enumeration Data here as a code.
-			  <code>
-			  var data = [{before: '1', after: '2'}, {before: '1', after: '1'}, {before: '2', after: '2'}];
-			  </code>
-		  </span>
 		</div>
 	  </div>
 		<input type="hidden" name="_userScript" id="_userScript" value="" />
