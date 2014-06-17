@@ -1,5 +1,4 @@
 public/js/modulesList.js
-
 # Logs
 logs
 *.log
@@ -15,10 +14,7 @@ lib-cov
 # Coverage directory used by tools like istanbul
 coverage
 
-# Grunt intermediate storage (http://gruntjs.co
-
-.DS_Store
-m/creating-plugins#storing-task-files)
+# Grunt intermediate storage (http://gruntjs.com/creating-plugins#storing-task-files)
 .grunt
 
 # Compiled binary addons (http://nodejs.org/api/addons.html)
@@ -31,5 +27,3 @@ node_modules
 
 # Users Environment Variables
 .lock-wscript
-
-.DS_Store
