@@ -125,7 +125,10 @@ exports.run = function(app){
 						break;
 
 						case "ENUM_FUNCTION":
-							res.render('modules/runModule_enum_function', module_details);
+							if(req.query.iframe && req.query.iframe === '1')
+								res.render('modules/runModule_enum_function_iframe', module_details);
+							else
+								res.render('modules/runModule_enum_function', module_details);
 							res.end();
 						break;
 
@@ -304,7 +307,7 @@ exports.edit = function(app){
 					newModule.test.enum_data = req.body._enum_data;
 					newModule.results.columns = modules.results.columns;
 				}
-				
+
 				var tags = req.body._tags;
 				tags = tags.replace(/ /g,'');
 				tags = tags.split(',');

@@ -1,0 +1,33 @@
+<html>
+<head>
+  <title>
+    Iframe for ENUM FUNCTION Test
+  </title>
+  <script>
+  // The Enum Data for the given module.
+
+  // Type = Data Enumeration using a test Function
+  (function (){
+    <%- module_test.enum_data %>
+    var count = 1;
+    data.forEach(function(x){
+      parent.newIframe(parent.userScript , function(testNode){
+        testNode.contentWindow.callTest.call(undefined, x, function(){
+          testNode.parentNode.removeChild(testNode);
+          count++;
+          if(data.length === count)
+            parent.endTest();
+        });
+      });
+    });
+    return;
+  })();
+  </script>
+</head>
+<body>
+  <h1>
+    Enumerating data and testing in isloated IFRAMES !
+  </h1>
+
+</body>
+</html>

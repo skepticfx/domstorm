@@ -4,19 +4,6 @@
 <title>
 Testing <%= module_name %>
 </title>
-
-<script type="text/javascript">
-var rows = [];
-var addResult = function(args, type){
-	var obj = {};
-	obj.data = [];
-	for(var x in args)
-		obj.data.push(args[x]);
-	obj.type = type;
-	rows.push(obj);
-}
-</script>
-
 </head>
 
 <body>
@@ -71,6 +58,17 @@ var callTest = function(dataObj, callback){
 <h1>Testing <%= module_name %> </h1>
 <script src="/public/js/detect.js"></script>
 <script>
+var rows = [];
+var addResult = function(args, type){
+	var obj = {};
+	obj.data = [];
+	for(var x in args)
+		obj.data.push(args[x]);
+	obj.type = type;
+	rows.push(obj);
+	console.log(rows.length);
+}
+
 var ua = detect.parse(navigator.userAgent);
 
 var userScript = document.getElementById('user_script').textContent;
@@ -88,29 +86,9 @@ function injectScript(iframe, inject){
 	iframe.contentWindow.document.body.appendChild(script);
 }
 
-// The Enum Data for the given module.
-<%- module_test.enum_data %>
 
-// Type = Data Enumeration using a test Function
-var x = 0;
-
-(function testLoop(){
-	if(x == data.length){
-		endTest();
-	return;
-	}
-	newIframe(userScript , function(testNode){
-		testNode.contentWindow.callTest.call(undefined, data[x], function(){
-			testNode.parentNode.removeChild(testNode);
-			x++;
-			testLoop();
-		});
-	});
-}());
-
-
-function endTest(){
-	document.body.innerHTML += '<h1>The test is complete now. </h1> <h2>This window will close right now.</h2>';
+function endTest(){console.log(rows.length);
+	document.getElementById('domstorm_id_status').innerHTML = '<h1>The test is complete now. </h1> <h2>This window will close right now.</h2>';
 	var module_id = '<%=module_id%>';
 	var xhr = new XMLHttpRequest();
 	xhr.open('POST', '/modules/results/update', true);
@@ -119,13 +97,14 @@ function endTest(){
 
 	setTimeout(function(){
 		window.opener.location.reload();
-		this.close();
+		//this.close();
 	}, 2000);
 }
 
 
 
 </script>
-
+<div id="domstorm_id_status"></div>
+<iframe width="100%"  height="999px" src="/modules/run?id=<%= module_id %>&iframe=1"></iframe>
 </body>
 </html>
