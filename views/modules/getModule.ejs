@@ -12,6 +12,7 @@
 			<p><h5><%= module_description %></h5></p>
  		 <div id='items-title'>By </div><a href="/profile/<%= module_owner %>/" class='tags-link'><span class="tags-link-span label label-user"><%= module_owner %></span></a>
 			<span id='fav_count' class='label label-favs'> <img id='favs-img' src="/public/imgs/icons/favs_small-red.png"> <%= module_favs %></span>
+
 			<br/>
 			<div id='items-title'>Tags</div>
 			<% for(tags in module.tags){ %>
@@ -54,6 +55,10 @@
 		</div>
 	<% } %>
 
+<% } else { %>
+	<h6>
+		Sign In to <b>Fork</b> this module or Create your own.
+	</h6>
 <% } %>
 
 </center>
@@ -72,7 +77,7 @@
 <div class="column">
 	<div class="panel panel-primary">
 		<div class="panel-heading">
-			<h3 class="panel-title"><img src="/public/imgs/icons/results.png"/> Results</h3>
+			<h3 class="panel-title"><img src="/public/imgs/icons/results.png"/> Results </h3>
 		</div>
 		<div class="panel-body">
 		<% if(module_test.state == "NOT_STARTED"){ %>
@@ -132,6 +137,13 @@
 
 
 
+</div>
+
+<div id="ds-tweet-button">
+	<center>
+		<a href="https://twitter.com/share" class="twitter-share-button" data-size="large" data-count="none" data-hashtags="domstrom">Tweet</a>
+		<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+	</center>
 </div>
 
 </div><!-- /.container -->

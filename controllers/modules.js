@@ -76,7 +76,8 @@ exports.index = function(app){
 					'module_owner': module.owner || 'Anonymous',
 					'userOptions': userOptions,
 					'module_favs': (module.favs && module.favs.length) || 0,
-					'module': module.toObject()
+					'module': module.toObject(),
+					'ds_title': module.name
 					};
 					res.render('modules/getModule', module_details);
 					res.end();
