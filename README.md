@@ -4,7 +4,24 @@ DomStorm
 
 ![logo](https://raw.github.com/skepticfx/Dom-Storm/master/public/imgs/dom-storm-logo.png)
 
-#### One can know the answers for,
+### Try http://domstorm.skepticfx.com
+
+#### Installation
+* Clone Domstorm, `git clone https://github.com/skepticfx/domstorm`
+
+* Install Nodejs and then, `npm install`
+
+* Configure `config.js` to add your MongoDB URL with authentication details.
+
+* Run Domstorm, `node server.js`
+
+* Head over to, `http://localhost:8080` and start storming the DOM.
+
+* Something went wrong? Raise an [issue in the Github Repo] (https://github.com/skepticfx/domstorm/issues/new)
+
+### What is DomStorm?
+#### It is a dashboard for interesting DOM tricks/techniques.
+One can know the answers for,
 * What are the different ways of accessing a [Window Object], in a given browser?
 
 * What properties of the postMessage API can be overridden and changed?
