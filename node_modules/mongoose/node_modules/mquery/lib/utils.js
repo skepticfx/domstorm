@@ -4,17 +4,10 @@
  * Module dependencies.
  */
 
-var mongodb = require('mongodb')
-  , ReadPref = mongodb.ReadPreference
-  , ObjectId = mongodb.ObjectID
-  , RegExpClone = require('regexp-clone')
+var RegExpClone = require('regexp-clone')
 
 /**
- * Object clone with Mongoose natives support.
- *
- * Creates a minimal data Object.
- * It does not clone empty Arrays, empty Objects, and undefined values.
- * This makes the data payload sent to MongoDB as minimal as possible.
+ * Clones objects
  *
  * @param {Object} obj the object to clone
  * @param {Object} options
@@ -22,30 +15,48 @@ var mongodb = require('mongodb')
  * @api private
  */
 
-exports.clone = function clone (obj, options) {
+var clone = exports.clone = function clone (obj, options) {
   if (obj === undefined || obj === null)
     return obj;
 
   if (Array.isArray(obj))
     return exports.cloneArray(obj, options);
 
-  if ('Object' === obj.constructor.name)
-    return exports.cloneObject(obj, options);
+  if (obj.constructor) {
+    if (/ObjectI[dD]$/.test(obj.constructor.name)) {
+      return 'function' == typeof obj.clone
+        ? obj.clone()
+        : new obj.constructor(obj.id);
+    }
 
-  if ('Date' === obj.constructor.name || 'Function' === obj.constructor.name)
-    return new obj.constructor(+obj);
+    if ('ReadPreference' === obj._type && obj.isValid && obj.toObject) {
+      return 'function' == typeof obj.clone
+        ? obj.clone()
+        : new obj.constructor(obj.mode, clone(obj.tags, options));
+    }
 
-  if ('RegExp' === obj.constructor.name) {
-    return RegExpClone(obj);
+    if ('Binary' == obj._bsontype && obj.buffer && obj.value) {
+      return 'function' == typeof obj.clone
+        ? obj.clone()
+        : new obj.constructor(obj.value(true), obj.sub_type);
+    }
+
+    if ('Date' === obj.constructor.name || 'Function' === obj.constructor.name)
+      return new obj.constructor(+obj);
+
+    if ('RegExp' === obj.constructor.name)
+      return RegExpClone(obj);
+
+    if ('Buffer' === obj.constructor.name)
+      return exports.cloneBuffer(obj);
   }
 
-  if (obj instanceof ObjectId)
-    return new ObjectId(obj.id);
+  if (isObject(obj))
+    return exports.cloneObject(obj, options);
 
   if (obj.valueOf)
     return obj.valueOf();
 };
-var clone = exports.clone;
 
 /*!
  * ignore
@@ -197,16 +208,10 @@ var mergeClone = exports.mergeClone = function mergeClone (to, from) {
  *     sp  secondaryPreferred
  *     n   nearest
  *
- * @param {String|Array} pref
- * @param {Array} [tags]
+ * @param {String} pref
  */
 
-exports.readPref = function readPref (pref, tags) {
-  if (Array.isArray(pref)) {
-    tags = pref[1];
-    pref = pref[0];
-  }
-
+exports.readPref = function readPref (pref) {
   switch (pref) {
     case 'p':
       pref = 'primary';
@@ -225,16 +230,16 @@ exports.readPref = function readPref (pref, tags) {
       break;
   }
 
-  return new ReadPref(pref, tags);
+  return pref;
 }
 
 /**
  * Object.prototype.toString.call helper
  */
 
-var toString = Object.prototype.toString;
-exports.toString = function (arg) {
-  return toString.call(arg);
+var _toString = Object.prototype.toString;
+var toString = exports.toString = function (arg) {
+  return _toString.call(arg);
 }
 
 /**
@@ -244,7 +249,7 @@ exports.toString = function (arg) {
  * @return {Boolean}
  */
 
-exports.isObject = function (arg) {
+var isObject = exports.isObject = function (arg) {
   return '[object Object]' == exports.toString(arg);
 }
 
@@ -256,7 +261,7 @@ exports.isObject = function (arg) {
  * @see nodejs utils
  */
 
-exports.isArray = function (arg) {
+var isArray = exports.isArray = function (arg) {
   return Array.isArray(arg) ||
     'object' == typeof arg && '[object Array]' == exports.toString(arg);
 }
@@ -313,7 +318,14 @@ var soon = exports.soon = 'function' == typeof setImmediate
   : process.nextTick;
 
 /**
- * need to export this for checking issues
+ * Clones the contents of a buffer.
+ *
+ * @param {Buffer} buff
+ * @return {Buffer}
  */
 
-exports.mongo = mongodb;
+exports.cloneBuffer = function (buff) {
+  var dupe = new Buffer(buff.length);
+  buff.copy(dupe, 0, 0, buff.length);
+  return dupe;
+};

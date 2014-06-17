@@ -64,6 +64,7 @@ function Schema (obj, options) {
   this.tree = {};
   this._requiredpaths = undefined;
   this.discriminatorMapping = undefined;
+  this._indexedpaths = undefined;
 
   this.options = this.defaultOptions(options);
 
@@ -174,7 +175,7 @@ Schema.prototype.defaultOptions = function (options) {
   }, options);
 
   if (options.read) {
-    options.read = mquery.utils.readPref(options.read);
+    options.read = utils.readPref(options.read);
   }
 
   return options;
@@ -223,7 +224,7 @@ Schema.prototype.add = function add (obj, prefix) {
  *
  * Keys in this object are names that are rejected in schema declarations b/c they conflict with mongoose functionality. Using these key name will throw an error.
  *
- *      on, emit, _events, db, init, isNew, errors, schema, options, modelName, collection, _pres, _posts, toObject
+ *      on, emit, _events, db, get, set, init, isNew, errors, schema, options, modelName, collection, _pres, _posts, toObject
  *
  * _NOTE:_ Use of these terms as method names is permitted, but play at your own risk, as they may be existing mongoose document methods you are stomping on.
  *
@@ -235,6 +236,8 @@ Schema.reserved = Object.create(null);
 var reserved = Schema.reserved;
 reserved.on =
 reserved.db =
+reserved.set =
+reserved.get =
 reserved.init =
 reserved.isNew =
 reserved.errors =
@@ -408,6 +411,19 @@ Schema.prototype.requiredPaths = function requiredPaths () {
 }
 
 /**
+ * Returns indexes from fields and schema-level indexes (cached).
+ *
+ * @api private
+ * @return {Array}
+ */
+
+Schema.prototype.indexedPaths = function indexedPaths () {
+  if (this._indexedpaths) return this._indexedpaths;
+
+  return this._indexedpaths = this.indexes();
+}
+
+/**
  * Returns the pathType of `path` for this schema.
  *
  * Given a path, returns whether it is a real, virtual, nested, or ad-hoc/undefined path.
@@ -515,7 +531,7 @@ Schema.prototype.pre = function(){
 };
 
 /**
- * Defines a post for the document
+ * Defines a post hook for the document
  *
  * Post hooks fire `on` the event emitted from document instances of Models compiled from this schema.
  *
@@ -664,7 +680,7 @@ Schema.prototype.set = function (key, value, _tags) {
 
   switch (key) {
     case 'read':
-      this.options[key] = mquery.utils.readPref(value, _tags)
+      this.options[key] = utils.readPref(value, _tags)
       break;
     case 'safe':
       this.options[key] = false === value

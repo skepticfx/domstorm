@@ -1,13 +1,42 @@
 {
-  "name": "Dom-Storm",
-  "version": "0.0.1",
+  "name": "DomStorm",
+  "version": "0.0.9",
   "private": true,
   "dependencies": {
-    "express": "3.4.4",
-    "ejs": "*",
-	  "mongoose": "*",
-	  "passport": "*",
-	  "passport-twitter": "*",
-	  "mongoose-findorcreate": "*"
-  }
+    "express": "^3.4.4",
+    "ejs": "^1.0.0",
+    "mongoose": "^3.8.12",
+    "passport": "^0.2.0",
+    "passport-twitter": "^1.0.2",
+    "mongoose-findorcreate": "^0.1.2"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "description": "DomStorm ========= ### A dashboard for interesting DOM tricks/techniques.",
+  "main": "server.js",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/skepticfx/domstorm"
+  },
+  "keywords": [
+    "domstorm",
+    "security",
+    "xss",
+    "testing",
+    "dom",
+    "js-testing",
+    "unit-testing",
+    "w3c",
+    "testharness",
+    "specs",
+    "tricks"
+  ],
+  "author": "Ahamed Nafeez <ahamed.nafeez@gmail.com> (http://blog.skepticfx.com/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/skepticfx/domstorm/issues"
+  },
+  "homepage": "https://github.com/skepticfx/domstorm"
 }
