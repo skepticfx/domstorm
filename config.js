@@ -1,3 +1,9 @@
+// First things first
+// Set up a mongoDB instance and update DB_URL below.
+// By Default, there is no Auth used (Twitter Sign-In). To enable it, set requireAuth to 'true' and setup the admin name as your twitter handle.
+// Leave the 'config.admin' as 'admin' if you are not using Auth Mode.
+// Raise an issue if something does'nt work.
+
 var config = {};
 
 exports.config = config;

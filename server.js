@@ -75,43 +75,44 @@ function myMiddleware (req, res, next) {
 	app.use("/public",express.static(path.join(__dirname, '/public'), {maxAge: oneDay} ));
 	app.use("/bower_components",express.static(path.join(__dirname, '/bower_components'), {maxAge: oneDay} ));
 
-passport.use(new TwitterStrategy({
-    consumerKey: config.TWITTER_CONSUMER_KEY,
-    consumerSecret: config.TWITTER_CONSUMER_SECRET,
-    callbackURL: config.CALLBACK_URL
-  },
-  function(token, tokenSecret, profile, done) {
-    User.findOne({uid: profile.id}, function(err, user) {
-      if(user) {
-        done(null, user);
-      } else {
-        var user = new User();
-        user.provider = "twitter";
-        user.uid = profile.id;
-				user.id = profile._id;
-				user.name = profile.displayName;
-				user.handle = profile.username;
-        user.image = profile._json.profile_image_url;
-        user.save(function(err) {
-          if(err) { throw err; }
-          done(null, user);
-        });
-      }
-    })
-  }
-));
+if(config.requireAuth){
+	passport.use(new TwitterStrategy({
+	    consumerKey: config.TWITTER_CONSUMER_KEY,
+	    consumerSecret: config.TWITTER_CONSUMER_SECRET,
+	    callbackURL: config.CALLBACK_URL
+	  },
+	  function(token, tokenSecret, profile, done) {
+	    User.findOne({uid: profile.id}, function(err, user) {
+	      if(user) {
+	        done(null, user);
+	      } else {
+	        var user = new User();
+	        user.provider = "twitter";
+	        user.uid = profile.id;
+					user.id = profile._id;
+					user.name = profile.displayName;
+					user.handle = profile.username;
+	        user.image = profile._json.profile_image_url;
+	        user.save(function(err) {
+	          if(err) { throw err; }
+	          done(null, user);
+	        });
+	      }
+	    })
+	  }
+	));
 
 
-passport.serializeUser(function(user, done) {
-  done(null, user.uid);
-});
+	passport.serializeUser(function(user, done) {
+	  done(null, user.uid);
+	});
 
-passport.deserializeUser(function(uid, done) {
-  User.findOne({uid: uid}, function (err, user) {
-    done(err, user);
-  });
-});
-
+	passport.deserializeUser(function(uid, done) {
+	  User.findOne({uid: uid}, function (err, user) {
+	    done(err, user);
+	  });
+	});
+}
 
 	// development only
 	if ('development' == app.get('env')) {
