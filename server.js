@@ -20,6 +20,9 @@ var port    = process.env.OPENSHIFT_NODEJS_PORT || 8080;
 
 var oneDay = '86400000';
 
+if(!config.requireAuth)
+	console.log('Running DomStorm in No Auth mode.');
+
 var mongoose = require('mongoose');
 mongoose.connect(config.DB_URL);
 console.log('Hold On ! We are connecting to the database.');
@@ -36,7 +39,19 @@ db.once('open', function () {
 
 
 function myMiddleware (req, res, next) {
-  res.locals.user = req.user;
+
+	var user;
+	if(!config.requireAuth){
+		var user = new User();
+			user.provider = "noAuth";
+			user.uid = '90823457769194527583260';
+			user.id = '90823457769194527583260';
+			user.name = config.admin = 'admin';
+			user.handle = 'admin';
+			user.image = '';
+			req.user = user;
+	}
+	res.locals.user = req.user;
   next();
 }
 

@@ -70,7 +70,9 @@
 <script>
   $(document).ready(function(){
     $('.enum_stuff').hide();
-
+    <% if(module.test._type === 'ENUM_FUNCTION') {%>
+      $('.enum_stuff').show();
+    <% } %>  
     $('#optionsRadios1').change(function(){
       $('.enum_stuff').hide();
     });

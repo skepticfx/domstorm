@@ -11,4 +11,9 @@ if(process.env.OPENSHIFT_MONGODB_DB_URL){
 }
 config.TWITTER_CONSUMER_KEY = "4BA67Z9R1y42ulAR0RnU7rbWb";
 config.TWITTER_CONSUMER_SECRET = "8AbsSbAQx4SEPcl8A3jkWdoXBjQu2x2VH6Z6xowSBI8OdIFn6a";
+
+// To Use DomStorm in No-Auth mode (No Twitter Login required), set the below property to false and choose an admin name;
+
+config.requireAuth = true;
+
 config.admin = 'skeptic_fx'; // Twitter Username of the Admin account.
