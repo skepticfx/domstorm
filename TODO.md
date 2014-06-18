@@ -2,9 +2,8 @@
 
 
 #### Bug Fixes and Features for Hack in the Box Conference.
-* Fork Module fix  - Done.
 * Shazzer Integration with Datasets -
-* Complete XSS Mitigation Strategy
+
 
 #### Questions
 * How are we going to compare the results with the specs?
@@ -19,4 +18,3 @@
 * Erland Oftedal's CSP check.
 *
 
-#2c3e50
