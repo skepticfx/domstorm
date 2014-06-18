@@ -22,6 +22,7 @@ DomStorm
 ### What is DomStorm?
 #### It is a dashboard for interesting DOM tricks/techniques.
 One can know the answers for,
+
 * What are the different ways of accessing a [Window Object], in a given browser?
 
 * What properties of the postMessage API can be overridden and changed?
@@ -52,3 +53,4 @@ One can know the answers for,
 * Browser Logos - https://github.com/paulirish/browser-logos
 * Detect User Agent - detect.js - https://github.com/darcyclarke/Detect.js
 * Flatly,  BootStrap Theme - http://bootswatch.com/flatly/
+c

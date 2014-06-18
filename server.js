@@ -37,6 +37,10 @@ db.once('open', function () {
 	app.set('views', path.join(__dirname, 'views'));
 	app.set('view engine', 'ejs');
 
+	if(typeof config.admin == 'undefined' || config.admin.length === 0){
+		console.log('admin must be configured in `config.js` ');
+		process.exit(1);
+	}
 
 function myMiddleware (req, res, next) {
 
@@ -46,8 +50,8 @@ function myMiddleware (req, res, next) {
 			user.provider = "noAuth";
 			user.uid = '90823457769194527583260';
 			user.id = '90823457769194527583260';
-			user.name = config.admin = 'admin';
-			user.handle = 'admin';
+			user.name = config.admin;
+			user.handle = config.admin;
 			user.image = '';
 			req.user = user;
 	}
