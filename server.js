@@ -23,6 +23,10 @@ var oneDay = '86400000';
 if(!config.requireAuth)
 	console.log('Running DomStorm in No Auth mode.');
 
+// Force No-Auth ?
+if(typeof process.argv[2] !== 'undefined' && process.argv[2] === '--noauth')
+	config.requireAuth = false;
+
 var mongoose = require('mongoose');
 mongoose.connect(config.DB_URL);
 console.log('Hold On ! We are connecting to the database.');

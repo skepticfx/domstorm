@@ -13,7 +13,7 @@ DomStorm
 
 * Configure `config.js` to add your MongoDB URL with authentication details.
 
-* Run Domstorm, `node server.js`
+* Run Domstorm, `node server.js --noauth`, to run in NoAuth mode.
 
 * Head over to, `http://localhost:8080` and start storming the DOM.
 
