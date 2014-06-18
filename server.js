@@ -20,12 +20,14 @@ var port    = process.env.OPENSHIFT_NODEJS_PORT || 8080;
 
 var oneDay = '86400000';
 
-if(!config.requireAuth)
-	console.log('Running DomStorm in No Auth mode.');
-
 // Force No-Auth ?
 if(typeof process.argv[2] !== 'undefined' && process.argv[2] === '--noauth')
 	config.requireAuth = false;
+
+
+if(!config.requireAuth)
+	console.log('Running DomStorm in No Auth mode.');
+
 
 var mongoose = require('mongoose');
 mongoose.connect(config.DB_URL);
