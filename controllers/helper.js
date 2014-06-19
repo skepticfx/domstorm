@@ -14,12 +14,14 @@ exports.headers = function(app) {
     app.get('/helper/headers', function(req, res) {
         // If a query param 'filter' is provided, then delete the header which
         // does not contains the value specified in the filter
-        var filter = req.query.filter;
-        for (var item in req.headers) {
-            if (req.headers[item] != filter) {
-                delete(req.headers[item]);
-            }
-        }
+				var filter = req.query.filter;
+				if(filter){
+	        for (var item in req.headers) {
+	            if (req.headers[item] != filter) {
+	                delete(req.headers[item]);
+	            }
+	        }
+				}
 
         var headers = JSON.stringify(req.headers);
         res.end(headers);
