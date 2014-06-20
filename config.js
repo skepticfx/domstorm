@@ -8,9 +8,12 @@ var config = {};
 
 exports.config = config;
 
+config.URL = ""; // The website which hosts this.
+
 if(process.env.OPENSHIFT_MONGODB_DB_URL){
   config.DB_URL = process.env.OPENSHIFT_MONGODB_DB_URL + 'domstorm';
   config.CALLBACK_URL = "http://domstorm.skepticfx.com/auth/twitter/callback";
+  config.URL = 'http://domstorm.skepticfx.com'
 } else {
   config.DB_URL = 'mongodb://fx:fx@127.0.0.1/domstorm'; // Local Mongo Instance
   config.CALLBACK_URL = "http://localhost:8080/auth/twitter/callback";
@@ -27,3 +30,6 @@ if(process.env.TWITTER_CONSUMER_KEY && process.env.TWITTER_CONSUMER_SECRET){
 config.requireAuth = true;
 
 config.admin = 'skeptic_fx'; // Twitter Username of the Admin account.
+
+// Logging capability
+config.log = false;
