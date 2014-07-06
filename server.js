@@ -81,7 +81,7 @@ function myMiddleware (req, res, next) {
   app.use(express.compress());
 	app.use(app.router);
 	app.use("/dynamic",express.static(path.join(__dirname, '/dynamic')));
-
+	app.use("/",express.static(path.join(__dirname, '/public'), {maxAge: oneDay} ));
 	app.use("/public",express.static(path.join(__dirname, '/public'), {maxAge: oneDay} ));
 	app.use("/bower_components",express.static(path.join(__dirname, '/bower_components'), {maxAge: oneDay} ));
 
