@@ -40,6 +40,10 @@ return;
 }
 
 
+var addNone = function(){
+	theCallback();
+return;
+}
 
 var callTest = function(dataObj, callback){
 	theCallback = function(){callback();};
