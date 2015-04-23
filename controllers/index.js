@@ -20,6 +20,12 @@ exports.set = function(app){
 		res.render('index', {'title': 'Home Page', 'authError': authError});
 	});
 
+
+app.get('/testrunner', function(req, res){
+	res.render('modules/testrunner', {'title': 'Test');
+});
+
+
 app.get('/xss', function(req, res){
 
   res.render('misc/404', {'title': 'XSS Tester', 'info': req.query.xss});

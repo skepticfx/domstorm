@@ -98,8 +98,7 @@ exports.index = function(app){
 
 // Loads and runs the module test page from /models/core/modules_test/
 // Anyone can RUN a module to test it. No Auth required.
-exports.run = function(app){
-
+exports.run = function(app){	
 	app.get('/modules/run', function(req, res){
 		if(typeof req.query.id != 'undefined'){
 			var module_id = req.query.id;
