@@ -79,6 +79,7 @@ var userScript = document.getElementById('user_script').textContent;
 
 function newIframe(injectMe, iframeCreated){
 	var iframe = document.createElement('iframe');
+	iframe.src = 'http://domstorm.skepticfx.com/testrunner';
 	iframe.onload = function(){ injectScript(this, injectMe); iframeCreated(iframe);}
 	document.body.appendChild(iframe);
 }
