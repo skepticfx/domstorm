@@ -22,7 +22,7 @@ exports.set = function(app){
 
 
 app.get('/testrunner', function(req, res){
-	res.render('modules/testrunner', {'title': 'Test');
+	res.render('modules/testrunner', {'title': 'Test'});
 });
 
 
