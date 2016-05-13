@@ -1,4 +1,4 @@
-DomStorm
+npm install DomStorm
 =========
 ### A dashboard for interesting DOM tricks/techniques.
 
