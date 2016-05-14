@@ -19,6 +19,7 @@
         testNode.contentWindow.callTest.call(undefined, x, function(){
           testNode.parentNode.removeChild(testNode);
           count++;
+          //console.log(data.length, count);
           if(data.length === count)
             parent.endTest();
         });

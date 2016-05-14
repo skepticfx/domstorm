@@ -33,7 +33,12 @@ var mongoose = require('mongoose');
 mongoose.connect(config.DB_URL);
 console.log('Hold On ! We are connecting to the database.');
 var db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
+db.on('error', function(err){
+	console.log('Connection error: ' + err.name + ': ' + err.message);
+	console.log('If you are trying to run this locally, make sure you have configured config.js to have the correct username and password');
+	console.log('You can create a Mongo user for the db domstorm using your mongo shell locally. ');
+	console.log('> use domstorm; db.createUser({"user": "fx", "pwd": "fx", "roles": ["readWrite"]});');
+});
 db.once('open', function () {
 	console.log('Alright ! Connected to the database.');
 
@@ -52,7 +57,7 @@ function myMiddleware (req, res, next) {
 
 	var user;
 	if(!config.requireAuth){
-		var user = new User();
+		user = new User();
 			user.provider = "noAuth";
 			user.uid = '90823457769194527583260';
 			user.id = '90823457769194527583260';

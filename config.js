@@ -26,6 +26,7 @@ if(process.env.TWITTER_CONSUMER_KEY && process.env.TWITTER_CONSUMER_SECRET){
   config.TWITTER_CONSUMER_SECRET = ""; // Specify Twitter Consumer Secret here
 }
 // To Use DomStorm in No-Auth mode (No Twitter Login required), set the below property to false and choose an admin name;
+// can be overridden on shell using the '--noauth' option.
 
 config.requireAuth = true;
 
