@@ -46,6 +46,7 @@ db.once('open', function () {
 	// all environments
 	app.set('views', path.join(__dirname, 'views'));
 	app.set('view engine', 'ejs');
+	app.set('port', process.env.PORT || 8080);
 
 	if(typeof config.admin == 'undefined' || config.admin.length === 0){
 		console.log('admin must be configured in `config.js` ');
