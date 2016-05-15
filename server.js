@@ -29,7 +29,7 @@ if(!config.requireAuth)
 
 
 var mongoose = require('mongoose');
-mongoose.connect(config.DB_URL);
+mongoose.connect(config.DB_URI);
 console.log('Hold On ! We are connecting to the database.');
 var db = mongoose.connection;
 db.on('error', function(err){
