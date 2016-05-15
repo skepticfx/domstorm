@@ -15,8 +15,7 @@ var config = require('./config.js').config;
 var User = require(process.cwd()+'/models/Modules.js').User;
 var Modules = require(process.cwd()+'/models/Modules.js').Modules;
 
-var ipaddress  = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
-var port    = process.env.OPENSHIFT_NODEJS_PORT || 8080;
+var port = process.env.port || 8080;
 
 var oneDay = '86400000';
 
@@ -154,8 +153,8 @@ if(config.requireAuth){
 					console.log('There is some error in writing the list to modulesList.js');
 				} else {
 					console.log('Great ! Populated the list of modules.');
-					http.createServer(app).listen(port, ipaddress, function(){
-						console.log('Dom Storm server listening on ' + ipaddress + ":" +port);
+					http.createServer(app).listen(port, function(){
+						console.log('Dom Storm server listening on port: ' +port);
 					});
 				}
 			});
