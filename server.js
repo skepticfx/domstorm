@@ -15,7 +15,7 @@ var config = require('./config.js').config;
 var User = require(process.cwd()+'/models/Modules.js').User;
 var Modules = require(process.cwd()+'/models/Modules.js').Modules;
 
-var port = process.env.port || 8080;
+var port = process.env.PORT || 8080;
 
 var oneDay = '86400000';
 
