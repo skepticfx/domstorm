@@ -2,7 +2,7 @@
 
 // Set up a mongoDB instance and update DB_URL below.
 // By Default, there is no Auth used (Twitter Sign-In). To enable it, set requireAuth to 'true' and setup the admin name as your twitter handle.
-// Raise an issue if something does'nt work.
+// Raise an issue if something doesn't work.
 
 var config = {};
 
@@ -10,8 +10,8 @@ exports.config = config;
 
 config.URL = ""; // The website which hosts this.
 
-if(process.env.OPENSHIFT_MONGODB_DB_URL){
-  config.DB_URL = process.env.OPENSHIFT_MONGODB_DB_URL + 'domstorm';
+if(process.env.DB_URL){
+  config.DB_URL = process.env.DB_URL + 'domstorm';
   config.CALLBACK_URL = "http://domstorm.skepticfx.com/auth/twitter/callback";
   config.URL = 'http://domstorm.skepticfx.com'
 } else {
@@ -30,7 +30,7 @@ if(process.env.TWITTER_CONSUMER_KEY && process.env.TWITTER_CONSUMER_SECRET){
 
 config.requireAuth = true;
 
-config.admin = 'skeptic_fx'; // Twitter Username of the Admin account.
+config.admin = 'skeptic_fx'; // Twitter Username of the Admin.
 
 // Logging capability
 config.log = false;
