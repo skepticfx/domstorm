@@ -5,27 +5,14 @@
   </title>
   <script>
   // The Enum Data for the given module.
-
-  // Type = Data Enumeration using a test Function
+  // This Iframe is specifically injected to get the value of data array without polluting any other JS Context.
+  // For instance, the userScript context can still have its own data variable.
+  // Type = Data Enumeration using a test Function.
   (function (){
+    // This injects the dynamic 'data' array.
     <%- module_test.enum_data %>
-    var count = 0;
-    if(data.length === 0){
-      parent.addResult(['No Data enumerated. The Data Array was empty.'], 'INFO');
-      parent.endTest();
-    }
-    data.forEach(function(x){
-      parent.newIframe(parent.userScript , function(testNode){
-        testNode.contentWindow.callTest.call(undefined, x, function(){
-          testNode.parentNode.removeChild(testNode);
-          count++;
-          //console.log(data.length, count);
-          if(data.length === count)
-            parent.endTest();
-        });
-      });
-    });
-    return;
+    parent.runTests(data)
+    parent.document.body.removeChild(parent.document.getElementById('iframe_data_enum'));
   })();
   </script>
 </head>

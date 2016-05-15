@@ -5,8 +5,8 @@
 Testing <%= module_name %>
 </title>
 </head>
-
 <body>
+
 <textarea id="user_script" style="display:none;">
 
 // Our code
@@ -61,6 +61,9 @@ var callTest = function(dataObj, callback){
 
 <h1>Testing <%= module_name %> </h1>
 <script src="/public/js/detect.js"></script>
+<h2>
+	Testing data: <div id="enum_status"></div>
+</h2>
 <script>
 var rows = [];
 var addResult = function(args, type){
@@ -71,38 +74,14 @@ var addResult = function(args, type){
 	obj.type = type;
 	rows.push(obj);
 	//console.log(rows.length);
-}
+};
 
 var ua = detect.parse(navigator.userAgent);
 
 var userScript = document.getElementById('user_script').textContent;
-var iframeQueue = [];
-var iframeCount = 0;
-function newIframe(injectMe, iframeCreated){
-	var iframeRequest;
-	//console.log(iframeCount);
-	iframeCount++;
-	// Push all newIframe requests to the Queue if more than threshold count of iframes is reached.
-	if(iframeCount >= 10){
-		iframeQueue.push({injectMe: injectMe, iframeCreated: iframeCreated});
-		return;
-	}
-	var iframe = document.createElement('iframe');
-	iframe.src = '/testrunner';
-	iframe.onload = function(){
-		injectScript(this, injectMe);
-		iframeCreated(iframe);
-		//console.log(iframeCount);
-		// Process all newIframe requests in the queue before ending the test
-		if(iframeQueue.length > 0){
-			iframeCount-=2;
-			iframeRequest = iframeQueue.shift();
-			//console.log(iframeRequest);
-			newIframe(iframeRequest.injectMe, iframeRequest.iframeCreated);
-		}
-	}
-	document.body.appendChild(iframe);
-}
+var currentTasks = 0;
+var totalTests = 0;
+var testCounter = 0;
 
 function injectScript(iframe, inject){
 	var script = iframe.contentWindow.document.createElement('script');
@@ -111,12 +90,54 @@ function injectScript(iframe, inject){
 	iframe.contentWindow.document.body.appendChild(script);
 }
 
+function injectIframe(list, src, callback){
+	if(list.length === 0){
+		endTest();
+		return ;
+	}
+	if(currentTasks <= 10) {console.log(currentTasks);
+		var data = list.shift();
+		document.getElementById('enum_status').textContent = data.toString() + ' -- (' + testCounter++ +'/' + totalTests +' )';
+		currentTasks++;
+		injectIframe(list, src, callback);
+		var iframe = document.createElement('iframe');
+		iframe.src = '/testrunner';
+		document.body.appendChild(iframe);
+		iframe.onload = function () {
+			injectScript(this, src);
+			iframe.contentWindow.callTest.call(undefined, data, function () {
+				callback(iframe);
+				currentTasks--;
+				injectIframe(list, src, callback);
+			});
+		};
+	} else {
+		console.log('not 10: ' + currentTasks);
+		setTimeout(function(){
+			injectIframe(list, src, callback);
+		}, 100);
+	}
+}
 
-function endTest(){console.log(iframeCount);
+function iframeInjected(iframeNode){
+	document.body.removeChild(iframeNode);
+};
+
+function runTests(dataArray){
+	totalTests = dataArray.length;
+	if(dataArray.length === 0){
+		addResult(['No Data enumerated. The Data Array was empty.'], 'INFO');
+		endTest();
+		return;
+	}
+	injectIframe(dataArray, userScript, iframeInjected);
+}
+
+function endTest(){
 
 	//console.log(rows.length);
 	document.getElementById('domstorm_id_status').innerHTML = '<h1>The test is complete now. </h1> <h2>This window will close right now.</h2>';
-	var module_id = '<%=module_id%>';
+	var module_id = '<%= module_id %>';
 	var xhr = new XMLHttpRequest();
 	xhr.open('POST', '/modules/results/update', true);
 	xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
@@ -132,6 +153,6 @@ function endTest(){console.log(iframeCount);
 
 </script>
 <div id="domstorm_id_status"></div>
-<iframe width="100%"  height="999px" src="/modules/run?id=<%= module_id %>&iframe=1"></iframe>
+<iframe width="100%"  height="999px" id="iframe_data_enum" src="/modules/run?id=<%= module_id %>&iframe=1"></iframe>
 </body>
 </html>

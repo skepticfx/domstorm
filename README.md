@@ -37,7 +37,7 @@ One can know the answers for,
 ###### Features
 * Enum Functions (Need a better name) - Ask questions on the DOM.
 
-* Fuzzer Modules
+* Fuzzer Modules (WIP)
 
 * TestHarness.js from W3C test suites for dedicated Spec tests.
 
