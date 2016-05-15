@@ -11,6 +11,7 @@ exports.config = config;
 config.URL = ""; // The website which hosts this.
 
 if(process.env.DB_URI){
+  console.log('Detected DB URI.');
   config.DB_URI = process.env.DB_URI;
   config.CALLBACK_URL = "http://domstorm.skepticfx.com/auth/twitter/callback";
   config.URL = 'http://domstorm.skepticfx.com'
