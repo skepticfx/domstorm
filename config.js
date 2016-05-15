@@ -11,7 +11,7 @@ exports.config = config;
 config.URL = ""; // The website which hosts this.
 
 if(process.env.DB_URL){
-  config.DB_URL = process.env.DB_URL + 'domstorm';
+  config.DB_URL = process.env.DB_URL;
   config.CALLBACK_URL = "http://domstorm.skepticfx.com/auth/twitter/callback";
   config.URL = 'http://domstorm.skepticfx.com'
 } else {
