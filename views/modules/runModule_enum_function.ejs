@@ -1,10 +1,10 @@
-< !DOCTYPE html >
-    < html >
-    < head >
-    < title >
-    Testing <%= module_name %> < /title> < /head> < body >
+<!DOCTYPE html >
+    <html >
+    <head >
+    <title >
+    Testing <%= module_name %> </title> </head> <body >
 
-    < textarea id = "user_script"
+    <textarea id = "user_script"
 style = "display:none;" >
 
     // Our code
@@ -57,10 +57,10 @@ var callTest = function(dataObj, callback) {
 // Our code
 
 
-< /textarea>
+</textarea>
 
-< h1 > Testing <%= module_name %> < /h1> < script src = "/public/js/detect.js" > < /script> < h2 >
-    Testing data: < div id = "enum_status" > < /div> < /h2> < script >
+<h1 > Testing <%= module_name %> </h1> <script src = "/public/js/detect.js" > </script> <h2 >
+    Testing data: <div id = "enum_status" > </div> </h2> <script >
     var rows = [];
 var addResult = function(args, type) {
     var obj = {};
@@ -148,7 +148,7 @@ function endTest() {
 
 
 
-< /script> < div id = "domstorm_id_status" > < /div> < iframe width = "100%"
+</script> <div id = "domstorm_id_status" > </div> <iframe width = "100%"
 height = "999px"
 id = "iframe_data_enum"
-src = "/modules/run?id=<%= module_id %>&iframe=1" > < /iframe> < /body> < /html>
+src = "/modules/run?id=<%= module_id %>&iframe=1" > </iframe> </body> </html>

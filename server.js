@@ -3,6 +3,7 @@
  */
 
 console.log('Starting server.js');
+var crypto = require('crypto');
 var express = require('express');
 var controllers = require('./controllers');
 var modules = require('./controllers/modules.js');
@@ -51,11 +52,9 @@ db.once('open', function() {
   if (typeof config.admin == 'undefined' || config.admin.length === 0) {
     console.log('admin must be configured in `config.js`. Setting admin to the name `twitter` ');
     config.admin = 'twitter';
-    process.exit(1);
   }
 
-  function myMiddleware(req, res, next) {
-
+  function defaultUser(req, res, next) {
     var user;
     if (!config.requireAuth) {
       user = new User();
@@ -79,12 +78,12 @@ db.once('open', function() {
   app.use(express.json());
   app.use(express.cookieParser());
   app.use(express.session({
-    secret: 'xss 123'
+    secret: crypto.randomBytes(256).toString()
   }));
   app.use(passport.initialize());
   app.use(passport.session());
   app.use(express.urlencoded());
-  app.use(myMiddleware);
+  app.use(defaultUser);
 
   app.use(express.compress());
   app.use(app.router);

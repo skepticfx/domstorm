@@ -1,51 +1,51 @@
 <% include ../layouts/header.ejs %>
-<% include ../layouts/navbar.ejs %> < div class = "container" >
+<% include ../layouts/navbar.ejs %> <div class = "container" >
 
-    < center >
-    < span >
-    < form action = "/search"
+    <center >
+    <span >
+    <form action = "/search"
 method = "GET" >
-    < input type = "text"
+    <input type = "text"
 class = "form-control"
 autofocus name = "q"
 id = "search-box"
 placeholder = "Search"
 value = "<%= q %>" / >
-    < input type = "submit"
+    <input type = "submit"
 id = "search-button"
 value = "Go"
 class = "btn btn-primary" / >
-    < /form> < /span> < /center>
+    </form> </span> </center>
 
 
-< br / >
+<br / >
 
-    < /div>
+    </div>
 
-< div class = "container" >
+<div class = "container" >
 
-    <% if(empty === true){ %> < h3 > < center > Search
-for modules. < /center></h
+    <% if(empty === true){ %> <h3 > <center > Search
+for modules. </center></h
 3 >
     <% } else {%>
-<% if(modules.length === 0){ %> < h3 > < center > Search returned no results. < /center></h
+<% if(modules.length === 0){ %> <h3 > <center > Search returned no results. </center></h
 3 >
     <% } else {%>
-<% for(x in modules) {%> < div class = "col-lg-4 module-block" >
-    < a href = "/modules/?id=<%= modules[x]._id %>"
+<% for(x in modules) {%> <div class = "col-lg-4 module-block" >
+    <a href = "/modules/?id=<%= modules[x]._id %>"
 class = "list-group-item"
 title = "<%= modules[x].description %>" >
-    < b > <%= modules[x].name %> < /b> <br/ >
-    <%= modules[x].description %> < br / >
-    By <%= modules[x].owner %> < br / >
+    <b > <%= modules[x].name %> </b> <br/ >
+    <%= modules[x].description %> <br / >
+    By <%= modules[x].owner %> <br / >
     Tested on <%= modules[x].browsers_tested %>
-browsers < br / >
-    < /a> < /div>
+browsers <br / >
+    </a> </div>
 <% } %>
 <% } %>
 <% } %>
 
 
-< /div>
+</div>
 
 <% include ../layouts/footer.ejs %>
