@@ -1,8 +1,9 @@
 <% include ../layouts/header.ejs %>
-<% include ../layouts/navbar.ejs %> <div class = "container" >
+  <% include ../layouts/navbar.ejs %>
+    <div class="container">
 
-    <center >
-    <span >
+      <center>
+        <span>
     <form action = "/search"
 method = "GET" >
     <input type = "text"
@@ -18,13 +19,14 @@ class = "btn btn-primary" / >
     </form> </span> </center>
 
 
-<br / >
+      <br />
 
     </div>
 
-<div class = "container" >
+    <div class="container">
 
-    <% if(empty === true){ %> <h3 > <center > Search
+      <% if(empty === true){ %>
+        <h3> <center > Search
 for modules. </center></h
 3 >
     <% } else {%>

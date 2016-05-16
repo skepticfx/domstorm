@@ -78,7 +78,7 @@ db.once('open', function() {
   app.use(express.json());
   app.use(express.cookieParser());
   app.use(express.session({
-    secret: crypto.randomBytes(256).toString()
+    secret: crypto.randomBytes(256).toString('hex')
   }));
   app.use(passport.initialize());
   app.use(passport.session());
@@ -94,11 +94,9 @@ db.once('open', function() {
   app.use("/public", express.static(path.join(__dirname, '/public'), {
     maxAge: oneDay
   }));
-  app.use("/bower_components", express.static(path.join(__dirname, '/bower_components'), {
-    maxAge: oneDay
-  }));
 
-  if (config.requireAuth) {
+
+  if (config.requireAuth && config.TWITTER_CONSUMER_KEY.length !== 0 && config.TWITTER_CONSUMER_SECRET.length !== 0) {
     passport.use(new TwitterStrategy({
         consumerKey: config.TWITTER_CONSUMER_KEY,
         consumerSecret: config.TWITTER_CONSUMER_SECRET,
@@ -141,6 +139,8 @@ db.once('open', function() {
         done(err, user);
       });
     });
+  } else {
+    console.log('Running in no-auth mode.');
   }
 
   // development only

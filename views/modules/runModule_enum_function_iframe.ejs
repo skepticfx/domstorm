@@ -1,21 +1,28 @@
-<html >
-    <head >
-    <title >
-    Iframe
-for ENUM FUNCTION Test
-    </title> <script >
+<html>
+
+<head>
+  <title>
+    Iframe for ENUM FUNCTION Test
+  </title>
+  <script>
     // The Enum Data for the given module.
     // This Iframe is specifically injected to get the value of data array without polluting any other JS Context.
     // For instance, the userScript context can still have its own data variable.
     // Type = Data Enumeration using a test Function.
     (function() {
-        // This injects the dynamic 'data' array.
-        <%- module_test.enum_data %>
-        parent.runTests(data)
-        parent.document.body.removeChild(parent.document.getElementById('iframe_data_enum'));
-    })(); </script> </head> <body >
-    <h1 >
+      // This injects the dynamic 'data' array.
+      <%- module_test.enum_data %>
+      parent.runTests(data)
+      parent.document.body.removeChild(parent.document.getElementById('iframe_data_enum'));
+    })();
+  </script>
+</head>
+
+<body>
+  <h1>
     Enumerating data and testing in isloated IFRAMES!
     </h1>
 
-</body> </html>
+</body>
+
+</html>
