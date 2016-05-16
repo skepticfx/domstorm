@@ -13,7 +13,7 @@
   "scripts": {
     "start": "node server.js"
   },
-  "description": "DomStorm ========= ### A dashboard for interesting DOM tricks/techniques.",
+  "description": "A dashboard for interesting DOM tricks/techniques.",
   "main": "server.js",
   "devDependencies": {},
   "repository": {

@@ -80,7 +80,17 @@ ModulesSchema.statics.getModuleById = function(id, callback) {
     if (!module) return callback(new Error('The module is not found'));
     return callback(null, module);
   });
-}
+};
+
+ModulesSchema.statics.getTopModules = function(callback){
+  this
+    .find({})
+    .limit(10)
+    .exec(function(err, modules) {
+      if (!modules) return callback(new Error('No modules found'));
+      return callback(null, modules);
+    });
+};
 
 // Search by Name, Description and also by tags if starts with [tags]:
 ModulesSchema.statics.searchAll = function(str, cb) {

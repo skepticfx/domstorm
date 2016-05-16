@@ -508,14 +508,13 @@ exports.fork = function(app) {
   });
 }
 
-// Favorites a given module by a logged in User.
-exports.favorite = function(app) {
+exports.init = function(app) {
 
-  // The UI
-  app.post('/modules/favorite', ensureAuthenticated, function(req, res) {
+  // Favorites a given module by a logged in User.
+  app.post('/modules/favorite', ensureAuthenticated, function (req, res) {
     if (typeof req.body.id != 'undefined') {
       var module_id = req.body.id;
-      var module = Modules.getModuleById(module_id, function(err, module) {
+      var module = Modules.getModuleById(module_id, function (err, module) {
         if (err) {
           res.render('misc/error', {
             'info': 'Apparently, the module is missing in our system.'
@@ -528,7 +527,7 @@ exports.favorite = function(app) {
           delete module._id;
           Modules.findOneAndUpdate({
             '_id': id
-          }, module, function(err, module) {
+          }, module, function (err, module) {
             if (err) {
               res.render('misc/error', {
                 'info': err + 'Something wrong happened, when we tried favoriting this module.'
@@ -547,9 +546,17 @@ exports.favorite = function(app) {
       res.end();
     }
   });
-}
 
+  app.get('/modules/topModules.json', function (req, res) {
+    Modules.getTopModules(function (err, topModules) {
+      var modules = topModules.map(function(module){
+        return {id: module._id, name: module.name}
+      });
+      res.json({topModules: modules});
+    });
+  });
 
+};
 
 function encode(str) {
   str = str.replace(/</gi, '&lt;');
