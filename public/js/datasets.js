@@ -1,2 +1,2 @@
 var DOMSTORM = {};
-var x ={};
+var x = {};

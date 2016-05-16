@@ -1,27 +1,23 @@
 <% include ../layouts/header.ejs %>
-<% include ../layouts/navbar.ejs %>
-<div class="container">
-<center>
-      <h1>Admin Dashboard</h1>
-</center>
-<br/>
-<br/>
-</div>
+<% include ../layouts/navbar.ejs %> < div class = "container" >
+    < center >
+    < h1 > Admin Dashboard < /h1> < /center> < br / >
+    < br / >
+    < /div>
 
-<div class="container">
-    <div class="col-lg-3">
-      <center><div class="jumbotron"><h3>Users - <%= users.length %></h3></div></center>
-        <% for(x in users) {%>
-        <a href="/profile/<%= users[x].handle %>" class="list-group-item" title="<%= users[x].handle %>"><%= users[x].handle %></a>
-        <% } %>
-    </div>
+< div class = "container" >
+    < div class = "col-lg-3" >
+    < center > < div class = "jumbotron" > < h3 > Users - <%= users.length %> < /h3></div > < /center>
+<% for(x in users) {%> < a href = "/profile/<%= users[x].handle %>"
+class = "list-group-item"
+title = "<%= users[x].handle %>" > <%= users[x].handle %> < /a>
+<% } %> < /div>
 
-    <div class="col-lg-7">
-      <center><div class="jumbotron"><h3>Modules - <%= modules.length %></h3></div></center>
-        <% for(x in modules) {%>
-        <a  href="/modules/?id=<%= modules[x]._id %>" class="list-group-item" title="By @<%= modules[x].owner %>"><b><%= modules[x].name %> </b></a>
-        <% } %>
-    </div>
-</div>
+< div class = "col-lg-7" >
+    < center > < div class = "jumbotron" > < h3 > Modules - <%= modules.length %> < /h3></div > < /center>
+<% for(x in modules) {%> < a href = "/modules/?id=<%= modules[x]._id %>"
+class = "list-group-item"
+title = "By @<%= modules[x].owner %>" > < b > <%= modules[x].name %> < /b></a >
+    <% } %> < /div> < /div>
 
 <% include ../layouts/footer.ejs %>

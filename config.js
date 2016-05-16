@@ -1,5 +1,3 @@
-// This is the config for http://domstorm.skepticfx.com , You may want to edit this !!
-
 // Set up a MongoDB instance and update DB_URI below.
 // Raise an issue if something doesn't work.
 
@@ -9,7 +7,7 @@ exports.config = config;
 
 config.URI = ""; // The website which hosts this.
 
-if(process.env.DB_URI){
+if (process.env.DB_URI) {
   console.log('Detected DB URI.');
   config.DB_URI = process.env.DB_URI;
   config.CALLBACK_URL = config.URI + "/auth/twitter/callback";
@@ -17,7 +15,7 @@ if(process.env.DB_URI){
   config.DB_URI = 'mongodb://fx:fx@127.0.0.1/domstorm'; // Local Mongo Instance
   config.CALLBACK_URL = "http://localhost:8080/auth/twitter/callback";
 }
-if(process.env.TWITTER_CONSUMER_KEY && process.env.TWITTER_CONSUMER_SECRET){
+if (process.env.TWITTER_CONSUMER_KEY && process.env.TWITTER_CONSUMER_SECRET) {
   config.TWITTER_CONSUMER_KEY = process.env.TWITTER_CONSUMER_KEY;
   config.TWITTER_CONSUMER_SECRET = process.env.TWITTER_CONSUMER_SECRET;
 } else {

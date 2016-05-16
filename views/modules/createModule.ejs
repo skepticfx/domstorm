@@ -1,277 +1,288 @@
 <% include ../layouts/header.ejs %>
 <% include ../layouts/navbar.ejs %>
 
-<style>
-#userScript{
-    width: 100%;
-    height: 300px;
+< style > #userScript {
+    width: 100 % ;
+    height: 300 px;
 }
 
-#enum_data{
-    width: 100%;
-    height: 300px;
+#
+enum_data {
+    width: 100 % ;
+    height: 300 px;
 }
 
-</style>
+< /style>
 
-<script src="/public/js/vendor/ace/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+< script src = "/public/js/vendor/ace/src-min-noconflict/ace.js"
+type = "text/javascript"
+charset = "utf-8" > < /script>
 
-<div class="container">
-	<h1><center><%= title %></center></h1>
-
-
-<div class="panel-heading">
-  <form class="bs-example form-horizontal" action="/modules/create" method="POST" id="createModule">
-	  <div id="greenish_title">Module Details</div>
-	  <div class="form-group">
-		<label for="inputName" class="col-lg-2 control-label">Name</label>
-		<div class="col-lg-10">
-		  <input type="text" name="_name" class="form-control" id="inputName" placeholder="Properties of window.document">
-		</div>
-	  </div>
-	  <div class="form-group">
-		<label for="inputDesc" class="col-lg-2 control-label">Description</label>
-		<div class="col-lg-10">
-		  <input type="text" class="form-control" name="_desc" id="inputDesc" placeholder="Lists all the window.document properties">
-		</div>
-	  </div>
-
-	  <div class="form-group">
-		<label for="inputTags" class="col-lg-2 control-label">Tags</label>
-		<div class="col-lg-10">
-		  <input type="text" class="form-control" name="_tags" id="inputTags" placeholder="Separate tags with a comma(,). Avoid spaces in between the Tag names.">
-		</div>
-	  </div>
-
-	  <div class="form-group">
-		<label class="col-lg-2 control-label">Module Type</label>
-		<div class="col-lg-10">
-      <div class="radio">
-      <label>
-        <input type="radio" name="_module_type" id="optionsRadios1" value="TESTHARNESS" checked="">
-        W3C TestHarness (Read more <a href="http://darobin.github.io/test-harness-tutorial/docs/using-testharness.html" target="_blank">here</a>)
-      </label>
-      </div>
-		  <div class="radio">
-			<label>
-			  <input type="radio" name="_module_type" id="optionsRadios2" value="ENUM_FUNCTION">
-        Enumeration Functions (Read more <a href="https://github.com/skepticfx/domstorm/wiki/Creating-a-Simple-Module" target="_blank">here</a>)
-			</label>
-		  </div>
-		  <div class="radio">
-			<label>
-			  <input disabled type="radio" name="_module_type" id="optionsRadios3" value="FUZZER">
-			  Fuzzer (Work In Progress)
-			</label>
-		  </div>
-		</div>
-	  </div>
-
-    <script>
-      $(document).ready(function(){
-        $('.enum_stuff').hide();
-        userScript = ace.edit("userScript");
-        userScript.setTheme("ace/theme/chrome");
-        userScript.getSession().setMode("ace/mode/html");
-        userScript.getSession().setValue($('#userScript_testharness').text());
-
-        // Test Harness
-        $('#optionsRadios1').change(function(){
-          $('.enum_stuff').hide();
-          userScript.getSession().setValue($('#userScript_testharness').text());
-        });
-
-        // Enum_function
-        $('#optionsRadios2').change(function(){
-          $('.enum_stuff').show();
-          userScript.getSession().setValue($('#userScript_enum_function').text());
-        });
-
-        // Fuzzer
-        $('#optionsRadios3').change(function(){
-          alert('Not supported yet');
-        });
-      });
-    </script>
-
-<div class="enum_stuff">
-  	  <div class="form-group">
-  		<label class="col-lg-2 control-label">Results Type</label>
-  		<div class="col-lg-10">
-  		  <div class="radio">
-  			<label>
-  			  <input type="radio" name="_results_type" id="optionsRadios1" value="SIMPLE_TABLE" checked="">
-  			  Simple Table Format - Columns and Rows.<br/>Use, <code>addResult()</code>,  <code>addSuccess()</code>, <code>addError() </code>, <code>addInfo()</code>, <code>addNone()</code>
-  			</label>
-  		  </div>
-  		</div>
-  	  </div>
-
-  <!-- Column Names et al -->
-
-  	  <div id="greenish_title">Customize your column names</div>
-  	  <div class="form-group">
-  		<label for="num_cols" class="col-lg-2 control-label">Number of Columns</label>
-  		<div class="col-lg-4">
-  		  <input type="text" class="form-control" name="_num_cols" id="num_cols" placeholder="Any value between 1 to 5" value="2" title="Any value between 1 to 5" autocomplete="off" />
-  		</div>
-  	   </div>
-  	  <!-- The column names will be populated dynamically -->
-  	<div id="div_cols" class="form-group">
-
-  	</div>
-  <!-- End of columns names et al -->
-</div>
-
-  <div id="greenish_title">Test scripts</div>
-	  <div class="form-group">
-<div class="enum_stuff">
-<center><span class="help-block">Come up with your own script to do a Enumeration Function scan. Read more <a href="https://github.com/skepticfx/domstorm/wiki/Creating-a-Simple-Module" target="_blank">here</a></span></center>
-<center><span class="help-block">Use, <code>addResult()</code>,  <code>addSuccess()</code>, <code>addError() </code>, <code>addInfo()</code></span></center>
-<center><span class="help-block">Defne your code inside the test() function - Each enumeration data is passed to it. (See below)</span></center>
-<center><span class="help-block">Note: Every time the test() function is invoked in an isolated Iframe.</span></center>
-</div>
-		<label for="userScript" class="col-lg-2 control-label">User Script</label>
-		<div class="col-lg-10">
-
-<div class="form-control" id="userScript">
-</div>
-
-<pre class="form-control hide_me" id="userScript_enum_function">
-function test(data){
-// data is the input variable that is supplied from the Enumeration List.
-
-// For this module, we don't process the input data.
-  addResult(data.prop, data.val);
-
-}
-
-</pre>
-<textarea class="form-control hide_me" id="userScript_testharness">
-<html>
-<head>
-<script src="/public/js/testharness-domstorm.js"></script>
+< div class = "container" >
+    < h1 > < center > <%= title %> < /center></h
+1 >
 
 
-<script>
-// The userScript for the Module
-// W3C Testharness.js
-// Turotial: http://darobin.github.io/test-harness-tutorial/docs/using-testharness.html
-// W3c Platform Tests: https://github.com/w3c/web-platform-tests
+    < div class = "panel-heading" >
+    < form class = "bs-example form-horizontal"
+action = "/modules/create"
+method = "POST"
+id = "createModule" >
+    < div id = "greenish_title" > Module Details < /div> < div class = "form-group" >
+    < label
+for = "inputName"
+class = "col-lg-2 control-label" > Name < /label> < div class = "col-lg-10" >
+    < input type = "text"
+name = "_name"
+class = "form-control"
+id = "inputName"
+placeholder = "Properties of window.document" >
+    < /div> < /div> < div class = "form-group" >
+    < label
+for = "inputDesc"
+class = "col-lg-2 control-label" > Description < /label> < div class = "col-lg-10" >
+    < input type = "text"
+class = "form-control"
+name = "_desc"
+id = "inputDesc"
+placeholder = "Lists all the window.document properties" >
+    < /div> < /div>
 
-function testXHRMethod(method) {
-  test(function() {
-      var client = new XMLHttpRequest();
-      assert_throws("SyntaxError", function() { client.open(method, "...") });
-    }, 'Checking XHR for bogus Methods: ' + " (" + method + ")");
-  }
+< div class = "form-group" >
+    < label
+for = "inputTags"
+class = "col-lg-2 control-label" > Tags < /label> < div class = "col-lg-10" >
+    < input type = "text"
+class = "form-control"
+name = "_tags"
+id = "inputTags"
+placeholder = "Separate tags with a comma(,). Avoid spaces in between the Tag names." >
+    < /div> < /div>
 
-testXHRMethod("");
-testXHRMethod(">");
-testXHRMethod("'hjs'");
-testXHRMethod("'/@");
-testXHRMethod(" GET");
-testXHRMethod("G T");
-testXHRMethod("G T");
-testXHRMethod("GORT_IT");
+< div class = "form-group" >
+    < label class = "col-lg-2 control-label" > Module Type < /label> < div class = "col-lg-10" >
+    < div class = "radio" >
+    < label >
+    < input type = "radio"
+name = "_module_type"
+id = "optionsRadios1"
+value = "TESTHARNESS"
+checked = "" >
+    W3C TestHarness(Read more < a href = "http://darobin.github.io/test-harness-tutorial/docs/using-testharness.html"
+        target = "_blank" > here < /a>) < /label> < /div> < div class = "radio" >
+        < label >
+        < input type = "radio"
+        name = "_module_type"
+        id = "optionsRadios2"
+        value = "ENUM_FUNCTION" >
+        Enumeration Functions(Read more < a href = "https://github.com/skepticfx/domstorm/wiki/Creating-a-Simple-Module"
+            target = "_blank" > here < /a>) < /label> < /div> < div class = "radio" >
+            < label >
+            < input disabled type = "radio"
+            name = "_module_type"
+            id = "optionsRadios3"
+            value = "FUZZER" >
+            Fuzzer(Work In Progress) < /label> < /div> < /div> < /div>
 
-</script>
+            < script >
+            $(document).ready(function() {
+                $('.enum_stuff').hide();
+                userScript = ace.edit("userScript");
+                userScript.setTheme("ace/theme/chrome");
+                userScript.getSession().setMode("ace/mode/html");
+                userScript.getSession().setValue($('#userScript_testharness').text());
 
-</head>
-<body>
-Testing using W3C TestHarness.js for XHR MEthods
-</body>
-</html>
+                // Test Harness
+                $('#optionsRadios1').change(function() {
+                    $('.enum_stuff').hide();
+                    userScript.getSession().setValue($('#userScript_testharness').text());
+                });
 
-</textarea>
-		</div>
-	  </div>
+                // Enum_function
+                $('#optionsRadios2').change(function() {
+                    $('.enum_stuff').show();
+                    userScript.getSession().setValue($('#userScript_enum_function').text());
+                });
 
-	  <div class="form-group enum_stuff">
-      <center>
-      <span class="help-block">Specify your Enumeration Data here. Something like,
-        <code>
-        var data = ['a', 'script', 'img'];
-        </code>
-        <code>
-        var data = Object.getOwnPropertyNames(window);
-        </code>
-      </span>
-    </center>
-		<label for="enum_data" class="col-lg-2 control-label">Enumeration Data</label>
-		<div class="col-lg-10">
-<pre class="form-control" id="enum_data">
-var data = []; // This Array is going to be populated with our enumeration result.
-var x;
-for(x in window){
-  if(typeof window[x] == "number"){
-    var obj = {};
-    obj.prop = x;
-    obj.val = window[x];
-    data.push(obj);
-  }
-}
+                // Fuzzer
+                $('#optionsRadios3').change(function() {
+                    alert('Not supported yet');
+                });
+            }); < /script>
 
-// what if the array is empty now?
-if(data.length === 0){
-    var obj = {};
-    obj.prop = 'This browser doesn\'t have any Number properties on the Window Object';
-    obj.val = ''; // Empty data
-    data.push(obj);
-}
-</pre>
-		</div>
-	  </div>
-		<input type="hidden" name="_userScript" id="_userScript" value="" />
-		<input type="hidden" name="_enum_data" id="_enum_data" value="" />
+            < div class = "enum_stuff" >
+            < div class = "form-group" >
+            < label class = "col-lg-2 control-label" > Results Type < /label> < div class = "col-lg-10" >
+            < div class = "radio" >
+            < label >
+            < input type = "radio"
+            name = "_results_type"
+            id = "optionsRadios1"
+            value = "SIMPLE_TABLE"
+            checked = "" >
+            Simple Table Format - Columns and Rows. < br / > Use, < code > addResult() < /code>,  <code>addSuccess()</code > , < code > addError() < /code>, <code>addInfo()</code > , < code > addNone() < /code> < /label> < /div> < /div> < /div>
 
-	  <div class="form-group">
-		<div class="col-lg-10 col-lg-offset-2">
-		  <button id="submitButton" type="button" class="btn btn-primary">Create Module</button>
-		</div>
-	  </div>
-  </form>
-</div>
-</div>
+            <!-- Column Names et al -->
 
-<script>
-$(document).ready(function() {
+            < div id = "greenish_title" > Customize your column names < /div> < div class = "form-group" >
+            < label
+            for = "num_cols"
+            class = "col-lg-2 control-label" > Number of Columns < /label> < div class = "col-lg-4" >
+            < input type = "text"
+            class = "form-control"
+            name = "_num_cols"
+            id = "num_cols"
+            placeholder = "Any value between 1 to 5"
+            value = "2"
+            title = "Any value between 1 to 5"
+            autocomplete = "off" / >
+            < /div> < /div>
+            <!-- The column names will be populated dynamically -->
+            < div id = "div_cols"
+            class = "form-group" >
 
-  var enum_data = ace.edit("enum_data");
-  enum_data.setTheme("ace/theme/chrome");
-  enum_data.getSession().setMode("ace/mode/javascript");
+            < /div>
+            <!-- End of columns names et al -->
+            < /div>
 
-  updateColumns($('#num_cols').val());
-  $('#num_cols').keyup(function(){
-    if(this.value>=1 && this.value<=5)
-      updateColumns(this.value);
-    else{
-      if(this.value != "")
-      this.value = 1;
-      updateColumns(1);
-    }
-  });
+            < div id = "greenish_title" > Test scripts < /div> < div class = "form-group" >
+            < div class = "enum_stuff" >
+            < center > < span class = "help-block" > Come up with your own script to do a Enumeration Function scan.Read more < a href = "https://github.com/skepticfx/domstorm/wiki/Creating-a-Simple-Module"
+            target = "_blank" >
+            here < /a></span > < /center> < center > < span class = "help-block" > Use, < code > addResult() < /code>,  <code>addSuccess()</code > , < code > addError() < /code>, <code>addInfo()</code > < /span></center >
+            < center > < span class = "help-block" > Defne your code inside the test()
+            function -Each enumeration data is passed to it.(See below) < /span></center >
+            < center > < span class = "help-block" > Note: Every time the test()
+            function is invoked in an isolated Iframe. < /span></center >
+            < /div> < label
+            for = "userScript"
+            class = "col-lg-2 control-label" > User Script < /label> < div class = "col-lg-10" >
 
-  $('#submitButton').click(function(){
-    $('#_userScript').val(userScript.getValue());
-    $('#_enum_data').val(enum_data.getValue());
-    $('#createModule').submit();
-  });
+            < div class = "form-control"
+            id = "userScript" >
+            < /div>
 
-});
-var updateColumns = function(num){
-  $('#div_cols').empty();
-  for(var i=1; i<=num; i++){
-  $('#div_cols').append('<label for="_cols_'+i+'" class="col-lg-2 control-label">Column '+i+'</label><div class="col-lg-4"><input type="text" name="_cols_'+i+'" class="form-control" id="cols_'+i+'" placeholder="'+getRandomColumnName()+'" value="" autocomplete="off"></div>');
-  }
-}
+            < pre class = "form-control hide_me"
+            id = "userScript_enum_function" >
+            function test(data) {
+                // data is the input variable that is supplied from the Enumeration List.
 
-var getRandomColumnName = function(){
-  var x = parseInt(Math.random()*10);
-  var column_names = ['Test Passed?', 'Test Type', 'Name', 'Propery Tested', 'Fuzzed Characters', 'True / False', 'Vulnerable', 'Overridding Allowed?', 'List of properties', 'Property Name'];
-  return column_names[x];
-}
+                // For this module, we don't process the input data.
+                addResult(data.prop, data.val);
 
-</script>
+            }
 
-<% include ../layouts/footer.ejs %>
+            < /pre> < textarea class = "form-control hide_me"
+            id = "userScript_testharness" >
+            < html >
+            < head >
+            < script src = "/public/js/testharness-domstorm.js" > < /script>
+
+
+            < script >
+            // The userScript for the Module
+            // W3C Testharness.js
+            // Turotial: http://darobin.github.io/test-harness-tutorial/docs/using-testharness.html
+            // W3c Platform Tests: https://github.com/w3c/web-platform-tests
+
+            function testXHRMethod(method) {
+                test(function() {
+                    var client = new XMLHttpRequest();
+                    assert_throws("SyntaxError", function() {
+                        client.open(method, "...")
+                    });
+                }, 'Checking XHR for bogus Methods: ' + " (" + method + ")");
+            }
+
+            testXHRMethod(""); testXHRMethod(">"); testXHRMethod("'hjs'"); testXHRMethod("'/@"); testXHRMethod(" GET"); testXHRMethod("G T"); testXHRMethod("G T"); testXHRMethod("GORT_IT");
+
+            < /script>
+
+            < /head> < body >
+            Testing using W3C TestHarness.js
+            for XHR MEthods < /body> < /html>
+
+            < /textarea> < /div> < /div>
+
+            < div class = "form-group enum_stuff" >
+            < center >
+            < span class = "help-block" > Specify your Enumeration Data here.Something like, < code >
+            var data = ['a', 'script', 'img']; < /code> < code >
+            var data = Object.getOwnPropertyNames(window); < /code> < /span> < /center> < label
+            for = "enum_data"
+            class = "col-lg-2 control-label" > Enumeration Data < /label> < div class = "col-lg-10" >
+            < pre class = "form-control"
+            id = "enum_data" >
+            var data = []; // This Array is going to be populated with our enumeration result.
+            var x;
+            for (x in window) {
+                if (typeof window[x] == "number") {
+                    var obj = {};
+                    obj.prop = x;
+                    obj.val = window[x];
+                    data.push(obj);
+                }
+            }
+
+            // what if the array is empty now?
+            if (data.length === 0) {
+                var obj = {};
+                obj.prop = 'This browser doesn\'t have any Number properties on the Window Object';
+                obj.val = ''; // Empty data
+                data.push(obj);
+            } < /pre> < /div> < /div> < input type = "hidden"
+            name = "_userScript"
+            id = "_userScript"
+            value = "" / >
+            < input type = "hidden"
+            name = "_enum_data"
+            id = "_enum_data"
+            value = "" / >
+
+            < div class = "form-group" >
+            < div class = "col-lg-10 col-lg-offset-2" >
+            < button id = "submitButton"
+            type = "button"
+            class = "btn btn-primary" > Create Module < /button> < /div> < /div> < /form> < /div> < /div>
+
+            < script >
+            $(document).ready(function() {
+
+                var enum_data = ace.edit("enum_data");
+                enum_data.setTheme("ace/theme/chrome");
+                enum_data.getSession().setMode("ace/mode/javascript");
+
+                updateColumns($('#num_cols').val());
+                $('#num_cols').keyup(function() {
+                    if (this.value >= 1 && this.value <= 5)
+                        updateColumns(this.value);
+                    else {
+                        if (this.value != "")
+                            this.value = 1;
+                        updateColumns(1);
+                    }
+                });
+
+                $('#submitButton').click(function() {
+                    $('#_userScript').val(userScript.getValue());
+                    $('#_enum_data').val(enum_data.getValue());
+                    $('#createModule').submit();
+                });
+
+            });
+            var updateColumns = function(num) {
+                $('#div_cols').empty();
+                for (var i = 1; i <= num; i++) {
+                    $('#div_cols').append('<label for="_cols_' + i + '" class="col-lg-2 control-label">Column ' + i + '</label><div class="col-lg-4"><input type="text" name="_cols_' + i + '" class="form-control" id="cols_' + i + '" placeholder="' + getRandomColumnName() + '" value="" autocomplete="off"></div>');
+                }
+            }
+
+            var getRandomColumnName = function() {
+                var x = parseInt(Math.random() * 10);
+                var column_names = ['Test Passed?', 'Test Type', 'Name', 'Propery Tested', 'Fuzzed Characters', 'True / False', 'Vulnerable', 'Overridding Allowed?', 'List of properties', 'Property Name'];
+                return column_names[x];
+            }
+
+            < /script>
+
+            <% include ../layouts/footer.ejs %>
