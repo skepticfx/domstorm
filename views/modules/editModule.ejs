@@ -1,6 +1,5 @@
 <% include ../layouts/header.ejs %>
   <% include ../layouts/navbar.ejs %>
-
     <style>
       #userScript {
         width: 100 %;
@@ -12,61 +11,49 @@
         height: 300 px;
       }
     </style>
-
     <script src="/public/js/vendor/ace/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8">
     </script>
-
     <div class="container">
       <h1> <%= title %> </h1>
-
 
       <div class="panel-heading">
         <form class="bs-example form-horizontal" action="/modules/edit" method="POST" id="editModule">
           <input type="hidden" name="_id" value="<%= module._id%>" />
-          <div id="greenish_title"> Module Details </div>
+          <div id="greenish_title">Module Details</div>
           <div class="form-group">
-            <label for="inputName" class="col-lg-2 control-label"> Name </label>
+            <label for="inputName" class="col-lg-2 control-label">Name</label>
             <div class="col-lg-10">
               <input type="text" name="_name" class="form-control" id="inputName" placeholder="Properties of document.window" value="<%= module.name%>">
             </div>
           </div>
           <div class="form-group">
-            <label for="inputDesc" class="col-lg-2 control-label"> Description </label>
+            <label for="inputDesc" class="col-lg-2 control-label">Description</label>
             <div class="col-lg-10">
               <input type="text" class="form-control" name="_desc" id="inputDesc" placeholder="Lists all the document.window properties" value="<%= module.description%>">
             </div>
           </div>
-
           <div class="form-group">
-            <label for="inputTags" class="col-lg-2 control-label"> Tags </label>
+            <label for="inputTags" class="col-lg-2 control-label">Tags</label>
             <div class="col-lg-10">
               <input type="text" class="form-control" name="_tags" id="inputTags" placeholder="Separate tags with a comma(,). Avoid spaces in between the Tag names." value="<%= module_tags_parsed %>">
             </div>
           </div>
-
-
           <div class="form-group">
-            <label class="col-lg-2 control-label"> Module Type </label>
+            <label class="col-lg-2 control-label">Module Type</label>
             <div class="col-lg-10">
               <div class="radio">
                 <label>
-
                   <input type="radio" name="_module_type" id="optionsRadios1" value="<%= module.test._type%>" checked="">
-                  <% if(module.test._type === 'ENUM_FUNCTION') {%>
-                    Enumeration Function
+                  <% if(module.test._type==='ENUM_FUNCTION' ) {%>Enumeration Function
                     <% } %>
-                      <% if(module.test._type === 'TESTHARNESS') {%>
-                        W3C Test Harness
+                      <% if(module.test._type==='TESTHARNESS' ) {%>W3C Test Harness
                         <% } %>
-                          <% if(module.test._type === 'FUZZER') {%>
-                            Fuzzer(Work In Progress)
+                          <% if(module.test._type==='FUZZER' ) {%>Fuzzer(Work In Progress)
                             <% } %>
                 </label>
               </div>
-
             </div>
           </div>
-
           <script>
             $(document).ready(function() {
               $('.enum_stuff').hide();
@@ -88,40 +75,36 @@
           </script>
           <div class='enum_stuff'>
             <div class="form-group">
-              <label class="col-lg-2 control-label"> Results Type </label>
+              <label class="col-lg-2 control-label">Results Type</label>
               <div class="col-lg-10">
                 <div class="radio">
                   <label>
-                    <input type="radio" name="_results_type" id="optionsRadios1" value="SIMPLE_TABLE" checked=""> Simple Table Format </label>
+                    <input type="radio" name="_results_type" id="optionsRadios1" value="SIMPLE_TABLE" checked="">Simple Table Format</label>
                 </div>
                 <div class="radio">
                   <label>
-                    <input disabled type="radio" name="_results_type" id="optionsRadios2" value="ENUM_LIST"> Enumeration List(Currently Not Supported) </label>
+                    <input disabled type="radio" name="_results_type" id="optionsRadios2" value="ENUM_LIST">Enumeration List(Currently Not Supported)</label>
                 </div>
               </div>
             </div>
-
             <!-- Column Names et al -->
-            <div id="greenish_title"> Customize your column names </div>
+            <div id="greenish_title">Customize your column names</div>
             <div class="form-group">
-              <label for="num_cols" class="col-lg-2 control-label"> Number of Columns </label>
+              <label for="num_cols" class="col-lg-2 control-label">Number of Columns</label>
               <div class="col-lg-4">
                 <input type="text" class="form-control" name="_num_cols" id="num_cols" placeholder="Any value between 1 to 5" value="<%= module.results.columns.length%>" title="Any value between 1 to 5" autocomplete="off" />
               </div>
             </div>
             <!-- The column names will be populated dynamically -->
-            <div id="div_cols" class="form-group">
-
-            </div>
+            <div id="div_cols" class="form-group"></div>
           </div>
           <!-- End of columns names et al -->
-
-          <div id="greenish_title"> Test scripts </div>
+          <div id="greenish_title">Test scripts</div>
           <div class="form-group">
-            <label for="userScript" class="col-lg-2 control-label"> User Script </label>
+            <label for="userScript" class="col-lg-2 control-label">User Script</label>
             <div class="col-lg-10">
               <div class="form-control" id="userScript">
-                <%= module.test.userScript%>
+                <%=m odule.test.userScript%>
               </div> <span class="help-block"> Come up with your own script to do a Enumeration Function scan.Read more <u > here </u></span >
         </div> </div>
 
@@ -143,21 +126,20 @@ id = "enum_data" > <%= module.test.enum_data%> </pre> <span class = "help-block"
     }, {
         before: '2',
         after: '2'
-    }]; </code> </span> </div>
+    }]; </code> </span>
+            </div>
           </div>
       </div>
       <input type="hidden" name="_userScript" id="_userScript" value="" />
       <input type="hidden" name="_enum_data" id="_enum_data" value="" />
-
       <div class="form-group">
         <div class="col-lg-10 col-lg-offset-2">
-          <button id="submitButton" type="button" class="btn btn-primary"> Edit Module </button>
+          <button id="submitButton" type="button" class="btn btn-primary">Edit Module</button>
         </div>
       </div>
       </form>
     </div>
     </div>
-
     <script>
       $(document).ready(function() {
         var userScript = ace.edit("userScript");
@@ -199,5 +181,4 @@ id = "enum_data" > <%= module.test.enum_data%> </pre> <span class = "help-block"
         return column_names[i - 1] || '';
       }
     </script>
-
     <% include ../layouts/footer.ejs %>

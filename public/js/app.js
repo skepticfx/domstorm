@@ -8,8 +8,6 @@ $(document).ready(function() {
         a.href = '/modules?id=' + module.id;
         a.innerText = module.name;
         li.appendChild(a);
-          console.log(li);
-          console.log(document.getElementById('modulesListNode'));
         document.getElementById('modulesListNode').appendChild(li);
       });
     }

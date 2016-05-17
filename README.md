@@ -1,4 +1,3 @@
-npm install DomStorm
 =========
 ### A dashboard for interesting DOM tricks/techniques.
 
@@ -10,7 +9,7 @@ npm install DomStorm
 #### Installation
 * Clone Domstorm, `git clone https://github.com/skepticfx/domstorm`
 
-* Install Nodejs and then, `npm install`
+* Install `nodejs` and then, `npm install`
 
 * Configure `config.js` to add your MongoDB URL with authentication details.
 

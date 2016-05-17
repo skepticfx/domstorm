@@ -1,31 +1,23 @@
-<!DOCTYPE html >
+<!DOCTYPE html>
 <html>
 
 <head>
-  <title>
-    Testing
-    <%= module_name %>
+  <title>Testing
+    <%=m odule_name %>
   </title>
 </head>
 
 <body>
-
-  <textarea id="user_script" style="display:none;">
-
-    // Our code // API - addResult(), addError(), addSuccess(), addInfo() var Test = new Object(); var theCallback = ""; var addResult = function() { top.window.addResult(arguments, 'SUCCESS'); theCallback(); return; } var addSuccess = function() { top.window.addResult(arguments, 'SUCCESS'); theCallback(); return; } var addError = function() { top.window.addResult(arguments, 'ERROR'); theCallback(); return; } var addInfo = function() { top.window.addResult(arguments, 'INFO'); theCallback(); return; } var addNone = function() { theCallback(); return; } var callTest = function(dataObj, callback) { theCallback = function() { callback(); }; test(dataObj); } // The userScript for the Module
-
-    <%- module_test.userScript %>
-
-      // Our code
-
-
-  </textarea>
-
+  <textarea id="user_script" style="display:none;">// Our code // API - addResult(), addError(), addSuccess(), addInfo() var Test = new Object(); var theCallback = ""; var addResult = function() { top.window.addResult(arguments, 'SUCCESS'); theCallback(); return; } var addSuccess = function() { top.window.addResult(arguments, 'SUCCESS'); theCallback(); return; } var addError = function() { top.window.addResult(arguments, 'ERROR'); theCallback(); return; } var addInfo = function() { top.window.addResult(arguments, 'INFO'); theCallback(); return; } var addNone = function() { theCallback(); return; } var callTest = function(dataObj, callback) { theCallback = function() { callback(); }; test(dataObj); } // The userScript for the Module
+    <%- module_test.userScript
+      %>// Our code</textarea>
   <h1> Testing <%= module_name %> </h1>
+
   <script src="/public/js/detect.js">
   </script>
   <h2>
     Testing data: <div id = "enum_status" > </div> </h2>
+
   <script>
     var rows = [];
     var addResult = function(args, type) {
@@ -112,8 +104,8 @@
       }, 2000);
     }
   </script>
-  <div id="domstorm_id_status"> </div>
-  <iframe width="100%" height="999px" id="iframe_data_enum" src="/modules/run?id=<%= module_id %>&iframe=1"> </iframe>
+  <div id="domstorm_id_status"></div>
+  <iframe width="100%" height="999px" id="iframe_data_enum" src="/modules/run?id=<%= module_id %>&iframe=1"></iframe>
 </body>
 
 </html>
