@@ -6,7 +6,9 @@ var config = {};
 exports.config = config;
 
 config.DEV_MODE = false;
-config.URI = ""; // The website which hosts this. (https://domstorm.skepticfx.com)
+
+// The website which hosts this. (https://domstorm.skepticfx.com)
+config.URI = process.env.URI || "http://localhost";
 
 
 // To Use DomStorm in No-Auth mode (No Twitter Login required), set the below property to false and choose an admin name;
