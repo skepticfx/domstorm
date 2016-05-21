@@ -32,7 +32,7 @@ if (process.env.DB_URI) {
   config.DEV_MODE = true;
   config.DB_URI = 'mongodb://fx:fx@127.0.0.1/domstorm'; // Local Mongo Instance
   config.CALLBACK_URL = "http://localhost:8080/auth/twitter/callback";
-  config.log = true;
   config.requireAuth = false;
+  config.log = true;
 }
 
