@@ -5,8 +5,7 @@
 
 ### Try http://domstorm.skepticfx.com
 
-[ ![Codeship Status for skepticfx/domstorm](https://www.codeship.io/projects/b3b95170-efd2-0131-0c85-62ba7cdbe292/status)](https://www.codeship.io/projects/27071)
-#### Installation
+[![Build Status](https://travis-ci.org/skepticfx/domstorm.svg?branch=master)](https://travis-ci.org/skepticfx/domstorm)#### Installation
 * Clone Domstorm, `git clone https://github.com/skepticfx/domstorm`
 
 * Install `nodejs` and then, `npm install`

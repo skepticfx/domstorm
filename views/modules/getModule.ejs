@@ -7,18 +7,18 @@
           <p>
             <h5> <%= module_description %> </h5>
           </p>
-          <div id='items-title'>By</div><a href="/profile / <%= module_owner %> / " class='tags-link'><span class="tags-link-span label label-user "><%= module_owner %></span></a>
+          <div id='items-title'>By</div><a href="/profile/<%= module_owner %>/" class='tags-link'><span class="tags-link-span label label-user "><%= module_owner %></span></a>
           <span id='fav_count' class='label label-favs'>
             <img id='favs-img' src="/public/imgs/icons/favs_small-red.png">
-            <%=module_favs %>
+            <%= module_favs %>
               </span>
           <br />
           <div id='items-title'>Tags</div>
           <% for(tags in module.tags){ %>
-            <a href="/search?q=[tags]:<%= module.tags[tags]%>" class='tags-link'> <span class="tags-link-span label label-tags"> <%= module.tags[tags] %> </span></a>
+            <a href="/search?q=[tags]:<%= module.tags[tags] %>" class='tags-link'> <span class="tags-link-span label label-tags"> <%= module.tags[tags] %> </span></a>
 
             <% } %>
-              <br />
+              <br/>
               <% if(userOptions.status=="enabled" ){ %>
                 <% if(userOptions.showFav){ %>
                   <div id="div-favorite" style="display: inline">
