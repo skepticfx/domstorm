@@ -2,10 +2,7 @@
 
 ### A dashboard for interesting DOM tricks/techniques.
 
-
 ### Try https://domstorm.skepticfx.com
-
-[![Build Status](https://travis-ci.org/skepticfx/domstorm.svg?branch=master)](https://travis-ci.org/skepticfx/domstorm)
 
 #### Installation
 * Clone Domstorm, `git clone https://github.com/skepticfx/domstorm`

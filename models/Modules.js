@@ -121,7 +121,9 @@ ModulesSchema.statics.searchAll = function(str, cb) {
       console.log(err);
 
     modules.forEach(function(module) {
-      module.browsers_tested = Object.keys(module.results.browsers).length;
+      if(module.results.browsers) {
+        module.browsers_tested = Object.keys(module.results.browsers).length;
+      }
     });
     cb(err, modules);
   });
