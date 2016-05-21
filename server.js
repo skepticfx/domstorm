@@ -66,6 +66,7 @@ db.once('open', function() {
 
 
   // middleware stack
+  app.use(redirectToHttps);
   app.use(express.favicon());
   app.use(express.logger('dev'));
   app.use(express.json());
@@ -144,14 +145,16 @@ db.once('open', function() {
   controllers.set(app);
 
   http.createServer(app).listen(app.get('port'), app.get('ip'), function() {
+    if(!config.DEV_MODE) console.log('Running in production mode.');
     console.log('Dom Storm server listening on port: ' + app.get('port'));
   });
 });
 
 
-function encodeHTML(str) {
-  str = str.replace(/</gi, '&lt;');
-  str = str.replace(/>/gi, '&gt;');
-  str = str.replace(/"/gi, '&quot;');
-  return str;
+function redirectToHttps(req, res, next) {
+  if (!config.DEV_MODE && req.headers['x-forwarded-proto'] == 'http') {
+    res.redirect('https://' + req.headers.host + req.path);
+  } else {
+    return next();
+  }
 }

@@ -3,7 +3,7 @@
 ### A dashboard for interesting DOM tricks/techniques.
 
 
-### Try http://domstorm.skepticfx.com
+### Try https://domstorm.skepticfx.com
 
 [![Build Status](https://travis-ci.org/skepticfx/domstorm.svg?branch=master)](https://travis-ci.org/skepticfx/domstorm)
 
@@ -20,8 +20,7 @@
 
 * Something went wrong? Raise an [issue in the Github Repo] (https://github.com/skepticfx/domstorm/issues/new)
 
-### What is DomStorm?
-#### It is a dashboard for interesting DOM tricks/techniques.
+### What can DomStorm be used for?
 One can know the answers for,
 
 * What are the different ways of accessing a [Window Object], in a given browser?
