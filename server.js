@@ -39,7 +39,8 @@ db.once('open', function() {
   // all environments
   app.set('views', path.join(__dirname, 'views'));
   app.set('view engine', 'ejs');
-  app.set('port', process.env.PORT || 8080);
+  app.set('port', process.env.PORT || process.env.NODE_PORT || 8080);
+  app.set('ip', process.env.IP || process.env.NODE_IP || '127.0.0.1');
 
   if (typeof config.admin == 'undefined' || config.admin.length === 0) {
     console.log('admin must be configured in `config.js`. Setting admin to the name `twitter` ');
@@ -142,7 +143,7 @@ db.once('open', function() {
   // routing
   controllers.set(app);
 
-  http.createServer(app).listen(app.get('port'), function() {
+  http.createServer(app).listen(app.get('port'), app.get('ip'), function() {
     console.log('Dom Storm server listening on port: ' + app.get('port'));
   });
 });

@@ -1,11 +1,13 @@
-=========
+![logo](https://raw.github.com/skepticfx/Dom-Storm/master/public/imgs/dom-storm-logo.png)
+
 ### A dashboard for interesting DOM tricks/techniques.
 
-![logo](https://raw.github.com/skepticfx/Dom-Storm/master/public/imgs/dom-storm-logo.png)
 
 ### Try http://domstorm.skepticfx.com
 
-[![Build Status](https://travis-ci.org/skepticfx/domstorm.svg?branch=master)](https://travis-ci.org/skepticfx/domstorm)#### Installation
+[![Build Status](https://travis-ci.org/skepticfx/domstorm.svg?branch=master)](https://travis-ci.org/skepticfx/domstorm)
+
+#### Installation
 * Clone Domstorm, `git clone https://github.com/skepticfx/domstorm`
 
 * Install `nodejs` and then, `npm install`

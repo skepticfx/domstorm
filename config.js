@@ -5,7 +5,7 @@ var config = {};
 
 exports.config = config;
 
-config.URI = ""; // The website which hosts this.
+config.URI = ""; // The website which hosts this. (https://domstorm.skepticfx.com)
 
 if (process.env.DB_URI) {
   console.log('Detected DB URI.');
@@ -23,7 +23,7 @@ if (process.env.TWITTER_CONSUMER_KEY && process.env.TWITTER_CONSUMER_SECRET) {
   config.TWITTER_CONSUMER_SECRET = ""; // Specify Twitter Consumer Secret here
 }
 
-config.admin = process.env.TWITTER_ADMIN; // Twitter Username of the Admin.
+config.admin = process.env.TWITTER_ADMIN || 'twitter'; // Twitter Username of the Admin.
 
 
 // To Use DomStorm in No-Auth mode (No Twitter Login required), set the below property to false and choose an admin name;
