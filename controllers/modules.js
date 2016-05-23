@@ -1,6 +1,4 @@
 // Routes for anything '/modules' related
-
-var fs = require('fs');
 var Modules = require(process.cwd() + '/models/Modules.js').Modules;
 var admin = require('../config.js').config.admin;
 
@@ -12,7 +10,7 @@ function ensureAdmin(req, res, next) {
     res.render('misc/userError', {
       info: 'You must be an Admin to do this action.'
     });
-    res.end();
+    
   }
 }
 
@@ -47,7 +45,7 @@ exports.index = function(app) {
           res.render('misc/error', {
             'info': 'Apparently, the module is missing in our system.'
           });
-          res.end();
+          
         } else {
 
           var userOptions = {};
@@ -84,7 +82,7 @@ exports.index = function(app) {
             'ds_title': module.name
           };
           res.render('modules/getModule', module_details);
-          res.end();
+          
         }
       });
     } else {
@@ -96,7 +94,7 @@ exports.index = function(app) {
             'title': 'Modules',
             'modules': modules
           });
-          res.end();
+          
         }
       });
     }
@@ -114,7 +112,7 @@ exports.run = function(app) {
           res.render('misc/error', {
             'info': 'Oops ! The test module is missing.'
           });
-          res.end();
+          
         } else {
           var module_details = {
             'module_id': module._id,
@@ -130,7 +128,7 @@ exports.run = function(app) {
                 res.render('modules/runModule_testharness_iframe', module_details);
               else
                 res.render('modules/runModule_testharness', module_details);
-              res.end();
+              
               break;
 
             case "ENUM_FUNCTION":
@@ -138,14 +136,14 @@ exports.run = function(app) {
                 res.render('modules/runModule_enum_function_iframe', module_details);
               else
                 res.render('modules/runModule_enum_function', module_details);
-              res.end();
+              
               break;
 
             default:
               res.render('misc/error', {
                 'info': 'The Test Type is not defined yet'
               });
-              res.end();
+              
           }
         }
       });
@@ -154,7 +152,7 @@ exports.run = function(app) {
       res.render('misc/404', {
         'info': 'Missing module id.'
       });
-      res.end();
+      
     }
   });
 
@@ -168,7 +166,7 @@ exports.create = function(app) {
     res.render('modules/createModule', {
       'title': 'Create a new Module'
     });
-    res.end();
+    
   });
 
   // Form
@@ -219,7 +217,7 @@ exports.create = function(app) {
         res.render('misc/error', {
           'info': 'Something wrong happened, when we tried creating your new module.'
         });
-        res.end();
+        
       } else {
         var Obj = {}
         Obj.name = module.name;
@@ -244,7 +242,6 @@ exports.edit = function(app) {
           res.render('misc/error', {
             'info': 'Apparently, the module is missing in our system.'
           });
-          res.end();
         } else {
           if (module.owner == req.currentUser || req.currentUser == admin) {
             module.remove();
@@ -253,7 +250,6 @@ exports.edit = function(app) {
             res.render('misc/userError', {
               'info': 'You must be the owner of this module to delete it.'
             });
-            res.end();
           }
         }
       });
@@ -261,7 +257,6 @@ exports.edit = function(app) {
       res.render('misc/error', {
         'info': 'Apparently, the module is missing in our system.'
       });
-      res.end();
     }
   });
 
@@ -274,13 +269,11 @@ exports.edit = function(app) {
           res.render('misc/error', {
             'info': 'Apparently, the module is missing in our system.'
           });
-          res.end();
         } else {
           if (module.owner != req.currentUser && req.currentUser != admin) {
             res.render('misc/userError', {
               'info': 'You must be the owner of this module to edit it. You can fork this module though !'
             });
-            res.end();
           } else {
             var module_tags_parsed = "";
             module = module.toObject();
@@ -294,7 +287,6 @@ exports.edit = function(app) {
               'columns': JSON.stringify(module.results.columns),
               'module_tags_parsed': module_tags_parsed
             });
-            res.end();
           }
         }
       });
@@ -302,7 +294,6 @@ exports.edit = function(app) {
       res.render('misc/error', {
         'info': 'Apparently, the module is missing in our system.'
       });
-      res.end();
     }
   });
 
@@ -317,7 +308,6 @@ exports.edit = function(app) {
         res.render('misc/userError', {
           'info': 'You must be the owner of this module to edit it. You can fork this module though !' + modules.owner + req.currentUser
         });
-        res.end();
       } else {
 
         var type = req.body._module_type;
@@ -366,7 +356,6 @@ exports.edit = function(app) {
             res.render('misc/error', {
               'info': err + 'Something wrong happened, when we tried editing your module.'
             });
-            res.end();
           } else {
             res.redirect('/modules/?id=' + module._id);
           }
@@ -400,7 +389,6 @@ exports.results = function(app) {
         res.render('misc/error', {
           'info': 'Something wrong happened, when we tried updating the results'
         });
-        res.end();
       } else {
         res.redirect('/modules/?id=' + result._id);
       }
@@ -420,22 +408,15 @@ exports.results = function(app) {
           obj.id = modules[x]._id;
           modulesList.push(obj);
         }
-        fs.writeFile(process.cwd() + '/dynamic/js/modulesList.js', 'var topModules = ' + JSON.stringify(modulesList) + ' ;', function(err) {
-          if (err) {
-            console.log('There is some error in writing the list to modulesList.js');
-          } else {
-            console.log('Great ! Populated the list of modules.');
-            if (typeof req.query.module != 'undefined') {
-              res.redirect('/modules/?id=' + req.query.module);
-            } else {
-              res.redirect('/');
-            }
-          }
-        });
+        if (typeof req.query.module != 'undefined') {
+          res.redirect('/modules/?id=' + req.query.module);
+        } else {
+          res.redirect('/');
+        }
       }
     });
   });
-}
+};
 
 
 var getBrowserResults = function(module) {
@@ -482,7 +463,7 @@ exports.fork = function(app) {
           res.render('misc/error', {
             'info': 'Apparently, the module is missing in our system.'
           });
-          res.end();
+          
         } else {
           var module_tags_parsed = "";
           module = module.toObject();
@@ -496,17 +477,17 @@ exports.fork = function(app) {
             'columns': JSON.stringify(module.results.columns),
             'module_tags_parsed': module_tags_parsed
           });
-          res.end();
+          
         }
       });
     } else {
       res.render('misc/error', {
         'info': 'Apparently, the module is missing in our system.'
       });
-      res.end();
+      
     }
   });
-}
+};
 
 exports.init = function(app) {
 
@@ -519,7 +500,7 @@ exports.init = function(app) {
           res.render('misc/error', {
             'info': 'Apparently, the module is missing in our system.'
           });
-          res.end();
+          
         } else {
           module = module.toObject();
           module.favs.push(req.currentUser);
@@ -532,7 +513,7 @@ exports.init = function(app) {
               res.render('misc/error', {
                 'info': err + 'Something wrong happened, when we tried favoriting this module.'
               });
-              res.end();
+              
             } else {
               res.redirect('/modules/?id=' + module._id + '&info=fav_success');
             }
@@ -543,7 +524,7 @@ exports.init = function(app) {
       res.render('misc/error', {
         'info': 'Apparently, the module is missing in our system.'
       });
-      res.end();
+      
     }
   });
 

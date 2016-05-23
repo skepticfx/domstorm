@@ -11,6 +11,11 @@ var http = require('http');
 var path = require('path');
 var mongoose = require('mongoose');
 var passport = require('passport');
+var session = require('express-session');
+var logger = require('morgan');
+var cookieParser = require('cookie-parser');
+var cookieSession = require('cookie-session');
+var bodyParser = require('body-parser');
 var TwitterStrategy = require('passport-twitter').Strategy;
 var config = require('./config.js').config;
 var User = require(process.cwd() + '/models/Modules.js').User;
@@ -67,20 +72,20 @@ db.once('open', function() {
 
   // middleware stack
   app.use(redirectToHttps);
-  app.use(express.favicon());
-  app.use(express.logger('dev'));
-  app.use(express.json());
-  app.use(express.cookieParser());
-  app.use(express.session({
-    secret: crypto.randomBytes(256).toString('hex')
+  app.use(logger('dev'));
+  app.use(bodyParser.json());
+  app.use(bodyParser.urlencoded({extended: false}));
+  app.use(cookieParser());
+  app.use(express.static(path.join(__dirname, 'public')));
+  app.use(cookieSession({
+    name :'expressSession',
+    secret: crypto.randomBytes(16).toString('hex')
   }));
+
   app.use(passport.initialize());
   app.use(passport.session());
-  app.use(express.urlencoded());
   app.use(defaultUser);
 
-  app.use(express.compress());
-  app.use(app.router);
   app.use("/", express.static(path.join(__dirname, '/public'), {
     maxAge: oneDay
   }));
@@ -136,10 +141,6 @@ db.once('open', function() {
     console.log('Running in no-auth mode.');
   }
 
-  // development only
-  if ('development' == app.get('env')) {
-    app.use(express.errorHandler());
-  }
 
   // routing
   controllers.set(app);

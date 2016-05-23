@@ -3,14 +3,27 @@
 
 <head>
   <title>Testing
-    <%=m odule_name %>
+    <%= module_name %>
   </title>
 </head>
 
 <body>
-  <textarea id="user_script" style="display:none;">// Our code // API - addResult(), addError(), addSuccess(), addInfo() var Test = new Object(); var theCallback = ""; var addResult = function() { top.window.addResult(arguments, 'SUCCESS'); theCallback(); return; } var addSuccess = function() { top.window.addResult(arguments, 'SUCCESS'); theCallback(); return; } var addError = function() { top.window.addResult(arguments, 'ERROR'); theCallback(); return; } var addInfo = function() { top.window.addResult(arguments, 'INFO'); theCallback(); return; } var addNone = function() { theCallback(); return; } var callTest = function(dataObj, callback) { theCallback = function() { callback(); }; test(dataObj); } // The userScript for the Module
-    <%- module_test.userScript
-      %>// Our code</textarea>
+  <textarea id="user_script" style="display:none;">
+    // Our code // API - addResult(), addError(), addSuccess(), addInfo()
+    var Test = new Object();
+    var theCallback = "";
+    var addResult = function() { top.window.addResult(arguments, 'SUCCESS'); theCallback(); return; }
+    var addSuccess = function() { top.window.addResult(arguments, 'SUCCESS'); theCallback(); return; }
+    var addError = function() { top.window.addResult(arguments, 'ERROR'); theCallback(); return; }
+    var addInfo = function() { top.window.addResult(arguments, 'INFO'); theCallback(); return; }
+    var addNone = function() { theCallback(); return; }
+    var callTest = function(dataObj, callback) { theCallback = function() { callback(); }; test(dataObj); }
+
+    // The userScript for the Module
+
+    <%- module_test.userScript %>
+    // Our code
+  </textarea>
   <h1> Testing <%= module_name %> </h1>
 
   <script src="/public/js/detect.js">

@@ -1,39 +1,29 @@
 <% include ../layouts/header.ejs %>
-  <% include ../layouts/navbar.ejs %>
-    <div class="container">
-      <center>
-        <h1> @<%= title %> </h1>
-        <h3> <%= profile.name %> </h3> </center>
-      <br />
-      <br />
-    </div>
+<% include ../layouts/navbar.ejs %>
+<div class="container">
+<center>
+      <h1>@<%= title %></h1>
+      <h3><%= profile.name %></h3>
+</center>
+<br/>
+<br/>
+</div>
 
-    <div class="container">
-      <div class="col-lg-6 scrollme">
-        <center>
-          <div class="jumbotron">
-            <h3> Modules Created </h3></div>
-        </center>
+<div class="container">
+    <div class="col-lg-6 scrollme">
+      <center><div class="jumbotron"><h3>Modules Created</h3></div></center>
         <% for(x in userModules) {%>
-          <a href="/modules/?id=<%= userModules[x]._id %>" class="list-group-item" title="<%= userModules[x].description %>">
-            <%= userModules[x].name %>
-          </a>
-          <% } %>
-      </div>
-
-      <div class="col-lg-6">
-        <center>
-          <div class="jumbotron">
-            <h3> Other Favorite Modules </h3></div>
-        </center>
-        <% for(x in favModules) {%>
-          <a href="/modules/?id=<%= favModules[x]._id %>" class="list-group-item" title="<%= favModules[x].description %>">
-            <%= favModules[x].name %> - By@
-              <%= favModules[x].owner%>
-          </a>
-          <% } %>
-      </div>
-
+        <a href="/modules/?id=<%= userModules[x]._id %>" class="list-group-item" title="<%= userModules[x].description %>"><%= userModules[x].name %></a>
+        <% } %>
     </div>
 
-    <% include ../layouts/footer.ejs %>
+    <div class="col-lg-6">
+      <center><div class="jumbotron"><h3>Other Favorite Modules</h3></div></center>
+        <% for(x in favModules) {%>
+        <a href="/modules/?id=<%= favModules[x]._id %>" class="list-group-item" title="<%= favModules[x].description %>"><%= favModules[x].name %> - By @<%= favModules[x].owner%></a>
+        <% } %>
+    </div>
+
+</div>
+
+<% include ../layouts/footer.ejs %>
