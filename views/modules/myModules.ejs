@@ -8,7 +8,7 @@
 	<div class="col-lg-4">
 	  <div class="list-group">
 		<% for(x in modules) {%>
-		<a href="/modules/?id=<%= modules[x]._id %>" class="list-group-item" title="<%= modules[x].description %>"><%= modules[x].name %></a>
+		<a href="/modules/?id=<%= modules[x].id %>" class="list-group-item" title="<%= modules[x].description %>"><%= modules[x].name %></a>
 		<% } %>
 	  </div>
 	</div>
