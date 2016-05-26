@@ -6,7 +6,6 @@
     "body-parser": "^1.15.1",
     "connect-mongo": "^1.2.0",
     "cookie-parser": "^1.4.2",
-    "cookie-session": "^2.0.0-alpha.1",
     "ejs": "^1.0.0",
     "express": "^4.4.4",
     "express-session": "^1.13.0",

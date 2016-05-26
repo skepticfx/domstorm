@@ -3,7 +3,6 @@
  */
 
 console.log('Starting server.js');
-var crypto = require('crypto');
 var express = require('express');
 var controllers = require('./controllers');
 var modules = require('./controllers/modules.js');
@@ -21,7 +20,7 @@ var config = require('./config.js').config;
 var User = require(process.cwd() + '/models/Modules.js').User;
 var Modules = require(process.cwd() + '/models/Modules.js').Modules;
 
-var oneDay = '86400000';
+var oneDay = 60 * 60 * 24;
 var app = express();
 
 // Force No-Auth ?
@@ -79,7 +78,7 @@ db.once('open', function() {
     store: new MongoStore({ mongooseConnection: db}),
     resave: true,
     saveUninitialized: true,
-    cookie: {maxAge: 24 * 36000}
+    cookie: {maxAge: oneDay * 31} // Persist for a month
   }));
 
   //app.use(cleanupPassportSession);
