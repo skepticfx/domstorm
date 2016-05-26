@@ -8,12 +8,19 @@
     <div class="collapse navbar-collapse navbar-ex1-collapse">
       <ul class="nav navbar-nav">
         <li>
+          <a href="/search"> <img src="/public/imgs/icons/search.png" /> Search </a>
+        </li>
+
+        <li>
           <a href="/modules/create"> <img src="/public/imgs/icons/add_module.png" /> Create Module </a>
         </li>
 
         <li class="dropdown">
           <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="themes"> <img src="/public/imgs/icons/module.png" /> Modules <span class="caret"> </span></a>
           <ul class="dropdown-menu" aria - labelledby="themes" id="modulesListNode">
+            <% if(typeof user !== 'undefined'){ %>
+            <li> <a tabindex="-1" href="/mymodules/"> My Modules </a></li>
+            <% } %>
             <li> <a tabindex="-1" href="/modules/"> All Modules </a></li>
             <li> <a tabindex="-1" href="/helper/"> Helper Modules </a></li>
             <li class="divider"> </li>
@@ -26,21 +33,15 @@
           </ul>
         </li>
 
-        <li>
-          <a href="/datasets"> <img src="/public/imgs/icons/datasets.png" /> DataSets </a>
-        </li>
+
 
         <li class="dropdown">
-          <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="themes"> <img src="/public/imgs/icons/helper.png" /> Documentation <span class="caret"> </span></a>
+          <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="themes"> <img src="/public/imgs/icons/bulb.png" /> Docs <span class="caret"> </span></a>
           <ul class="dropdown-menu" aria - labelledby="themes" id="docsListNode">
             <li> <a href="http://darobin.github.io/test-harness-tutorial/docs/using-testharness.html" target="_blank"> Creating Test Harness Module </a></li>
-            <li> <a href="https://github.com/skepticfx/domstorm/wiki/Creating-a-Simple-Module" target="_blank"> Creating a Enumertion Module </a></li>
-          </ul>
-        </li>
+            <li> <a href="https://github.com/skepticfx/domstorm/wiki/Creating-a-Simple-Module" target="_blank"> Creating a Enumeration Module </a></li>
 
-        <li class="dropdown">
-          <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="themes"> <img src="/public/imgs/icons/bulb.png" /> Specs <span class="caret"> </span></a>
-          <ul class="dropdown-menu" aria - labelledby="themes" id="specsListNode">
+            <li class="divider"> </li>
             <li> <a tabindex="-1" target="_blank" href="http://es5.github.io/"> ECMAScript 5.1 </a></li>
             <li> <a tabindex="-1" target="_blank" href="http://www.w3.org/DOM/DOMTR"> Document Object Model </a></li>
             <li> <a tabindex="-1" target="_blank" href="https://developer.mozilla.org/en-US/docs/Web"> Mozilla Developer Network Docs </a></li>
@@ -53,24 +54,21 @@
           </ul>
         </li>
 
+
+        <li class="dropdown github-link">
+          <a href="https://github.com/skepticfx/domstorm" id="themes" target="_blank"> <img src="/public/imgs/icons/github.png" /> GitHub </a>
+        </li>
+
         <% if(typeof user === 'undefined'){ %>
         <li class="dropdown auth-twitter">
-          <a class="auth-twitter" id="auth-twitter-id" href="/auth/twitter" id="themes"> <img src="/public/imgs/icons/twitter.png" /> Sign in with Twitter </a>
+          <a class="auth-twitter" id="auth-twitter-id" href="/auth/twitter" id="themes"> <img src="/public/imgs/icons/twitter.png" /> Login </a>
         </li>
         <% } else {%>
         <li class="dropdown auth-twitter">
-          <a class="auth-twitter" id="auth-twitter-id" href="/profile/<%= user.handle %>" id="themes"> <img src="/public/imgs/icons/profile.png" /> @
-            <%= user.handle %>
-          </a>
+          <a class="auth-twitter" id="auth-twitter-id" href="/profile/<%= user.handle %>" id="themes"> <img src="/public/imgs/icons/profile.png" /> <%= user.handle %></a>
         </li>
         <% } %>
 
-        <li>
-          <a href="/search"> <img src="/public/imgs/icons/search.png" /> Search </a>
-        </li>
-
-      </ul>
-      <a href="https://github.com/skepticfx/domstorm"> <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical - src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png"> </a>
     </div>
 
 

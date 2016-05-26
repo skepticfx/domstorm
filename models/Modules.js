@@ -82,6 +82,15 @@ ModulesSchema.statics.getModuleById = function(id, callback) {
   });
 };
 
+ModulesSchema.statics.getModulesByUser = function(username, callback) {
+  this.find({
+    owner: username
+  }, function(err, modules) {
+    if (!modules) return callback(new Error('No Modules found'));
+    return callback(null, modules);
+  });
+};
+
 ModulesSchema.statics.getTopModules = function(callback){
   this
     .find({})

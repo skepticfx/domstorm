@@ -11,10 +11,10 @@ var http = require('http');
 var path = require('path');
 var mongoose = require('mongoose');
 var passport = require('passport');
-var session = require('express-session');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
-var cookieSession = require('cookie-session');
+var expressSession = require('express-session');
+var MongoStore = require('connect-mongo')(expressSession);
 var bodyParser = require('body-parser');
 var TwitterStrategy = require('passport-twitter').Strategy;
 var config = require('./config.js').config;
@@ -39,6 +39,11 @@ db.on('error', function(err) {
   console.log('You can create a Mongo user for the db domstorm using your mongo shell locally. ');
   console.log('> use domstorm; db.createUser({"user": "fx", "pwd": "fx", "roles": ["readWrite"]});');
 });
+
+
+
+initPassportStrategy();
+
 db.once('open', function() {
   console.log('Successfully connected to the database.');
   // all environments
@@ -52,39 +57,7 @@ db.once('open', function() {
     config.admin = 'twitter';
   }
 
-  function defaultUser(req, res, next) {
-    var user;
-    if (!config.requireAuth) {
-      user = new User();
-      user.provider = "noAuth";
-      user.uid = '90823457769194527583260';
-      user.id = '90823457769194527583260';
-      user.name = config.admin;
-      user.handle = config.admin;
-      user.image = '';
-      req.user = user;
-    }
-    res.locals.user = req.user;
-    next();
-  }
-
-
-
-  // middleware stack
   app.use(redirectToHttps);
-  app.use(logger('dev'));
-  app.use(bodyParser.json());
-  app.use(bodyParser.urlencoded({extended: false}));
-  app.use(cookieParser());
-  app.use(express.static(path.join(__dirname, 'public')));
-  app.use(cookieSession({
-    name :'expressSession',
-    secret: crypto.randomBytes(16).toString('hex')
-  }));
-
-  app.use(passport.initialize());
-  app.use(passport.session());
-  app.use(defaultUser);
 
   app.use("/", express.static(path.join(__dirname, '/public'), {
     maxAge: oneDay
@@ -93,6 +66,64 @@ db.once('open', function() {
     maxAge: oneDay
   }));
 
+
+  // middleware stack
+  app.use(logger('dev'));
+  app.use(bodyParser.json());
+  app.use(bodyParser.urlencoded({extended: false}));
+  app.use(express.static(path.join(__dirname, 'public')));
+  app.use(cookieParser());
+  app.use(expressSession({
+    key :'domstorm_session_id',
+    secret: config.EXPRESS_SESSION_SECRET,
+    store: new MongoStore({ mongooseConnection: db}),
+    resave: true,
+    saveUninitialized: true,
+    cookie: {maxAge: 24 * 36000}
+  }));
+
+  //app.use(cleanupPassportSession);
+  app.use(passport.initialize());
+  app.use(passport.session());
+  app.use(defaultUser);
+
+
+
+  // routing
+  controllers.set(app);
+
+  http.createServer(app).listen(app.get('port'), app.get('ip'), function() {
+    if(!config.DEV_MODE) console.log('Running in production mode.');
+    console.log('Dom Storm server listening on port: ' + app.get('port'));
+  });
+});
+
+
+function redirectToHttps(req, res, next) {
+  if (!config.DEV_MODE && req.headers['x-forwarded-proto'] == 'http') {
+    res.redirect('https://' + req.headers.host + req.path);
+  } else {
+    return next();
+  }
+}
+
+function defaultUser(req, res, next) {
+  var user;
+  if (!config.requireAuth) {
+    user = new User();
+    user.provider = "noAuth";
+    user.uid = '90823457769194527583260';
+    user.id = '90823457769194527583260';
+    user.name = config.admin;
+    user.handle = config.admin;
+    user.image = '';
+    req.user = user;
+  }
+  res.locals.user = req.user;
+  next();
+}
+
+function initPassportStrategy(){
 
   if (config.requireAuth && config.TWITTER_CONSUMER_KEY.length !== 0 && config.TWITTER_CONSUMER_SECRET.length !== 0) {
     passport.use(new TwitterStrategy({
@@ -141,21 +172,21 @@ db.once('open', function() {
     console.log('Running in no-auth mode.');
   }
 
-
-  // routing
-  controllers.set(app);
-
-  http.createServer(app).listen(app.get('port'), app.get('ip'), function() {
-    if(!config.DEV_MODE) console.log('Running in production mode.');
-    console.log('Dom Storm server listening on port: ' + app.get('port'));
-  });
-});
-
-
-function redirectToHttps(req, res, next) {
-  if (!config.DEV_MODE && req.headers['x-forwarded-proto'] == 'http') {
-    res.redirect('https://' + req.headers.host + req.path);
-  } else {
-    return next();
-  }
 }
+
+function cleanupPassportSession(req, res, next) {
+  var _end = res.end;
+  var ended = false;
+  res.end = function end(chunk, encoding) {
+    if (ended) {
+      return;
+    }
+    ended = true;
+
+    if (req.session && req.session.passport && Object.keys(req.session.passport).length === 0) {
+      delete req.session.passport;
+    }
+    _end.call(res, chunk, encoding);
+  };
+  next();
+};

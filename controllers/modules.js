@@ -491,6 +491,16 @@ exports.fork = function(app) {
 
 exports.init = function(app) {
 
+
+  app.get('/mymodules', ensureAuthenticated, function (req, res) {
+    Modules.getModulesByUser(req.currentUser, function (err, modules) {
+      modules = modules.map(function(module){
+        return {id: module._id, name: module.name, description: module.description, favorites: module.favs}
+      });
+      res.render('modules/myModules', {modules: modules});
+    });
+  });
+
   // Favorites a given module by a logged in User.
   app.post('/modules/favorite', ensureAuthenticated, function (req, res) {
     if (typeof req.body.id != 'undefined') {

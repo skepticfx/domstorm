@@ -17,6 +17,11 @@ config.requireAuth = true;
 // Logging capability
 config.log = false;
 
+
+// THIS MUST BE SET TO A VALUE like 'crypto.randomBytes(16).toString('hex')' as an ENV VAR in your Server.
+config.EXPRESS_SESSION_SECRET = process.env.EXPRESS_SESSION_SECRET || 'express_session_secret';
+
+
 // Twitter Config
 config.TWITTER_CONSUMER_KEY = process.env.TWITTER_CONSUMER_KEY;
 config.TWITTER_CONSUMER_SECRET = process.env.TWITTER_CONSUMER_SECRET;
@@ -32,7 +37,7 @@ if (process.env.DB_URI) {
   config.DEV_MODE = true;
   config.DB_URI = 'mongodb://fx:fx@127.0.0.1/domstorm'; // Local Mongo Instance
   config.CALLBACK_URL = "http://localhost:8080/auth/twitter/callback";
-  config.requireAuth = false;
+  config.requireAuth = true;
   config.log = true;
 }
 
