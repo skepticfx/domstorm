@@ -9,16 +9,15 @@ var modules = require('./controllers/modules.js');
 var http = require('http');
 var path = require('path');
 var mongoose = require('mongoose');
-var passport = require('passport');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
-var expressSession = require('express-session');
-var MongoStore = require('connect-mongo')(expressSession);
 var bodyParser = require('body-parser');
-var TwitterStrategy = require('passport-twitter').Strategy;
 var config = require('./config.js').config;
 var User = require(process.cwd() + '/models/Modules.js').User;
 var Modules = require(process.cwd() + '/models/Modules.js').Modules;
+var appRouter = require('./routes');
+
+var authenticationMiddleware = require('./middlewares/authentication');
 
 var oneDay = 60 * 60 * 24;
 var app = express();
@@ -41,7 +40,6 @@ db.on('error', function(err) {
 
 
 
-initPassportStrategy();
 
 db.once('open', function() {
   console.log('Successfully connected to the database.');
@@ -51,6 +49,9 @@ db.once('open', function() {
   app.set('port', process.env.PORT || process.env.NODE_PORT || 8080);
   app.set('ip', process.env.IP || process.env.NODE_IP || '127.0.0.1');
 
+  app.set('db', db);
+  app.set('config', config);
+
   if (typeof config.admin == 'undefined' || config.admin.length === 0) {
     console.log('admin must be configured in `config.js`. Setting admin to the name `twitter` ');
     config.admin = 'twitter';
@@ -58,9 +59,6 @@ db.once('open', function() {
 
   app.use(redirectToHttps);
 
-  app.use("/", express.static(path.join(__dirname, '/public'), {
-    maxAge: oneDay
-  }));
   app.use("/public", express.static(path.join(__dirname, '/public'), {
     maxAge: oneDay
   }));
@@ -68,27 +66,20 @@ db.once('open', function() {
 
   // middleware stack
   app.use(logger('dev'));
+  app.use(cookieParser());
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({extended: false}));
-  app.use(express.static(path.join(__dirname, 'public')));
-  app.use(cookieParser());
-  app.use(expressSession({
-    key :'domstorm_session_id',
-    secret: config.EXPRESS_SESSION_SECRET,
-    store: new MongoStore({ mongooseConnection: db}),
-    resave: true,
-    saveUninitialized: true,
-    cookie: {maxAge: oneDay * 31} // Persist for a month
-  }));
 
-  //app.use(cleanupPassportSession);
-  app.use(passport.initialize());
-  app.use(passport.session());
-  app.use(defaultUser);
+  app.use(authenticationMiddleware.init(app));
 
-
+  app.use(function(req, res, next){
+    req.Modules = Modules;
+    req.User = User;
+    next();
+  });
 
   // routing
+  app.use('/', appRouter);
   controllers.set(app);
 
   http.createServer(app).listen(app.get('port'), app.get('ip'), function() {
@@ -105,87 +96,3 @@ function redirectToHttps(req, res, next) {
     return next();
   }
 }
-
-function defaultUser(req, res, next) {
-  var user;
-  if (!config.requireAuth) {
-    user = new User();
-    user.provider = "noAuth";
-    user.uid = '90823457769194527583260';
-    user.id = '90823457769194527583260';
-    user.name = config.admin;
-    user.handle = config.admin;
-    user.image = '';
-    req.user = user;
-  }
-  res.locals.user = req.user;
-  next();
-}
-
-function initPassportStrategy(){
-
-  if (config.requireAuth && config.TWITTER_CONSUMER_KEY.length !== 0 && config.TWITTER_CONSUMER_SECRET.length !== 0) {
-    passport.use(new TwitterStrategy({
-        consumerKey: config.TWITTER_CONSUMER_KEY,
-        consumerSecret: config.TWITTER_CONSUMER_SECRET,
-        callbackURL: config.CALLBACK_URL
-      },
-      function(token, tokenSecret, profile, done) {
-        User.findOne({
-          uid: profile.id
-        }, function(err, user) {
-          if (user) {
-            done(null, user);
-          } else {
-            var user = new User();
-            user.provider = "twitter";
-            user.uid = profile.id;
-            user.id = profile._id;
-            user.name = profile.displayName;
-            user.handle = profile.username;
-            user.image = profile._json.profile_image_url;
-            user.save(function(err) {
-              if (err) {
-                throw err;
-              }
-              done(null, user);
-            });
-          }
-        })
-      }
-    ));
-
-
-    passport.serializeUser(function(user, done) {
-      done(null, user.uid);
-    });
-
-    passport.deserializeUser(function(uid, done) {
-      User.findOne({
-        uid: uid
-      }, function(err, user) {
-        done(err, user);
-      });
-    });
-  } else {
-    console.log('Running in no-auth mode.');
-  }
-
-}
-
-function cleanupPassportSession(req, res, next) {
-  var _end = res.end;
-  var ended = false;
-  res.end = function end(chunk, encoding) {
-    if (ended) {
-      return;
-    }
-    ended = true;
-
-    if (req.session && req.session.passport && Object.keys(req.session.passport).length === 0) {
-      delete req.session.passport;
-    }
-    _end.call(res, chunk, encoding);
-  };
-  next();
-};

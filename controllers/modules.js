@@ -4,7 +4,7 @@ var admin = require('../config.js').config.admin;
 
 function ensureAdmin(req, res, next) {
 
-  if (req.isAuthenticated() && req.user.handle === admin) {
+  if (req.isAdminUser()) {
     return next();
   } else {
     res.render('misc/userError', {
@@ -158,6 +158,7 @@ exports.run = function(app) {
 
 }
 
+
 // Creates a new module
 exports.create = function(app) {
 
@@ -166,7 +167,7 @@ exports.create = function(app) {
     res.render('modules/createModule', {
       'title': 'Create a new Module'
     });
-    
+
   });
 
   // Form
@@ -185,7 +186,6 @@ exports.create = function(app) {
       }
       results.columns = columns;
     }
-
     if (type === 'TESTHARNESS') {
       results._type = 'testharness';
       results.columns = ['Result', 'Test Name', 'Message'];
@@ -243,7 +243,7 @@ exports.edit = function(app) {
             'info': 'Apparently, the module is missing in our system.'
           });
         } else {
-          if (module.owner == req.currentUser || req.currentUser == admin) {
+          if (module.owner == req.currentUser || req.isAdminUser()) {
             module.remove();
             res.redirect('/');
           } else {

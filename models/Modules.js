@@ -136,7 +136,7 @@ ModulesSchema.statics.searchAll = function(str, cb) {
     });
     cb(err, modules);
   });
-}
+};
 
 
 var Modules = mongoose.model('Modules', ModulesSchema);

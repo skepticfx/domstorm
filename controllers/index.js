@@ -2,16 +2,18 @@
  * Controllers. This routes everything under the sun.
  */
 
-var modules = require(process.cwd() + '/controllers/modules.js');
-var helper = require(process.cwd() + '/controllers/helper.js');
-var auth = require(process.cwd() + '/controllers/auth.js');
-var datasets = require(process.cwd() + '/controllers/datasets.js');
-var admin = require(process.cwd() + '/controllers/admin.js');
-var profile = require(process.cwd() + '/controllers/profile.js');
-var search = require(process.cwd() + '/controllers/search.js');
+var modules = require('./modules.js');
+var helper = require('./helper.js');
+var auth = require('./auth.js');
+var admin = require('./admin.js');
+var profile = require('./profile.js');
+var search = require('./search.js');
 
 // All Local routing goes here.
 exports.set = function(app) {
+  // Router()
+
+
   // Home page
   app.get('/', function(req, res) {
     var authError = 0;
@@ -39,7 +41,6 @@ exports.set = function(app) {
     });
   });
   // Modules
-  modules.create(app); // More specific routes comes first.
   modules.index(app);
   modules.run(app);
   modules.results(app);
@@ -56,8 +57,6 @@ exports.set = function(app) {
   auth.index(app);
   auth.twitter(app);
 
-  // Dataset
-  datasets.index(app);
 
   // Profile
   profile.index(app);

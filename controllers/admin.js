@@ -6,7 +6,7 @@ var admin = require('../config.js').config.admin;
 
 function ensureAdmin(req, res, next) {
 
-  if (req.isAuthenticated() && req.user.handle === admin) {
+  if (req.isAdminUser()) {
     return next();
   } else {
     res.render('misc/userError', {
@@ -29,7 +29,7 @@ function ensureAuthenticated(req, res, next) {
 
 exports.index = function(app) {
 
-  app.get('/admin', function(req, res) {
+  app.get('/admin', ensureAdmin, function(req, res) {
     Users.find({}, function(err, users) {
       Modules.find({}, function(err, modules) {
         for (x in modules) {
