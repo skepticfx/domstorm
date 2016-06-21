@@ -13,4 +13,9 @@ $(document).ready(function() {
     }
   });
 
+
+  // Update current browser used browser
+  var browser = detect.parse(navigator.userAgent).browser;
+
+  $('#current-browser').html('<img src="/public/imgs/browser-logos/' + browser.family + '.png"><span class="tooltip">Running on '+ browser.family + ' ' +  browser.version+'</span>');
 });

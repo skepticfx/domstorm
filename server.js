@@ -12,6 +12,7 @@ var mongoose = require('mongoose');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var favicon = require('serve-favicon');
 var config = require('./config.js').config;
 var User = require(process.cwd() + '/models/Modules.js').User;
 var Modules = require(process.cwd() + '/models/Modules.js').Modules;
@@ -35,7 +36,9 @@ db.on('error', function(err) {
   console.log('Connection error: ' + err.name + ': ' + err.message);
   console.log('If you are trying to run this locally, make sure you have configured config.js to have the correct username and password');
   console.log('You can create a Mongo user for the db domstorm using your mongo shell locally. ');
-  console.log('> use domstorm; db.createUser({"user": "fx", "pwd": "fx", "roles": ["readWrite"]});');
+  console.log('*************');
+  console.log('use domstorm;');
+  console.log('db.createUser({"user": "fx", "pwd": "fx", "roles": ["readWrite"]});');
 });
 
 
@@ -58,7 +61,7 @@ db.once('open', function() {
   }
 
   app.use(redirectToHttps);
-
+  app.use(favicon(__dirname + '/public/imgs/dom-storm-logo.png'));
   app.use("/public", express.static(path.join(__dirname, '/public'), {
     maxAge: oneDay
   }));
@@ -67,7 +70,7 @@ db.once('open', function() {
   // middleware stack
   app.use(logger('dev'));
   app.use(cookieParser());
-  app.use(bodyParser.json());
+  app.use(bodyParser.json({limit: '50mb'}));
   app.use(bodyParser.urlencoded({extended: false}));
 
   app.use(authenticationMiddleware.init(app));
@@ -77,6 +80,8 @@ db.once('open', function() {
     req.User = User;
     next();
   });
+
+  app.locals.TESTRUNNER_MAXIMUM_IFRAMES = config.TESTRUNNER_MAXIMUM_IFRAMES || 10;
 
   // routing
   app.use('/', appRouter);

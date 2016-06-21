@@ -41,3 +41,7 @@ if (process.env.DB_URI) {
   config.log = true;
 }
 
+// TESTRUNNER SPECIFIC CONFIGURATION
+
+// This decides the total number of iframes to spawn for parallel testing.
+config.TESTRUNNER_MAXIMUM_IFRAMES = 10;

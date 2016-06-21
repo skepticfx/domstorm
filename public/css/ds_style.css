@@ -62,3 +62,10 @@ div.col-lg-4 a.list-group-item:hover{
   display: inline;
   font-family: 'Courier';
 }
+
+
+#current-browser{
+
+  bottom: 5px;
+  right: 12px;
+}

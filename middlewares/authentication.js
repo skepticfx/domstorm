@@ -49,6 +49,7 @@ function setAuthenticationHelpers(req, res, next){
 
   // Setting the user in locals, so it can be accessed globally in views as well.
   res.locals.user = req.user;
+  res.locals.isAuthenticated = function(){ return true;};
 
   if(req.isAuthenticated()) req.username = req.user.handle;
 

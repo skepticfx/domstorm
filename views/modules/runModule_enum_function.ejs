@@ -39,70 +39,105 @@
         obj.data.push(args[x]);
       obj.type = type;
       rows.push(obj);
-      //console.log(rows.length);
     };
 
-    var ua = detect.parse(navigator.userAgent);
 
+    var TESTRUNNER_MAXIMUM_IFRAMES = <%- TESTRUNNER_MAXIMUM_IFRAMES %>;
     var userScript = document.getElementById('user_script').textContent;
-    var currentTasks = 0;
+    var testRunnerIframes = {};
     var totalTests = 0;
-    var testCounter = 0;
+    var completedTests = 0;
 
-    function injectScript(iframe, inject) {
-      var script = iframe.contentWindow.document.createElement('script');
-      script.type = 'text/javascript';
-      script.innerHTML = inject;
-      iframe.contentWindow.document.body.appendChild(script);
-    }
-
-    function injectIframe(list, src, callback) {
-      if (list.length === 0) {
-        endTest();
-        return;
-      }
-      if (currentTasks <= 10) {
-        console.log(currentTasks);
-        var data = list.shift();
-        document.getElementById('enum_status').textContent = data.toString() + ' -- (' + testCounter++ + '/' + totalTests + ' )';
-        currentTasks++;
-        injectIframe(list, src, callback);
-        var iframe = document.createElement('iframe');
-        iframe.src = '/testrunner';
-        document.body.appendChild(iframe);
-        iframe.onload = function() {
-          injectScript(this, src);
-          iframe.contentWindow.callTest.call(undefined, data, function() {
-            callback(iframe);
-            currentTasks--;
-            injectIframe(list, src, callback);
-          });
-        };
-      } else {
-        console.log('not 10: ' + currentTasks);
-        setTimeout(function() {
-          injectIframe(list, src, callback);
-        }, 100);
-      }
-    }
-
-    function iframeInjected(iframeNode) {
-      document.body.removeChild(iframeNode);
-    };
 
     function runTests(dataArray) {
-      totalTests = dataArray.length;
       if (dataArray.length === 0) {
         addResult(['No Data enumerated. The Data Array was empty.'], 'INFO');
         endTest();
         return;
       }
-      injectIframe(dataArray, userScript, iframeInjected);
+      totalTests = dataArray.length;
+      initializeIframes(function(){
+        dataArray.forEach(function(data){
+          runTestOnIframe(data);
+        });
+      });
+
     }
 
-    function endTest() {
 
-      //console.log(rows.length);
+    /**
+     *
+     */
+    function runTestOnIframe(data){
+      getIframeForTesting(function(iframe){
+        iframe.contentWindow.callTest.call(undefined, data, function(){
+          // The iframe test has been completed.
+          testRunnerIframes[iframe.id].running = false;
+          document.getElementById('enum_status').textContent = data.toString() + ' -- (' + completedTests++ + '/' + totalTests + ' )';
+
+          if(completedTests === totalTests){
+            endTest();
+          }
+        });
+      });
+    }
+
+
+    function getIframeForTesting(cb){
+      var i;
+      for(i=1; i<=Object.keys(testRunnerIframes).length; i++){
+        if(!testRunnerIframes[i].running){
+          testRunnerIframes[i].running = true;
+          cb(testRunnerIframes[i]);
+          return;
+        }
+      }
+      // At this point none of the iframes[] are free.
+      // We wait now ...
+      setTimeout(function(){
+        getIframeForTesting(function(iframe){
+          cb(iframe);
+        });
+      }, 100);
+
+    }
+
+    /**
+     * Initializes the IFrames for TESTRUNNER_MAXIMUM_IFRAMES number of counts with their respective ids as iframe_i;
+     *
+     */
+    function initializeIframes(cb){
+      var i, iframe;
+      var iframeCount = 0;
+      for(i=1; i<=TESTRUNNER_MAXIMUM_IFRAMES; i++){
+        iframe = document.createElement('iframe');
+        iframe.id = i;
+        iframe.src = '/testrunner';
+        document.body.appendChild(iframe);
+        iframe.onload = function(){
+          iframeCount++;
+          injectScript(this, userScript);
+          this.running = false;
+          // If all the iframes have been initialized just callback().
+          if(iframeCount === TESTRUNNER_MAXIMUM_IFRAMES){
+            cb();
+          }
+        };
+        testRunnerIframes[iframe.id] = iframe;
+      }
+    }
+
+
+    function injectScript(iframe, content) {
+      var script = iframe.contentWindow.document.createElement('script');
+      script.type = 'text/javascript';
+      script.innerHTML = content;
+      iframe.contentWindow.document.body.appendChild(script);
+    }
+
+
+    function endTest() {
+      var ua = detect.parse(navigator.userAgent);
       document.getElementById('domstorm_id_status').innerHTML = '<h1>The test is complete now. </h1> <h2>This window will close right now.</h2>';
       var module_id = '<%= module_id %>';
       var xhr = new XMLHttpRequest();
