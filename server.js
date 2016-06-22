@@ -10,7 +10,6 @@ var http = require('http');
 var path = require('path');
 var mongoose = require('mongoose');
 var logger = require('morgan');
-var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var favicon = require('serve-favicon');
 var config = require('./config.js').config;
@@ -20,7 +19,8 @@ var appRouter = require('./routes');
 
 var authenticationMiddleware = require('./middlewares/authentication');
 
-var oneDay = 60 * 60 * 24;
+var oneSecond = 1000; // milliseconds
+var oneDay = (60 * oneSecond) *  (60 * 24); // 1 minute * 60 * 24
 var app = express();
 
 // Force No-Auth ?
@@ -69,7 +69,6 @@ db.once('open', function() {
 
   // middleware stack
   app.use(logger('dev'));
-  app.use(cookieParser());
   app.use(bodyParser.json({limit: '50mb'}));
   app.use(bodyParser.urlencoded({extended: false}));
 

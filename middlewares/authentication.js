@@ -16,7 +16,8 @@ var TwitterStrategy = require('passport-twitter').Strategy;
 var authenticator = express();
 var config;
 
-var oneDay = 60 * 60 * 24;
+var oneSecond = 1000; // milliseconds
+var oneDay = (60 * oneSecond) *  (60 * 24); // 1 minute * 60 * 24
 
 module.exports.init = function(app){
   var db = app.get('db');
