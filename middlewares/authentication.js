@@ -30,7 +30,7 @@ module.exports.init = function(app){
     resave: true,
     saveUninitialized: true,
     cookie: {
-      maxAge: oneDay * 31 // Persist for a month
+      maxAge: oneDay * 31 * 12 // Persist for a year
     }
   }));
   authenticator.use(passport.initialize());

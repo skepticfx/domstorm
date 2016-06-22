@@ -40,17 +40,19 @@ function ensureAuthenticated(req, res, next){
 
 var allowedRoutes = {
   '/': ['*'],
-  '/search': ['*'],
+  '/modules/topModules.json': ['GET'],
+  '/profile/*': ['*'],
+  '/public/*': ['*'],
+  '/modules': ['GET'],
+  '/modules/results/update': ['POST'],
   '/auth/twitter': ['*'],
   '/auth/twitter/callback': ['*'],
-  '/modules/topModules.json': ['GET'],
   '/modules/run': ['GET'],
-  '/modules': ['GET'],
   '/helper': ['GET'],
   '/testrunner': ['GET'],
-  '/helper/headers': ['GET'],
-  '/modules/results/update': ['POST'],
-  '/profile/*': ['*']
+  '/search': ['*'],
+  '/helper/headers': ['GET']
+
 };
 
 /**
