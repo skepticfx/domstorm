@@ -179,15 +179,15 @@ $(document).ready(function() {
   $('#submitButton').click(function(){
     var formDetails = $('#forkModule')[0];
     if(formDetails._name.value.trim().length === 0){
-      alert('Please enter a name for the module');
+      sweetAlert({'title': 'Missing input', 'type':'error', 'text': 'Please enter a name for the module'});
       return;
     }
     if(formDetails._desc.value.trim().length === 0){
-      alert('Please enter a brief description for the module');
+      sweetAlert({'title': 'Missing input', 'type':'error', 'text': 'Please enter a description for the module'});
       return;
     }
     if(formDetails._tags.value.trim().length === 0){
-      alert('Please enter at least one tag name to identify this module');
+      sweetAlert({'title': 'Missing input', 'type':'error', 'text': 'Please enter at least one tag name to identify this module'});
       return;
     }
     $('#_userScript').val(userScript.getValue());
