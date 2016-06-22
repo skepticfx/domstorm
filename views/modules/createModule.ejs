@@ -48,13 +48,13 @@
 		<div class="col-lg-10">
       <div class="radio">
       <label>
-        <input type="radio" name="_module_type" id="optionsRadios1" value="TESTHARNESS" checked="">
+        <input type="radio" name="_module_type" id="optionsRadios1" value="TESTHARNESS">
         W3C TestHarness (Read more <a href="http://darobin.github.io/test-harness-tutorial/docs/using-testharness.html" target="_blank">here</a>)
       </label>
       </div>
 		  <div class="radio">
 			<label>
-			  <input type="radio" name="_module_type" id="optionsRadios2" value="ENUM_FUNCTION">
+			  <input type="radio" name="_module_type" id="optionsRadios2" value="ENUM_FUNCTION" checked="">
         Enumeration Functions (Read more <a href="https://github.com/skepticfx/domstorm/wiki/Creating-a-Simple-Module" target="_blank">here</a>)
 			</label>
 		  </div>
@@ -69,11 +69,10 @@
 
     <script>
       $(document).ready(function(){
-        $('.enum_stuff').hide();
         userScript = ace.edit("userScript");
         userScript.setTheme("ace/theme/chrome");
         userScript.getSession().setMode("ace/mode/html");
-        userScript.getSession().setValue($('#userScript_testharness').text());
+        userScript.getSession().setValue($('#userScript_enum_function').text());
 
         // Test Harness
         $('#optionsRadios1').change(function(){
@@ -253,6 +252,19 @@ $(document).ready(function() {
   });
 
   $('#submitButton').click(function(){
+    var formDetails = $('#createModule')[0];
+    if(formDetails._name.value.trim().length === 0){
+      alert('Please enter a name for the module');
+      return;
+    }
+    if(formDetails._desc.value.trim().length === 0){
+      alert('Please enter a brief description for the module');
+      return;
+    }
+    if(formDetails._tags.value.trim().length === 0){
+      alert('Please enter at least one tag name to identify this module');
+      return;
+    }
     $('#_userScript').val(userScript.getValue());
     $('#_enum_data').val(enum_data.getValue());
     $('#createModule').submit();
