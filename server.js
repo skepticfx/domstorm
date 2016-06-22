@@ -13,8 +13,8 @@ var logger = require('morgan');
 var bodyParser = require('body-parser');
 var favicon = require('serve-favicon');
 var config = require('./config.js').config;
-var User = require(process.cwd() + '/models/Modules.js').User;
-var Modules = require(process.cwd() + '/models/Modules.js').Modules;
+var User = require('./models/User');
+var Modules = require('./models/Modules');
 var appRouter = require('./routes');
 
 var authenticationMiddleware = require('./middlewares/authentication');

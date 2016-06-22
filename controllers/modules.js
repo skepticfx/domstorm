@@ -1,5 +1,5 @@
 // Routes for anything '/modules' related
-var Modules = require(process.cwd() + '/models/Modules.js').Modules;
+var Modules = require('../models/Modules');
 var admin = require('../config.js').config.admin;
 
 function ensureAdmin(req, res, next) {

@@ -1,8 +1,7 @@
 // Routes everything '/admin' related.
 
-var Modules = require(process.cwd() + '/models/Modules.js').Modules;
-var Users = require(process.cwd() + '/models/Modules.js').User;
-var admin = require('../config.js').config.admin;
+var Modules = require('../models/Modules');
+var User = require('../models/User');
 
 function ensureAdmin(req, res, next) {
 
@@ -16,21 +15,10 @@ function ensureAdmin(req, res, next) {
   }
 }
 
-// Auth Middleware and sets the logged in user to req.currentUser;
-function ensureAuthenticated(req, res, next) {
-
-  if (req.isAuthenticated()) {
-    req.currentUser = req.user.handle;
-    return next();
-  }
-  req.currentUser = 'Anonymous';
-  res.redirect('/?authError=1');
-}
-
 exports.index = function(app) {
 
   app.get('/admin', ensureAdmin, function(req, res) {
-    Users.find({}, function(err, users) {
+    User.getAllUsers(function(err, users) {
       Modules.find({}, function(err, modules) {
         for (x in modules) {
           if (modules[x].owner === undefined)

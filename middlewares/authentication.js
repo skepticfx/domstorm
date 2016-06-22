@@ -7,7 +7,7 @@
  *  - embed authentication helpers inside the request object
  *  - passport-twitter is the core authentication module.
  */
-var User = require('../models/Modules').User;
+var User = require('../models/User');
 var express = require('express');
 var expressSession = require('express-session');
 var MongoStore = require('connect-mongo')(expressSession);

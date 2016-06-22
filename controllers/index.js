@@ -6,7 +6,6 @@ var modules = require('./modules.js');
 var helper = require('./helper.js');
 var auth = require('./auth.js');
 var admin = require('./admin.js');
-var profile = require('./profile.js');
 var search = require('./search.js');
 
 // All Local routing goes here.
@@ -56,10 +55,6 @@ exports.set = function(app) {
   // Auth Modules
   auth.index(app);
   auth.twitter(app);
-
-
-  // Profile
-  profile.index(app);
 
   // Add Admin Features
   admin.index(app);

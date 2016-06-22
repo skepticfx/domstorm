@@ -69,25 +69,3 @@ router.post('/', function(req, res){
 module.exports = router;
 
 
-/**
-
-
- // Creates a new module
- exports.create = function(app) {
-
-  // The UI
-  app.get('/modules/create', ensureAuthenticated, function(req, res) {
-    res.render('modules/createModule', {
-      'title': 'Create a new Module'
-    });
-
-  });
-
-  // Form
-  app.post('/modules/create', ensureAuthenticated, function(req, res) {
-      });
-
-}
-
-
- */

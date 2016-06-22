@@ -1,18 +1,5 @@
 var mongoose = require('mongoose');
 
-var UserSchema = mongoose.Schema({
-  provider: String,
-  uid: String,
-  handle: String,
-  name: String,
-  image: String,
-  created: {
-    type: Date,
-    default: Date.now
-  }
-});
-
-
 var ModulesSchema = mongoose.Schema({
   name: String,
   description: String,
@@ -83,14 +70,18 @@ ModulesSchema.statics.getModuleById = function(id, callback) {
 };
 
 ModulesSchema.statics.getModulesByUser = function(username, callback) {
-  this.find({
-    owner: username
-  }, function(err, modules) {
-    if (!modules) return callback(new Error('No Modules found'));
+  this.find({ owner: username }, function(err, modules) {
     return callback(null, modules);
   });
 };
 
+ModulesSchema.statics.getFavsByUser = function(username, callback) {
+  this.find({ "favs": {$in: [username] }}, function(err, modules) {
+    return callback(null, modules);
+  });
+};
+
+// Returns the top 10 modules
 ModulesSchema.statics.getTopModules = function(callback){
   this
     .find({})
@@ -139,8 +130,7 @@ ModulesSchema.statics.searchAll = function(str, cb) {
 };
 
 
-var Modules = mongoose.model('Modules', ModulesSchema);
-var User = mongoose.model('User', UserSchema);
 
-exports.Modules = Modules;
-exports.User = User;
+var Modules = mongoose.model('Modules', ModulesSchema);
+
+module.exports= Modules;

@@ -7,7 +7,7 @@ exports.index = function(app) {
   app.get('/auth', function(req, res) {
     res.redirect('/auth/twitter');
   });
-}
+};
 
 exports.twitter = function(app) {
 
@@ -31,4 +31,4 @@ exports.twitter = function(app) {
     res.redirect('/');
   });
 
-}
+};
