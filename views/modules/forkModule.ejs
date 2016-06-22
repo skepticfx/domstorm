@@ -21,7 +21,7 @@
 
 
 <div class="panel-heading">
-  <form class="bs-example form-horizontal" action="/modules/create" method="POST" id="editModule">
+  <form class="bs-example form-horizontal" action="/modules/create" method="POST" id="forkModule">
   <input type="hidden" name= "_id" value="<%= module._id%>" />
     <div id="greenish_title">Module Details</div>
     <div class="form-group">
@@ -177,7 +177,7 @@ $(document).ready(function() {
   });
 
   $('#submitButton').click(function(){
-    var formDetails = $('#createModule')[0];
+    var formDetails = $('#forkModule')[0];
     if(formDetails._name.value.trim().length === 0){
       alert('Please enter a name for the module');
       return;
@@ -192,7 +192,7 @@ $(document).ready(function() {
     }
     $('#_userScript').val(userScript.getValue());
     $('#_enum_data').val(enum_data.getValue());
-    $('#editModule').submit();
+    $('#forkModule').submit();
   });
 });
 
