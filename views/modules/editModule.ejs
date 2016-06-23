@@ -201,7 +201,7 @@ var updateColumns = function(num){
   for(var i=1; i<=num; i++){
     $('#div_cols').append('<label for="_cols_'+i+'" class="col-lg-2 control-label">Column '+i+'</label><div class="col-lg-4"><input type="text" name="_cols_'+i+'" class="form-control" id="cols_'+i+'" placeholder="'+getColumnName(i)+'" value="'+getColumnName(i)+'" autocomplete="off"></div>');
   }
-}
+};
 
 var column_names = <%- columns %>;
 var getColumnName = function(i){

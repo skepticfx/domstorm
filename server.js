@@ -62,9 +62,10 @@ db.once('open', function() {
 
   app.use(redirectToHttps);
   app.use(favicon(__dirname + '/public/imgs/dom-storm-logo.png'));
-  app.use("/public", express.static(path.join(__dirname, '/public'), {
-    maxAge: oneDay
-  }));
+  app.use("/public", express.static(path.join(__dirname, '/public'), { maxAge: oneDay }));
+
+  // Handle browser logos if its not found in the public folder. (/public/imgs/browser-logos/unknown-browser-name.png)
+  app.use("/public/imgs/browser-logos/:browser", express.static(path.join(__dirname, '/public/imgs/browser-logos/unknownbrowser.png'), { maxAge: oneDay }));
 
 
   // middleware stack
