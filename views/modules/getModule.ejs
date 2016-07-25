@@ -119,8 +119,8 @@
 		</div>
 	</div>
 
-
-	<div class="column <% if(module_test._type === 'TESTHARNESS'){ %>  hide_me <% } %>">
+	<% if(module_test._type === 'ENUM_FUNCTION'){ %>
+	<div class="column">
 		<div class="panel panel-primary">
 			<div class="panel-heading">
 				<h3 class="panel-title"><img src="/public/imgs/icons/data.png"/> Enum Data (<%=module_test._type%>) </h3>
@@ -134,8 +134,24 @@
 			</div>
 		</div>
 	</div>
+	<% } %>
 
-
+	<% if(module_test._type === 'FUZZER'){ %>
+	<div class="column">
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+				<h3 class="panel-title"><img src="/public/imgs/icons/data.png"/> Fuzz Data (<%=module_test._type%>) </h3>
+			</div>
+			<div class="panel-body">
+				<pre>
+					<code>
+<%= module_test.fuzz_data %>
+					</code>
+				</pre>
+			</div>
+		</div>
+	</div>
+	<% } %>
 
 </div>
 

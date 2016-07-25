@@ -2,17 +2,6 @@
 var Modules = require('../models/Modules');
 var admin = require('../config.js').config.admin;
 
-function ensureAdmin(req, res, next) {
-
-  if (req.isAdminUser()) {
-    return next();
-  } else {
-    res.render('misc/userError', {
-      info: 'You must be an Admin to do this action.'
-    });
-    
-  }
-}
 
 // Auth Middleware and sets the logged in user to req.currentUser;
 function ensureAuthenticated(req, res, next) {
@@ -101,133 +90,10 @@ exports.index = function(app) {
   });
 }
 
-// Loads and runs the module test page from /models/core/modules_test/
-// Anyone can RUN a module to test it. No Auth required.
-exports.run = function(app) {
-  app.get('/modules/run', function(req, res) {
-    if (typeof req.query.id != 'undefined') {
-      var module_id = req.query.id;
-      var module = Modules.getModuleById(module_id, function(err, module) {
-        if (err) {
-          res.render('misc/error', {
-            'info': 'Oops ! The test module is missing.'
-          });
-          
-        } else {
-          var module_details = {
-            'module_id': module._id,
-            'module_name': module.name,
-            'module_description': module.description,
-            'module_results': module.results,
-            'module_test': module.test
-          };
-
-          switch (module_details.module_test._type) {
-            case "TESTHARNESS":
-              if (req.query.iframe && req.query.iframe === '1')
-                res.render('modules/runModule_testharness_iframe', module_details);
-              else
-                res.render('modules/runModule_testharness', module_details);
-              
-              break;
-
-            case "ENUM_FUNCTION":
-              if (req.query.iframe && req.query.iframe === '1')
-                res.render('modules/runModule_enum_function_iframe', module_details);
-              else
-                res.render('modules/runModule_enum_function', module_details);
-              
-              break;
-
-            default:
-              res.render('misc/error', {
-                'info': 'The Test Type is not defined yet'
-              });
-              
-          }
-        }
-      });
-    } else {
-      res.status(404);
-      res.render('misc/404', {
-        'info': 'Missing module id.'
-      });
-      
-    }
-  });
-
-}
 
 
-// Creates a new module
-exports.create = function(app) {
 
-  // The UI
-  app.get('/modules/create', ensureAuthenticated, function(req, res) {
-    res.render('modules/createModule', {
-      'title': 'Create a new Module'
-    });
 
-  });
-
-  // Form
-  app.post('/modules/create', ensureAuthenticated, function(req, res) {
-    var type = req.body._module_type;
-    var results = {};
-    // Fuzzer remaining
-    if (type === 'ENUM_FUNCTION') {
-      results._type = req.body._results_type;
-      var columns = [];
-      if (results._type == 'SIMPLE_TABLE') {
-        var num_cols = req.body._num_cols;
-        for (var i = 1; i <= num_cols; i++) {
-          columns.push(req.body['_cols_' + i]);
-        }
-      }
-      results.columns = columns;
-    }
-    if (type === 'TESTHARNESS') {
-      results._type = 'testharness';
-      results.columns = ['Result', 'Test Name', 'Message'];
-    }
-
-    var tags = req.body._tags;
-    tags = tags.replace(/ /g, '');
-    tags = tags.split(',');
-
-    var test = {};
-    test.state = 'NOT_STARTED'; // ERROR, COMPLETE
-    test._type = req.body._module_type;
-    test.userScript = req.body._userScript;
-
-    if (type === 'ENUM_FUNCTION')
-      test.enum_data = req.body._enum_data;
-
-    var newModule = {};
-    newModule.results = results;
-    newModule.test = test;
-    newModule.name = req.body._name;
-    newModule.description = req.body._desc;
-    newModule.tags = tags;
-    newModule.owner = req.user.handle || 'Anonymous';
-    newModule.favs = [];
-
-    Modules.add(newModule, function(err, module) {
-      if (err) {
-        res.render('misc/error', {
-          'info': 'Something wrong happened, when we tried creating your new module.'
-        });
-        
-      } else {
-        var Obj = {}
-        Obj.name = module.name;
-        Obj.id = module._id;
-        res.redirect('/update?module=' + module._id);
-      }
-    });
-  });
-
-}
 
 // Edits a module including delete, edit, fork etc.
 exports.edit = function(app) {

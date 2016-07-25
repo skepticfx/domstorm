@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Testing
+    <%= module.name %>
+  </title>
+  <script src="/public/js/async.min.js"></script>
+  <script src="/public/js/detect.js"></script>
+</head>
+
+<body>
+  <textarea id="user_script" style="display:none;">
+    <%- module.test.userScript %>
+  </textarea>
+
+  <textarea id="fuzz_script" style="display:none;">
+    <script>
+      // Our code // API - addResult(), addError(), addSuccess(), addInfo()
+      var Test = new Object();
+      var theCallback = "";
+      var addResult = function() { top.window.addResult(arguments, 'SUCCESS'); return; }
+      var addSuccess = function() { top.window.addResult(arguments, 'SUCCESS'); return; }
+      var addError = function() { top.window.addResult(arguments, 'ERROR'); return; }
+      var addInfo = function() { top.window.addResult(arguments, 'INFO'); return; }
+      var addNone = function() { return; }
+    </script>
+
+  </textarea>
+  <h1> Testing <%= module.name %> </h1>
+
+
+  <h2>
+    Fuzzing: <div id = "fuzz_status" > </div> </h2>
+
+  <script>
+    var rows = [];
+    var addResult = function(args, type) {
+      var obj = {};
+      obj.data = [];
+      for (var x in args)
+        obj.data.push(args[x]);
+      obj.type = type;
+      rows.push(obj);
+    };
+
+    var userScript = document.getElementById('user_script').textContent;
+    var fuzzScript = document.getElementById('fuzz_script').textContent;
+    var totalFuzzes = 0;
+    var completedFuzzes = 0;
+
+
+    function injectIframeAndFuzz(data, id, cb){
+      var iframe = document.createElement('iframe');
+      iframe.id = 'fuzzer_iframe_'+id;
+//      iframe.src = '/testrunner';
+      iframe.srcdoc = "<html>"+ fuzzScript.toString() + data.toString() +"</html>";
+      document.body.appendChild(iframe);
+      iframe.onload = function(){
+        document.getElementById('fuzz_status').textContent = data.toString() + ' -- (' + ++completedFuzzes + '/' + totalFuzzes + ' )';
+        console.log(totalFuzzes, completedFuzzes);
+        cb();
+        this.parentNode.removeChild(this);
+      };
+    }
+
+    function startFuzz(fuzzData) {
+      if (Object.keys(fuzzData).length === 0) {
+        endTest(false, 'No Fuzz data available. You can specify fuzz data by defining arrays which has a "DS_" prefix. For example, "var DS_ELEMENTS = [\'img\', \'a\']"');
+        return;
+      }
+
+      var fuzzes = generateFuzzArray(fuzzData, userScript);
+      totalFuzzes = fuzzes.length;
+      async.eachOfSeries(fuzzes, injectIframeAndFuzz, endTest);
+
+    }
+
+
+    /** generateFuzzArray
+     * 1. Find the number of types of DS_VARIABLES being used.
+     * 2. Generate Fuzz data as an array by replacing the DS_ variables and get the whole text to be fuzzed.
+     * 3. Make sure all these fuzz data have one of the callback functions like: addResult(), addInfo() etc.
+     */
+
+    function generateFuzzArray(data, fuzzString){
+      var fuzzes = [], regexString;
+      // Remove HTML comments from the userScript
+      fuzzString = fuzzString.trim().replace(/<!--[\s\S]*?-->/g, '');
+      if(!fuzzString.includes('***DS_')){
+        endTest(false, 'Did not find any fuzz data variables in the userScript. Use your variables from the Fuzz Data section here. Something like - ***DS_ELEMENTS*** ');
+        return [];
+      }
+      // simple
+      var firstVar = fuzzString.match(/\*\*\*DS_[\s\S]*?\*\*\*/)[0].slice(3,-3);
+      data[firstVar].forEach(function(x){
+        regexString = '\\*\\*\\*'+ firstVar + '\\*\\*\\*';
+        fuzzes.push(fuzzString.replace(new RegExp(regexString, 'g'), x));
+      });
+
+      return fuzzes;
+    }
+
+
+
+    function endTest(error, message) {
+      setTimeout(function(){
+        if(error){
+          alert(message);
+        }
+        var ua = detect.parse(navigator.userAgent);
+        document.getElementById('domstorm_id_status').innerHTML = '<h1>The fuzz is complete now. </h1> <h2>This window will close now.</h2>';
+        var module_id = '<%= module.id %>';
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/modules/results/update', true);
+        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhr.send('_module_id=' + module_id + '&_browser=' + ua.browser.family + '&_os=' + ua.os.family + '&_version=' + ua.browser.version + '&_results_raw=' + encodeURIComponent(1) + '&_rows=' + encodeURIComponent(JSON.stringify(rows)));
+
+        setTimeout(function() {
+          window.opener.location.reload();
+          this.close();
+        }, 2000);
+      }, 1000);
+    }
+
+  </script>
+  <div id="domstorm_id_status"></div>
+  <iframe width="100%" height="999px" id="iframe_data_enum" src="/modules/run?id=<%= module.id %>&iframe=1"></iframe>
+</body>
+
+</html>

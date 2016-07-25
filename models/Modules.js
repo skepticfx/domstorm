@@ -10,6 +10,9 @@ var ModulesSchema = mongoose.Schema({
     enum_data: {
       type: String
     },
+    fuzz_data: {
+
+    },
     userScript: {
       type: String
     },
@@ -47,6 +50,8 @@ ModulesSchema.statics.add = function(obj, callback) {
   instance.test.userScript = obj.test.userScript;
   if (obj.test.enum_data)
     instance.test.enum_data = obj.test.enum_data;
+  if (obj.test.fuzz_data)
+    instance.test.fuzz_data = obj.test.fuzz_data;
   instance.results._type = obj.results._type;
   if (obj.results.columns)
     instance.results.columns = obj.results.columns;

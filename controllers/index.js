@@ -32,16 +32,8 @@ exports.set = function(app) {
   });
 
 
-  app.get('/xss', function(req, res) {
-
-    res.render('misc/404', {
-      'title': 'XSS Tester',
-      'info': req.query.xss
-    });
-  });
   // Modules
   modules.index(app);
-  modules.run(app);
   modules.results(app);
   modules.edit(app);
   modules.fork(app);

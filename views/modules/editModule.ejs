@@ -68,23 +68,37 @@
 	  </div>
 
 <script>
-  $(document).ready(function(){ 
+  $(document).ready(function(){
     $('.enum_stuff').hide();
+	$('.fuzzer').hide();
     <% if(module.test._type === 'ENUM_FUNCTION') {%>
       $('.enum_stuff').show();
     <% } %>
-    $('#optionsRadios1').change(function(){
-      $('.enum_stuff').hide();
-    });
+	  <% if(module.test._type === 'FUZZER') {%>
+	  $('.fuzzer').show();
+	  <% } %>
 
-    $('#optionsRadios2').change(function(){
-      $('.enum_stuff').show();
-    });
+	  $('#optionsRadios1').change(function(){
+		  $('.enum_stuff').hide();
+		  $('.fuzzer').hide();
+		  userScript.getSession().setValue($('#userScript_testharness').text());
+	  });
 
-    $('#optionsRadios3').change(function(){
-      alert('Not supported yet');
-    });
+	  // Enum_function
+	  $('#optionsRadios2').change(function(){
+		  $('.fuzzer').hide();
+		  $('.enum_stuff').show();
+		  userScript.getSession().setValue($('#userScript_enum_function').text());
+	  });
+
+	  // Fuzzer
+	  $('#optionsRadios3').change(function(){
+		  $('.enum_stuff').hide();
+		  $('.fuzzer').show();
+		  userScript.getSession().setValue($('#userScript_fuzzer').text());
+	  });
   });
+
 </script>
   <div class='enum_stuff'>
 	  <div class="form-group">
@@ -122,11 +136,32 @@
 
     <div id="greenish_title">Test scripts</div>
 	  <div class="form-group">
+		  <div class="enum_stuff">
+			  <center><span class="help-block">Come up with your own script to do a Enumeration Function scan. Read more <a href="https://github.com/skepticfx/domstorm/wiki/Creating-a-Simple-Module" target="_blank">here</a></span></center>
+			  <center><span class="help-block">Use, <code>addResult()</code>,  <code>addSuccess()</code>, <code>addError() </code>, <code>addInfo()</code></span></center>
+			  <center><span class="help-block">Define your code inside the test() function - Each enumeration data is passed to it. (See below)</span></center>
+			  <center><span class="help-block">Note: Every time the test() function is invoked in an isolated Iframe.</span></center>
+		  </div>
 		<label for="userScript" class="col-lg-2 control-label">User Script</label>
 		<div class="col-lg-10">
 		  <div class="form-control" id="userScript"><%= module.test.userScript%></div>
-		  <span class="help-block">Come up with your own script to do a Enumeration Function scan. Read more <u>here</u></span>
 		</div>
+	  </div>
+
+	  <div class="form-group fuzzer">
+		  <center>
+      <span class="help-block">Specify your Fuzz Data here. Something like,
+        <code>
+			var DS_ATTRIBUTES = ['onload', 'onerror', 'onfocus'];
+		</code>
+      </span>
+		  </center>
+		  <label for="fuzz_data" class="col-lg-2 control-label">Fuzz Data</label>
+		  <div class="col-lg-10">
+<pre class="form-control" id="fuzz_data">
+<%= module.test.fuzz_data%>
+</pre>
+		  </div>
 	  </div>
 
   <div class='enum_stuff'>
@@ -144,6 +179,8 @@
   </div>
 		<input type="hidden" name="_userScript" id="_userScript" value="" />
 		<input type="hidden" name="_enum_data" id="_enum_data" value="" />
+	    <input type="hidden" name="_fuzz_data" id="_fuzz_data" value="" />
+
 
 	  <div class="form-group">
 		<div class="col-lg-10 col-lg-offset-2">
@@ -164,6 +201,9 @@ $(document).ready(function() {
   enum_data.setTheme("ace/theme/chrome");
   enum_data.getSession().setMode("ace/mode/html");
 
+	var fuzz_data = ace.edit("fuzz_data");
+	enum_data.setTheme("ace/theme/chrome");
+	enum_data.getSession().setMode("ace/mode/html");
 
 	updateColumns($('#num_cols').val());
 	$('#num_cols').keyup(function(){
@@ -192,6 +232,7 @@ $(document).ready(function() {
 		}
 		$('#_userScript').val(userScript.getValue());
 		$('#_enum_data').val(enum_data.getValue());
+		$('#_fuzz_data').val(fuzz_data.getValue());
 		$('#editModule').submit();
 	});
 });

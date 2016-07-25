@@ -1,0 +1,38 @@
+<html>
+
+<head>
+  <title>Iframe for ENUM FUNCTION Test</title>
+  <script>
+    // The Fuzz Data for the given module.
+    // This Iframe is specifically injected to get the value of Fuzz Data without polluting any other JS Context.
+    // For instance, the userScript context can still have its own data variable.
+    // Type = Fuzzer.
+
+    // This injects the dynamic 'fuzz data' array.
+    <%- module.test.fuzz_data %> ;
+
+
+    (function() {
+
+      var fuzz_data_576c9a039fea0345ihj95874cbf9426 = {};
+      Object.getOwnPropertyNames(window)
+        .filter(function(prop){
+          return prop.toUpperCase().startsWith('DS_');
+        })
+        .forEach(function(dsProp){
+          fuzz_data_576c9a039fea0345ihj95874cbf9426[dsProp] = window[dsProp];
+        });
+      parent.startFuzz(fuzz_data_576c9a039fea0345ihj95874cbf9426);
+      parent.document.body.removeChild(parent.document.getElementById('iframe_data_enum'));
+    })();
+  </script>
+</head>
+
+<body>
+  <h1>
+    Fuzzing data in an isolated IFRAME!
+    </h1>
+
+</body>
+
+</html>

@@ -11,7 +11,11 @@ router.get('/', function(req, res){
 router.post('/', function(req, res){
   var type = req.body._module_type;
   var results = {};
-  // Fuzzer remaining
+
+  if (type === 'FUZZER') {
+    results._type = 'SIMPLE_TABLE';
+    results.columns = ['Fuzz data'];
+  }
   if (type === 'ENUM_FUNCTION') {
     results._type = req.body._results_type;
     var columns = [];
@@ -29,7 +33,7 @@ router.post('/', function(req, res){
   }
 
   var tags = req.body._tags;
-  tags = tags.replace(/ /g, '');
+  tags = tags.replace(/-/g, '');
   tags = tags.split(',');
 
   var test = {};
@@ -39,6 +43,8 @@ router.post('/', function(req, res){
 
   if (type === 'ENUM_FUNCTION')
     test.enum_data = req.body._enum_data;
+  if (type === 'FUZZER')
+    test.fuzz_data = req.body._fuzz_data;
 
   var newModule = {};
   newModule.results = results;
@@ -54,12 +60,8 @@ router.post('/', function(req, res){
       res.render('misc/error', {
         'info': 'Something wrong happened, when we tried creating your new module.'
       });
-
     } else {
-      var Obj = {}
-      Obj.name = module.name;
-      Obj.id = module._id;
-      res.redirect('/update?module=' + module._id);
+      res.redirect('/modules?id=' + module._id);
     }
   });
 
