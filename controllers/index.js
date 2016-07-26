@@ -35,7 +35,6 @@ exports.set = function(app) {
   // Modules
   modules.index(app);
   modules.results(app);
-  modules.edit(app);
   modules.fork(app);
   modules.init(app);
 
