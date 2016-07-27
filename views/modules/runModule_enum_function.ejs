@@ -2,6 +2,8 @@
 <html>
 
 <head>
+  <script src="/public/js/lodash.js"> </script>
+
   <title>Testing
     <%= module_name %>
   </title>
@@ -143,7 +145,7 @@
       var xhr = new XMLHttpRequest();
       xhr.open('POST', '/modules/results/update', true);
       xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-      xhr.send('_module_id=' + module_id + '&_browser=' + ua.browser.family + '&_os=' + ua.os.family + '&_version=' + ua.browser.version + '&_results_raw=' + encodeURIComponent(1) + '&_rows=' + encodeURIComponent(JSON.stringify(rows)));
+      xhr.send('_module_id=' + module_id + '&_browser=' + ua.browser.family + '&_os=' + ua.os.family + '&_version=' + ua.browser.version + '&_results_raw=' + encodeURIComponent(1) + '&_rows=' + encodeURIComponent(JSON.stringify(_.uniqWith(rows, _.isEqual))));
 
       setTimeout(function() {
         window.opener.location.reload();

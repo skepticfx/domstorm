@@ -36,9 +36,12 @@ var ModulesSchema = mongoose.Schema({
   created: {
     type: Date,
     default: Date.now
-  }
+  },
+  viewCount: Number
 
 });
+
+
 
 ModulesSchema.statics.add = function(obj, callback) {
   var instance = new Modules();
@@ -74,6 +77,14 @@ ModulesSchema.statics.getModuleById = function(id, callback) {
   });
 };
 
+ModulesSchema.statics.getModuleByIdAndIncreaseViewCount = function(id, callback){
+  this.getModuleById(id, function(err, module){
+    ModulesSchema.statics.addViewCount(id, function(){
+      return callback(err, module);
+    });
+  });
+};
+
 ModulesSchema.statics.getModulesByUser = function(username, callback) {
   this.find({ owner: username }, function(err, modules) {
     return callback(null, modules);
@@ -96,6 +107,14 @@ ModulesSchema.statics.getTopModules = function(callback){
       return callback(null, modules);
     });
 };
+
+
+ModulesSchema.statics.addViewCount = function(id, callback){
+  Modules.update({_id: id}, {$inc: {viewCount: 1}}).exec(function(){
+    callback();
+  });
+};
+
 
 // Search by Name, Description and also by tags if starts with [tags]:
 ModulesSchema.statics.searchAll = function(str, cb) {
@@ -135,7 +154,7 @@ ModulesSchema.statics.searchAll = function(str, cb) {
 };
 
 
-
 var Modules = mongoose.model('Modules', ModulesSchema);
+
 
 module.exports= Modules;

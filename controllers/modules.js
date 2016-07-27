@@ -14,22 +14,14 @@ function ensureAuthenticated(req, res, next) {
   res.redirect('/?authError=1');
 }
 
-function populateUser(req, res, next) {
-  if (req.isAuthenticated()) {
-    req.currentUser = req.user.handle;
-  } else {
-    req.currentUser = 'Anonymous';
-  }
-  return next();
-}
 
 // Loads the module home and individual modules
 exports.index = function(app) {
 
-  app.get('/modules', populateUser, function(req, res) {
+  app.get('/modules', function(req, res) {
     if (typeof req.query.id != 'undefined') {
       var module_id = req.query.id;
-      var module = Modules.getModuleById(module_id, function(err, module) {
+      var module = req.Modules.getModuleByIdAndIncreaseViewCount(module_id, function(err, module) {
         if (err) {
           res.render('misc/error', {
             'info': 'Apparently, the module is missing in our system.'
@@ -67,6 +59,7 @@ exports.index = function(app) {
             'module_owner': module.owner || 'Anonymous',
             'userOptions': userOptions,
             'module_favs': (module.favs && module.favs.length) || 0,
+            'module_viewCount': module.viewCount + 1 || 1,
             'module': module.toObject(),
             'ds_title': module.name
           };
@@ -88,7 +81,7 @@ exports.index = function(app) {
       });
     }
   });
-}
+};
 
 
 
