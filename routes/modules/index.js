@@ -6,6 +6,7 @@ var router = express.Router();
  */
 router.use('/create', require('./create'));
 router.use('/edit', require('./edit'));
+router.use('/delete', require('./delete'));
 router.use('/run', require('./run'));
 
 

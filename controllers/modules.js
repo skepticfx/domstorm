@@ -25,7 +25,6 @@ exports.index = function(app) {
           userOptions.owner = false;
           if (module.owner == req.username || req.isAdminUser())
             userOptions.owner = true;
-console.log(module.owner, req.username);
           if (req.username !== 'Anonymous') {
             userOptions.status = 'enabled';
             userOptions.showFav = true;
