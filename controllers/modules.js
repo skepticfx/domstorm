@@ -1,18 +1,6 @@
 // Routes for anything '/modules' related
 var Modules = require('../models/Modules');
-var admin = require('../config.js').config.admin;
 
-
-// Auth Middleware and sets the logged in user to req.currentUser;
-function ensureAuthenticated(req, res, next) {
-
-  if (req.isAuthenticated()) {
-    req.currentUser = req.user.handle;
-    return next();
-  }
-  req.currentUser = 'Anonymous';
-  res.redirect('/?authError=1');
-}
 
 
 // Loads the module home and individual modules
@@ -26,7 +14,7 @@ exports.index = function(app) {
           res.render('misc/error', {
             'info': 'Apparently, the module is missing in our system.'
           });
-          
+
         } else {
 
           var userOptions = {};
@@ -35,14 +23,14 @@ exports.index = function(app) {
             userOptions.blinkFav = true;
 
           userOptions.owner = false;
-          if (module.owner == req.currentUser || req.currentUser == admin)
+          if (module.owner == req.username || req.isAdminUser())
             userOptions.owner = true;
-
-          if (req.currentUser !== 'Anonymous') {
+console.log(module.owner, req.username);
+          if (req.username !== 'Anonymous') {
             userOptions.status = 'enabled';
             userOptions.showFav = true;
             if (module.favs)
-              if (module.favs.indexOf(req.currentUser) >= 0)
+              if (module.favs.indexOf(req.username) >= 0)
                 userOptions.showFav = false;
 
           } else {
@@ -64,7 +52,7 @@ exports.index = function(app) {
             'ds_title': module.name
           };
           res.render('modules/getModule', module_details);
-          
+
         }
       });
     } else {
@@ -76,7 +64,7 @@ exports.index = function(app) {
             'title': 'Modules',
             'modules': modules
           });
-          
+
         }
       });
     }
@@ -118,7 +106,7 @@ exports.results = function(app) {
   });
 
   // Hackish to Update the stuff.
-  app.get('/update', ensureAuthenticated, function(req, res) {
+  app.get('/update', function(req, res) {
     Modules.find({}, function(err, modules) {
       if (err) {
         console.log('There is some error populating the Modules List');
@@ -177,7 +165,7 @@ var getBrowserResults = function(module) {
 exports.fork = function(app) {
 
   // The UI
-  app.get('/modules/fork', ensureAuthenticated, function(req, res) {
+  app.get('/modules/fork', function(req, res) {
     if (typeof req.query.id != 'undefined') {
       var module_id = req.query.id;
       var module = Modules.getModuleById(module_id, function(err, module) {
@@ -185,7 +173,7 @@ exports.fork = function(app) {
           res.render('misc/error', {
             'info': 'Apparently, the module is missing in our system.'
           });
-          
+
         } else {
           var module_tags_parsed = "";
           module = module.toObject();
@@ -199,14 +187,14 @@ exports.fork = function(app) {
             'columns': JSON.stringify(module.results.columns),
             'module_tags_parsed': module_tags_parsed
           });
-          
+
         }
       });
     } else {
       res.render('misc/error', {
         'info': 'Apparently, the module is missing in our system.'
       });
-      
+
     }
   });
 };
@@ -214,8 +202,8 @@ exports.fork = function(app) {
 exports.init = function(app) {
 
 
-  app.get('/mymodules', ensureAuthenticated, function (req, res) {
-    Modules.getModulesByUser(req.currentUser, function (err, modules) {
+  app.get('/mymodules', function (req, res) {
+    Modules.getModulesByUser(req.username, function (err, modules) {
       modules = modules.map(function(module){
         return {id: module._id, name: module.name, description: module.description, favorites: module.favs}
       });
@@ -224,7 +212,7 @@ exports.init = function(app) {
   });
 
   // Favorites a given module by a logged in User.
-  app.post('/modules/favorite', ensureAuthenticated, function (req, res) {
+  app.post('/modules/favorite', function (req, res) {
     if (typeof req.body.id != 'undefined') {
       var module_id = req.body.id;
       var module = Modules.getModuleById(module_id, function (err, module) {
@@ -232,10 +220,10 @@ exports.init = function(app) {
           res.render('misc/error', {
             'info': 'Apparently, the module is missing in our system.'
           });
-          
+
         } else {
           module = module.toObject();
-          module.favs.push(req.currentUser);
+          module.favs.push(req.username);
           var id = module._id;
           delete module._id;
           Modules.findOneAndUpdate({
@@ -245,7 +233,7 @@ exports.init = function(app) {
               res.render('misc/error', {
                 'info': err + 'Something wrong happened, when we tried favoriting this module.'
               });
-              
+
             } else {
               res.redirect('/modules/?id=' + module._id + '&info=fav_success');
             }
@@ -256,7 +244,7 @@ exports.init = function(app) {
       res.render('misc/error', {
         'info': 'Apparently, the module is missing in our system.'
       });
-      
+
     }
   });
 

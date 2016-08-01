@@ -9,7 +9,7 @@ router.get('/', function(req, res){
       if (err) {
         res.render('misc/error', {'info': 'Apparently, the module is missing in our system.'});
       } else {
-        if (module.owner != req.currentUser && !req.isAdminUser()) {
+        if (module.owner != req.username || !req.isAdminUser()) {
           res.render('misc/userError', {'info': 'You must be the owner of this module to edit it. You can fork this module though !'});
         } else {
           var module_tags_parsed = "";
@@ -40,7 +40,7 @@ router.get('/', function(req, res){
 router.post('/', function(req, res) {
   var type, num_cols, i, newModule;
   req.Modules.getModuleById(req.body._id, function(err, module) {
-    if (module.owner != req.currentUser && !req.isAdminUser()) {
+    if (module.owner != req.username || !req.isAdminUser()) {
       res.render('misc/userError', {'info': 'You must be the owner of this module to edit it. You can fork this module though !'});
     } else {
       type = req.body._module_type;
