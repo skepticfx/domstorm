@@ -101,6 +101,7 @@ ModulesSchema.statics.getFavsByUser = function(username, callback) {
 ModulesSchema.statics.getTopModules = function(callback){
   this
     .find({})
+    .sort({viewCount: -1})
     .limit(10)
     .exec(function(err, modules) {
       if (!modules) return callback(new Error('No modules found'));
