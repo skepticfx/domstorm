@@ -86,6 +86,12 @@ db.once('open', function() {
   // routing
   app.use('/', appRouter);
   controllers.set(app);
+  /// catch 404 and forward to error handler
+  app.use(function(req, res) {
+    res.status(404);
+    res.render('misc/404', {'info': 'Page Not found.'});
+  });
+
 
   http.createServer(app).listen(app.get('port'), app.get('ip'), function() {
     if(!config.DEV_MODE) console.log('Running in production mode.');
