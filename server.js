@@ -50,7 +50,7 @@ db.once('open', function() {
   app.set('views', path.join(__dirname, 'views'));
   app.set('view engine', 'ejs');
   app.set('port', process.env.PORT || process.env.NODE_PORT || 8080);
-  app.set('ip', process.env.IP || process.env.NODE_IP || '127.0.0.1');
+  app.set('ip', process.env.IP || process.env.NODE_IP || '0.0.0.0');
 
   app.set('db', db);
   app.set('config', config);
