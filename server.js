@@ -60,7 +60,7 @@ db.once('open', function() {
     config.admin = 'twitter';
   }
 
-  // app.use(redirectToHttps);
+  app.use(redirectToHttps);
   app.use(favicon(__dirname + '/public/imgs/dom-storm-logo.png'));
   app.use("/public", express.static(path.join(__dirname, '/public'), { maxAge: oneDay }));
 
