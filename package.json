@@ -9,9 +9,9 @@
     "ejs": "^2.5.5",
     "express": "^4.16.3",
     "express-session": "^1.15.6",
-    "mongoose": "^5.1.1",
+    "mongoose": "^5.5.1",
     "mongoose-findorcreate": "^0.1.2",
-    "morgan": "^1.9.0",
+    "morgan": "^1.9.1",
     "passport": "^0.2.0",
     "passport-twitter": "^1.0.2",
     "serve-favicon": "^2.5.0"
