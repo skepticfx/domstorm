@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "body-parser": "^1.18.3",
-    "connect-mongo": "^1.2.0",
+    "connect-mongo": "^2.0.3",
     "cookie-parser": "^1.4.2",
     "ejs": "^2.5.5",
     "express": "^4.16.3",
