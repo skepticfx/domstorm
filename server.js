@@ -30,7 +30,7 @@ if (!config.requireAuth)
   console.log('Running DomStorm in No Auth mode.');
 
 console.log('Establishing connection to database.');
-mongoose.connect(config.DB_URI);
+mongoose.connect(config.DB_URI, {useNewUrlParser: true, useUnifiedTopology: false});
 var db = mongoose.connection;
 db.on('error', function(err) {
   console.log('Connection error: ' + err.name + ': ' + err.message);
