@@ -32,6 +32,7 @@ config.admin = process.env.TWITTER_ADMIN || 'twitter'; // Twitter Username of th
 if (process.env.DB_URI) {
   console.log('Detected DB URI.');
   config.DB_URI = process.env.DB_URI;
+  config.CALLBACK_URL = config.URI + "/auth/twitter/callback";
 } else {
   config.DEV_MODE = true;
   config.DB_URI = 'mongodb://fx:fx@127.0.0.1/domstorm'; // Local Mongo Instance
