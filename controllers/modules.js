@@ -85,6 +85,7 @@ exports.results = function(app) {
     browser.rows = JSON.parse(req.body._rows);
     browser.version = req.body._version;
     browser.os = req.body._os;
+    browser.last_run = browser.os;
     var test = {};
     test.state = 'COMPLETED'; //  COMPLETE
     var updateObj = {};
@@ -138,7 +139,9 @@ var getBrowserResults = function(module) {
       if (browser_temp.name === undefined || browser_temp.name === '') browser_temp.name = 'Unknown Browser';
       if (browser_temp.version === undefined || browser_temp.version === '') browser_temp.version = 'Unknown Version';
       if (browser_temp.os === undefined || browser_temp.os === '') browser_temp.os = 'Unknown OS';
-      var table_html = '<br/><div class="table-responsive"><div class="label label-danger">Tested on</div><div class="label label-info">' + browser_temp.name + ' - ' + browser_temp.version + ' - ' + browser_temp.os + '</div><table class="table table-striped table-bordered table-hover"> <thead><tr class="TITLE">';
+      if (browser_temp.last_run === undefined || browser_temp.last_run === '') browser_temp.last_run = 'Unknown OS';
+      let is_last_run = (browser_temp.os === browser_temp.last_run)? '<div class="label label-success">This browser ran the most recent scan</div>': "";
+      var table_html = '<br/><div class="table-responsive"><div class="label label-danger">Tested on</div>"+ is_last_run +"<div class="label label-info">' + browser_temp.name + ' - ' + browser_temp.version + ' - ' + browser_temp.os + '</div><table class="table table-striped table-bordered table-hover"> <thead><tr class="TITLE">';
       // Iterate the columns
       for (var i = 0; i < module.results.columns.length; i++) {
         table_html += '<th>' + module.results.columns[i] + '</th>'
