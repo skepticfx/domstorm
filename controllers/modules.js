@@ -249,10 +249,16 @@ exports.init = function(app) {
 
   app.get('/modules/topModules.json', function (req, res) {
     Modules.getTopModules(function (err, topModules) {
-      var modules = topModules.map(function(module){
-        return {id: module._id, name: module.name}
+      let modules = new Map();
+      topModules.forEach((m) =>{
+        modules.set(m.name, m._id);
       });
-      res.json({topModules: modules});
+      let arr = [];  
+      for (let [k,v] of modules) {
+        arr.push({_id: v, name: k});
+      }
+  
+      res.json({topModules: arr});
     });
   });
 
