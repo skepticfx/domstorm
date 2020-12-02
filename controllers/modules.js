@@ -255,7 +255,7 @@ exports.init = function(app) {
       });
       let arr = [];  
       for (let [k,v] of modules) {
-        arr.push({_id: v, name: k});
+        arr.push({id: v, name: k});
       }
   
       res.json({topModules: arr});
