@@ -1,14 +1,14 @@
 # DOM Lab
 
-DOM Lab is a Cloudflare Workers app for cataloging and running browser behavior experiments.
+DOM Lab is a Cloudflare Workers app for cataloging and running modern browser security experiments.
 
 Live app: https://dom-lab.skepticfx.com
 
-This is a modernized rebuild of the original DomStorm idea. The old Express, MongoDB, EJS, Bootstrap, jQuery, and Twitter OAuth runtime has been replaced with:
+DOM Lab focuses on the 2026 browser attack surface: DOM sinks, parser differentials, isolation primitives, capability APIs, storage boundaries, URL canonicalization, message channels, and weird corners where security bugs tend to hide.
 
-- A Cloudflare Worker edge shell.
+- Cloudflare Worker edge shell.
 - Static assets served from `site/`.
-- Seed experiments stored in `site/data/modules.json`.
+- Seed security experiments stored in `site/data/modules.json`.
 - Local-first custom experiments and run results stored in the browser.
 - Sandboxed iframe execution for experiment runs.
 - A small service worker for offline-friendly repeat visits.
@@ -41,5 +41,3 @@ Wrangler deploys the Worker named `dom-lab` and attaches the custom domain:
 ```txt
 dom-lab.skepticfx.com
 ```
-
-The Worker keeps legacy routes such as `/modules?id=...` and `/modules/run?id=...` redirecting into the new app.

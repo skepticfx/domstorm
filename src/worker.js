@@ -38,9 +38,9 @@ export default {
       return serveSeedModules(request, env);
     }
 
-    const legacyRedirect = getLegacyRedirect(url);
-    if (legacyRedirect) {
-      return Response.redirect(`${url.origin}${legacyRedirect}`, 308);
+    const compatibilityRedirect = getCompatibilityRedirect(url);
+    if (compatibilityRedirect) {
+      return Response.redirect(`${url.origin}${compatibilityRedirect}`, 308);
     }
 
     const response = await env.ASSETS.fetch(request);
@@ -60,7 +60,7 @@ async function serveSeedModules(request, env) {
   return json(modules, { headers: JSON_HEADERS });
 }
 
-function getLegacyRedirect(url) {
+function getCompatibilityRedirect(url) {
   if (url.pathname === "/modules/run") {
     const id = url.searchParams.get("id");
     return id ? `/runner/${encodeURIComponent(id)}` : "/modules";
@@ -69,13 +69,6 @@ function getLegacyRedirect(url) {
   if (url.pathname === "/modules") {
     const id = url.searchParams.get("id");
     return id ? `/module/${encodeURIComponent(id)}` : "/modules";
-  }
-
-  if (url.pathname === "/mymodules") return "/modules?filter=local";
-  if (url.pathname === "/helper") return "/about";
-  if (url.pathname === "/search") {
-    const query = url.searchParams.get("q");
-    return query ? `/modules?q=${encodeURIComponent(query)}` : "/modules";
   }
 
   return null;

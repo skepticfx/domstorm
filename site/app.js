@@ -97,8 +97,8 @@ function renderModules(route) {
     <section class="hero-strip">
       <div>
         <span class="eyebrow">DOM Lab</span>
-        <h1>Run browser behavior experiments without hauling a server around.</h1>
-        <p class="hero-copy">A faster, cleaner rebuild of DomStorm for Cloudflare Workers. Seed experiments ship from the edge, and your own experiments plus run results stay local in this browser.</p>
+        <h1>DOM security probes for the 2026 browser surface.</h1>
+        <p class="hero-copy">Run focused experiments for parser quirks, sink behavior, isolation boundaries, URL canonicalization, storage partitioning, message channels, and emerging web-platform APIs. Seed probes ship from the edge; your forks and run results stay local in this browser.</p>
         <div class="button-row">
           <a class="button" href="/new">New experiment</a>
           <a class="button secondary" href="/about">How it works</a>
@@ -134,7 +134,7 @@ function renderModules(route) {
         </section>
         <section class="panel">
           <h2>Runner API</h2>
-          <p>Write <code>function test(data)</code> and call <code>addSuccess</code>, <code>addInfo</code>, or <code>addError</code>. Each data item runs in a sandboxed iframe.</p>
+          <p>Write <code>function test(data)</code> and call <code>addSuccess</code>, <code>addInfo</code>, or <code>addError</code>. Each item runs in a sandboxed iframe so probes stay contained.</p>
         </section>
       </aside>
     </section>
@@ -150,6 +150,7 @@ function renderModuleCard(module) {
         <p>${escapeHtml(module.description)}</p>
       </a>
       <div class="tag-row">
+        ${module.risk ? `<span class="pill red">${escapeHtml(module.risk)}</span>` : ""}
         ${module.tags.slice(0, 4).map(renderTag).join("")}
       </div>
     </article>
@@ -176,6 +177,7 @@ function renderModuleDetail(id) {
         <div class="meta-row">
           <span class="pill blue">${escapeHtml(module.owner || "DOM Lab")}</span>
           <span class="pill">${getViewCount(module)} views</span>
+          ${module.risk ? `<span class="pill red">${escapeHtml(module.risk)}</span>` : ""}
           ${module.tags.map(renderTag).join("")}
         </div>
       </div>
@@ -192,6 +194,7 @@ function renderModuleDetail(id) {
           <h2>Results</h2>
           ${browserNames.length ? browserNames.map((browser) => renderResultSet(browser, results)).join("") : "<p>No local runs yet. Run this experiment to capture results for your browser.</p>"}
         </section>
+        ${module.securityNote ? `<section class="panel note-panel"><h2>Security lens</h2><p>${escapeHtml(module.securityNote)}</p></section>` : ""}
         <section class="panel">
           <h2>User script</h2>
           ${renderCode(module.test.userScript)}
@@ -205,6 +208,7 @@ function renderModuleDetail(id) {
         <section class="panel">
           <h2>Run model</h2>
           <p>Runs are isolated in sandboxed iframes with a timeout of ${Number(module.test.timeout || 2000)}ms per item. Results are saved in localStorage for this browser.</p>
+          ${module.era ? `<p><span class="pill blue">${escapeHtml(module.era)}</span></p>` : ""}
         </section>
         <section class="panel">
           <h2>Columns</h2>
@@ -334,15 +338,15 @@ function renderAbout() {
     <section class="hero-strip">
       <div>
         <span class="eyebrow">About</span>
-        <h1>DomStorm, rebuilt as DOM Lab.</h1>
-        <p class="hero-copy">The original app mixed Express, MongoDB, Twitter OAuth, EJS, jQuery, and Bootstrap. This version keeps the browser experiment idea and moves delivery to Cloudflare Workers with static edge assets and a small Worker API.</p>
+        <h1>DOM Lab is a field bench for browser security behavior.</h1>
+        <p class="hero-copy">It is built for quick, repeatable probes around modern DOM security boundaries: HTML parsing, named properties, Trusted Types, fenced APIs, storage partitioning, cross-origin isolation, URL normalization, and capability exposure.</p>
       </div>
     </section>
     <section class="workspace">
       <div class="panel">
-        <h2>What changed</h2>
-        <p>Seed experiments are served from JSON, custom experiments are local-first, and the runner uses sandboxed iframes with postMessage instead of server-rendered harness pages.</p>
-        <p>Legacy URLs such as <code>/modules?id=...</code> redirect to the new routes, so old links degrade gracefully.</p>
+        <h2>Model</h2>
+        <p>Seed experiments are served from JSON, custom experiments are local-first, and the runner uses sandboxed iframes plus message passing. The goal is to expose browser differences and risky primitives without shipping exploit chains.</p>
+        <p>Fork an experiment when a behavior looks strange, tighten the input set, then compare runs across browsers.</p>
       </div>
       <aside class="sidebar">
         <section class="panel">
@@ -351,7 +355,7 @@ function renderAbout() {
             <li>Cloudflare Worker shell</li>
             <li>Strict response headers</li>
             <li>Offline-capable service worker</li>
-            <li>No runtime npm dependencies</li>
+            <li>2026 DOM security catalog</li>
           </ul>
         </section>
       </aside>
@@ -495,7 +499,7 @@ function runSingleItem(module, item) {
 function buildRunnerDocument(token, userScript, item) {
   return `<!doctype html><meta charset="utf-8"><script>
     const TOKEN = ${JSON.stringify(token)};
-    const DATA = ${JSON.stringify(item)};
+    const DATA = ${scriptSafeJson(item)};
     const send = (type, data) => parent.postMessage({ token: TOKEN, type, data: Array.from(data, String) }, "*");
     window.addResult = (...args) => send("SUCCESS", args);
     window.addSuccess = (...args) => send("SUCCESS", args);
@@ -511,6 +515,10 @@ function buildRunnerDocument(token, userScript, item) {
       send("__DONE__", []);
     });
   <\/script>`;
+}
+
+function scriptSafeJson(value) {
+  return JSON.stringify(value).replace(/<\/script/gi, "<\\/script");
 }
 
 function readDataItems(module) {
@@ -610,7 +618,7 @@ function getFilteredModules() {
     if (state.filter === "local" && !module.local) return false;
     if (state.filter === "seed" && module.local) return false;
     if (!query) return true;
-    const haystack = [module.name, module.description, module.type, ...(module.tags || [])].join(" ").toLowerCase();
+    const haystack = [module.name, module.description, module.type, module.securityNote || "", module.risk || "", ...(module.tags || [])].join(" ").toLowerCase();
     return haystack.includes(query);
   });
 }

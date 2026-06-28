@@ -21,12 +21,5 @@
   "devDependencies": {
     "wrangler": "^4.23.0"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/skepticfx/domstorm"
-  },
-  "bugs": {
-    "url": "https://github.com/skepticfx/domstorm/issues"
-  },
   "homepage": "https://dom-lab.skepticfx.com"
 }

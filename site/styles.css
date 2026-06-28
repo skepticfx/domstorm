@@ -307,7 +307,7 @@ p {
 }
 
 .module-card {
-  min-height: 210px;
+  min-height: 238px;
   padding: 18px;
   transition: transform 160ms ease, border-color 160ms ease;
 }
@@ -319,7 +319,7 @@ p {
 
 .module-link {
   display: block;
-  min-height: 136px;
+  min-height: 154px;
   text-decoration: none;
 }
 
@@ -360,6 +360,11 @@ p {
 
 .panel {
   padding: 18px;
+}
+
+.note-panel {
+  border-color: rgba(196, 67, 47, 0.26);
+  background: linear-gradient(180deg, rgba(255, 226, 218, 0.56), rgba(255, 253, 246, 0.9));
 }
 
 .sidebar {

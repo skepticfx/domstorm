@@ -1,4 +1,4 @@
-import { readFile } from "node:fs/promises";
+import { readdir, readFile } from "node:fs/promises";
 
 const requiredFiles = [
   "site/index.html",
@@ -17,13 +17,13 @@ const moduleData = JSON.parse(
   await readFile(new URL("../site/data/modules.json", import.meta.url), "utf8")
 );
 
-if (!Array.isArray(moduleData.modules) || moduleData.modules.length < 3) {
-  throw new Error("Expected at least three seed modules.");
+if (!Array.isArray(moduleData.modules) || moduleData.modules.length < 12) {
+  throw new Error("Expected at least twelve seed modules.");
 }
 
 const ids = new Set();
 for (const mod of moduleData.modules) {
-  const fields = ["id", "name", "description", "type", "test", "results"];
+  const fields = ["id", "name", "description", "type", "risk", "securityNote", "test", "results"];
   for (const field of fields) {
     if (!mod[field]) throw new Error(`Module ${mod.id || "(missing id)"} is missing ${field}.`);
   }
@@ -39,6 +39,18 @@ for (const mod of moduleData.modules) {
   if (!mod.test.userScript.includes("function test")) {
     throw new Error(`Module ${mod.id} userScript must define function test(data).`);
   }
+  new Function(`${mod.test.userScript}; return typeof test;`);
 }
 
-console.log(`Validated ${moduleData.modules.length} seed modules and Worker assets.`);
+const removedPaths = ["controllers", "middlewares", "models", "public", "routes", "views", "server.js", "config.js", "Procfile"];
+const rootEntries = new Set(await readdir(new URL("../", import.meta.url)));
+for (const path of removedPaths) {
+  if (rootEntries.has(path)) throw new Error(`Removed server artifact is still present: ${path}`);
+}
+
+const activeText = await Promise.all(requiredFiles.map((file) => readFile(new URL(`../${file}`, import.meta.url), "utf8")));
+if (activeText.some((text) => /DomStorm|Dom Storm|storming|\bExpress\b|MongoDB|Twitter OAuth|jQuery|\bBootstrap\b|legacy/i.test(text))) {
+  throw new Error("Active Worker app still contains old-branding or server-stack wording.");
+}
+
+console.log(`Validated ${moduleData.modules.length} seed modules, Worker assets, and rebrand cleanup.`);
