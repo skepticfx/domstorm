@@ -1,52 +1,45 @@
-![logo](https://raw.github.com/skepticfx/Dom-Storm/master/public/imgs/dom-storm-logo.png)
+# DOM Lab
 
-### A dashboard for interesting DOM tricks/techniques.
+DOM Lab is a Cloudflare Workers app for cataloging and running browser behavior experiments.
 
-### Try https://domstorm.skepticfx.com
+Live app: https://dom-lab.skepticfx.com
 
-#### Installation
-* Clone Domstorm, `git clone https://github.com/skepticfx/domstorm`
+This is a modernized rebuild of the original DomStorm idea. The old Express, MongoDB, EJS, Bootstrap, jQuery, and Twitter OAuth runtime has been replaced with:
 
-* Install `nodejs` and then, `npm install`
+- A Cloudflare Worker edge shell.
+- Static assets served from `site/`.
+- Seed experiments stored in `site/data/modules.json`.
+- Local-first custom experiments and run results stored in the browser.
+- Sandboxed iframe execution for experiment runs.
+- A small service worker for offline-friendly repeat visits.
 
-* Configure `config.js` to add your MongoDB URL with authentication details.
+## Commands
 
-* Run Domstorm, `node server.js --noauth`, to run in NoAuth mode.
+```sh
+npm install
+npm run check
+npm run dev
+npm run dry-run
+npm run deploy
+```
 
-* Head over to, `http://localhost:8080` and start storming the DOM.
+## Experiment API
 
-* Something went wrong? Raise an [issue in the Github Repo] (https://github.com/skepticfx/domstorm/issues/new)
+Experiments define a `function test(data)` in JavaScript. The runner provides:
 
-### What can DomStorm be used for?
-One can know the answers for,
+- `addSuccess(...values)`
+- `addInfo(...values)`
+- `addError(...values)`
+- `addResult(...values)`
 
-* What are the different ways of accessing a [Window Object], in a given browser?
+Enum experiments provide JavaScript that defines a `data` array. Fuzzer experiments provide one payload per line.
 
-* What properties of the postMessage API can be overridden and changed?
+## Deployment
 
-* Does XMLHttpRequest follow the Same-Origin-Policy on redirects?
+Wrangler deploys the Worker named `dom-lab` and attaches the custom domain:
 
-* Does a certain DOM security bug in Firefox be replicated in other browsers?
+```txt
+dom-lab.skepticfx.com
+```
 
-* And many more interesting questions, where your imagination is the only limit !
-
-###### Features
-* Enum Functions (Need a better name) - Ask questions on the DOM.
-
-* Fuzzer Modules (WIP)
-
-* TestHarness.js from W3C test suites for dedicated Spec tests.
-
-###### Milestones
-* [Pre-Alpha Version](https://github.com/skepticfx/Dom-Storm/issues?milestone=1&state=open)
-
-###### Framework
-
-* Create and run modules, to test DOM and JS behaviour.
-
-###### Kudos to
-
-* Icons by iconmonstr - http://iconmonstr.com/
-* Browser Logos - https://github.com/paulirish/browser-logos
-* Detect User Agent - detect.js - https://github.com/darcyclarke/Detect.js
-* Flatly,  BootStrap Theme - http://bootswatch.com/flatly/
+The Worker keeps legacy routes such as `/modules?id=...` and `/modules/run?id=...` redirecting into the new app.

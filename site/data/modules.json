@@ -1,0 +1,84 @@
+{
+  "modules": [
+    {
+      "id": "window-entrypoints",
+      "name": "Window entrypoints",
+      "description": "Enumerates common references that resolve back to the active Window object in this browser.",
+      "type": "ENUM_FUNCTION",
+      "owner": "DOM Lab",
+      "created": "2026-06-28T00:00:00.000Z",
+      "viewCount": 0,
+      "favorites": 0,
+      "tags": ["window", "references", "browser"],
+      "test": {
+        "timeout": 2000,
+        "enumData": "var data = ['window', 'self', 'frames', 'globalThis', 'top', 'parent'];",
+        "userScript": "function test(expression) {\n  try {\n    var value = Function('return ' + expression)();\n    if (value === window) {\n      addSuccess(expression, 'resolves to window');\n    } else {\n      addInfo(expression, Object.prototype.toString.call(value));\n    }\n  } catch (error) {\n    addError(expression, error.name + ': ' + error.message);\n  }\n}"
+      },
+      "results": {
+        "columns": ["Input", "Observation"],
+        "browsers": {}
+      }
+    },
+    {
+      "id": "postmessage-event-shape",
+      "name": "postMessage event shape",
+      "description": "Checks whether selected MessageEvent fields are writable, configurable, or fixed by the browser.",
+      "type": "ENUM_FUNCTION",
+      "owner": "DOM Lab",
+      "created": "2026-06-28T00:00:00.000Z",
+      "viewCount": 0,
+      "favorites": 0,
+      "tags": ["postmessage", "messageevent", "dom"],
+      "test": {
+        "timeout": 2000,
+        "enumData": "var data = ['data', 'origin', 'source', 'ports', 'lastEventId'];",
+        "userScript": "function test(field) {\n  var event = new MessageEvent('message', {\n    data: 'payload',\n    origin: location.origin,\n    source: window\n  });\n  var before = event[field];\n  var writable = true;\n  try {\n    event[field] = 'dom-lab';\n  } catch (error) {\n    writable = false;\n  }\n  var descriptor = Object.getOwnPropertyDescriptor(MessageEvent.prototype, field);\n  addInfo(field, JSON.stringify({ before: String(before), after: String(event[field]), writable: writable, configurable: !!(descriptor && descriptor.configurable) }));\n}"
+      },
+      "results": {
+        "columns": ["Field", "Descriptor"],
+        "browsers": {}
+      }
+    },
+    {
+      "id": "storage-capability",
+      "name": "Storage capability probe",
+      "description": "Tests storage-like browser APIs without leaving persistent state behind.",
+      "type": "ENUM_FUNCTION",
+      "owner": "DOM Lab",
+      "created": "2026-06-28T00:00:00.000Z",
+      "viewCount": 0,
+      "favorites": 0,
+      "tags": ["storage", "capabilities", "privacy"],
+      "test": {
+        "timeout": 2000,
+        "enumData": "var data = ['localStorage', 'sessionStorage', 'indexedDB', 'caches', 'cookieStore'];",
+        "userScript": "function test(api) {\n  try {\n    if (!(api in window)) {\n      addInfo(api, 'not exposed');\n      return;\n    }\n    if (api === 'localStorage' || api === 'sessionStorage') {\n      window[api].setItem('__dom_lab_probe__', '1');\n      window[api].removeItem('__dom_lab_probe__');\n      addSuccess(api, 'read/write available');\n      return;\n    }\n    addInfo(api, Object.prototype.toString.call(window[api]));\n  } catch (error) {\n    addError(api, error.name + ': ' + error.message);\n  }\n}"
+      },
+      "results": {
+        "columns": ["API", "Observation"],
+        "browsers": {}
+      }
+    },
+    {
+      "id": "markup-fuzzer-smoke",
+      "name": "Markup parser smoke test",
+      "description": "Feeds small HTML payloads through DOMParser and reports how the browser normalizes them.",
+      "type": "FUZZER",
+      "owner": "DOM Lab",
+      "created": "2026-06-28T00:00:00.000Z",
+      "viewCount": 0,
+      "favorites": 0,
+      "tags": ["parser", "fuzzer", "html"],
+      "test": {
+        "timeout": 2000,
+        "fuzzData": "<svg><script>1</script></svg>\n<table><tr><td>x</table>\n<img src=x onerror=1>\n<template><p>inside</p></template>",
+        "userScript": "function test(payload) {\n  try {\n    var doc = new DOMParser().parseFromString(payload, 'text/html');\n    var first = doc.body.firstElementChild;\n    addInfo(payload, first ? first.tagName.toLowerCase() + ' / ' + doc.body.childElementCount + ' node(s)' : 'empty body');\n  } catch (error) {\n    addError(payload, error.name + ': ' + error.message);\n  }\n}"
+      },
+      "results": {
+        "columns": ["Payload", "Parsed shape"],
+        "browsers": {}
+      }
+    }
+  ]
+}
