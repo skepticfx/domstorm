@@ -1,0 +1,441 @@
+{
+  "modules": [
+    {
+      "id": "trusted-types-sinks",
+      "name": "Trusted Types sink coverage",
+      "description": "Maps whether Trusted Types exists and how classic HTML/script sinks behave under the current policy environment.",
+      "type": "ENUM_FUNCTION",
+      "owner": "DOM Lab",
+      "created": "2026-06-28T00:00:00.000Z",
+      "viewCount": 0,
+      "favorites": 0,
+      "risk": "sink hardening",
+      "era": "2026 DOM security",
+      "securityNote": "Trusted Types is one of the strongest defenses for DOM XSS, but coverage differs by browser and by sink. This probe inventories the boundary without executing attacker code.",
+      "tags": ["trusted-types", "xss", "sinks", "csp"],
+      "test": {
+        "timeout": 2500,
+        "enumData": "var data = ['trustedTypes', 'innerHTML', 'outerHTML', 'insertAdjacentHTML', 'Range.createContextualFragment', 'DOMParser.parseFromString', 'script.src'];",
+        "userScript": "function test(sink) {\n  try {\n    var supported = !!window.trustedTypes;\n    if (sink === 'trustedTypes') {\n      addInfo(sink, supported ? 'available' : 'not exposed');\n      return;\n    }\n    var div = document.createElement('div');\n    var result = 'not exercised';\n    if (sink === 'innerHTML') {\n      div.innerHTML = '<span data-probe=\"1\">ok</span>';\n      result = div.firstElementChild ? div.firstElementChild.tagName : 'empty';\n    }\n    if (sink === 'outerHTML') {\n      div.outerHTML = '<section data-probe=\"1\"></section>';\n      result = 'accepted';\n    }\n    if (sink === 'insertAdjacentHTML') {\n      div.insertAdjacentHTML('beforeend', '<b data-probe=\"1\">ok</b>');\n      result = div.children.length + ' child';\n    }\n    if (sink === 'Range.createContextualFragment') {\n      result = document.createRange().createContextualFragment('<i data-probe=\"1\">ok</i>').children.length + ' child';\n    }\n    if (sink === 'DOMParser.parseFromString') {\n      result = new DOMParser().parseFromString('<p>ok</p>', 'text/html').body.children.length + ' body child';\n    }\n    if (sink === 'script.src') {\n      var script = document.createElement('script');\n      script.src = 'about:blank';\n      result = script.src;\n    }\n    addInfo(sink, JSON.stringify({ trustedTypes: supported, result: result }));\n  } catch (error) {\n    addError(sink, error.name + ': ' + error.message);\n  }\n}"
+      },
+      "results": {
+        "columns": ["Surface", "Observation"],
+        "browsers": {}
+      }
+    },
+    {
+      "id": "sanitizer-api-surface",
+      "name": "Sanitizer and safe HTML API surface",
+      "description": "Checks emerging HTML sanitization and safe-set APIs that change how defensive code should treat markup.",
+      "type": "ENUM_FUNCTION",
+      "owner": "DOM Lab",
+      "created": "2026-06-28T00:00:00.000Z",
+      "viewCount": 0,
+      "favorites": 0,
+      "risk": "new platform",
+      "era": "2026 DOM security",
+      "securityNote": "The Sanitizer API and setHTML-style methods affect whether apps need custom sanitizers. Partial implementations can create portability traps.",
+      "tags": ["sanitizer", "html", "xss", "platform"],
+      "test": {
+        "timeout": 2500,
+        "enumData": "var data = ['Sanitizer', 'Element.setHTML', 'Element.setHTMLUnsafe', 'Document.parseHTML', 'Document.parseHTMLUnsafe', 'ShadowRoot.setHTMLUnsafe'];",
+        "userScript": "function test(feature) {\n  var target = document.createElement('div');\n  var observed = 'missing';\n  try {\n    if (feature === 'Sanitizer') observed = typeof window.Sanitizer;\n    if (feature === 'Element.setHTML') observed = typeof target.setHTML;\n    if (feature === 'Element.setHTMLUnsafe') observed = typeof target.setHTMLUnsafe;\n    if (feature === 'Document.parseHTML') observed = typeof Document.parseHTML;\n    if (feature === 'Document.parseHTMLUnsafe') observed = typeof Document.parseHTMLUnsafe;\n    if (feature === 'ShadowRoot.setHTMLUnsafe') observed = typeof Element.prototype.attachShadow === 'function' ? typeof target.attachShadow({ mode: 'open' }).setHTMLUnsafe : 'no shadow root';\n    addInfo(feature, observed);\n  } catch (error) {\n    addError(feature, error.name + ': ' + error.message);\n  }\n}"
+      },
+      "results": {
+        "columns": ["Feature", "Observation"],
+        "browsers": {}
+      }
+    },
+    {
+      "id": "dom-clobbering-named-properties",
+      "name": "DOM clobbering named properties",
+      "description": "Creates named elements and records which identifiers become visible through document or window named property lookup.",
+      "type": "ENUM_FUNCTION",
+      "owner": "DOM Lab",
+      "created": "2026-06-28T00:00:00.000Z",
+      "viewCount": 0,
+      "favorites": 0,
+      "risk": "bypass primitive",
+      "era": "2026 DOM security",
+      "securityNote": "DOM clobbering is still a common way to subvert assumptions in client-side code that trusts globals or document properties.",
+      "tags": ["clobbering", "named-properties", "globals", "bypass"],
+      "test": {
+        "timeout": 2500,
+        "enumData": "var data = ['redirect_uri', 'constructor', 'defaultView', 'cookie', 'csrfToken', 'location'];",
+        "userScript": "function test(name) {\n  var host = document.createElement('form');\n  host.id = name;\n  host.name = name;\n  var input = document.createElement('input');\n  input.name = name;\n  host.appendChild(input);\n  document.body.appendChild(host);\n  try {\n    var docValue = document[name];\n    var winValue = window[name];\n    addInfo(name, JSON.stringify({ documentType: Object.prototype.toString.call(docValue), windowType: Object.prototype.toString.call(winValue), windowOwn: Object.prototype.hasOwnProperty.call(window, name) }));\n  } catch (error) {\n    addError(name, error.name + ': ' + error.message);\n  } finally {\n    host.remove();\n  }\n}"
+      },
+      "results": {
+        "columns": ["Name", "Lookup result"],
+        "browsers": {}
+      }
+    },
+    {
+      "id": "window-entrypoints",
+      "name": "Window and realm entrypoints",
+      "description": "Enumerates references that resolve to the active Window or expose neighboring browsing contexts.",
+      "type": "ENUM_FUNCTION",
+      "owner": "DOM Lab",
+      "created": "2026-06-28T00:00:00.000Z",
+      "viewCount": 0,
+      "favorites": 0,
+      "risk": "realm mapping",
+      "era": "2026 DOM security",
+      "securityNote": "Many browser bugs begin with the wrong assumption about which realm, WindowProxy, or browsing context a value belongs to.",
+      "tags": ["window", "realm", "windowproxy", "browser"],
+      "test": {
+        "timeout": 2000,
+        "enumData": "var data = ['window', 'self', 'globalThis', 'frames', 'top', 'parent', 'opener', 'visualViewport'];",
+        "userScript": "function test(expression) {\n  try {\n    var value = Function('return ' + expression)();\n    var relation = value === window ? 'same window' : Object.prototype.toString.call(value);\n    addInfo(expression, relation);\n  } catch (error) {\n    addError(expression, error.name + ': ' + error.message);\n  }\n}"
+      },
+      "results": {
+        "columns": ["Expression", "Observation"],
+        "browsers": {}
+      }
+    },
+    {
+      "id": "messageevent-mutability",
+      "name": "MessageEvent mutability",
+      "description": "Checks whether selected postMessage event fields are writable, configurable, or fixed by the browser.",
+      "type": "ENUM_FUNCTION",
+      "owner": "DOM Lab",
+      "created": "2026-06-28T00:00:00.000Z",
+      "viewCount": 0,
+      "favorites": 0,
+      "risk": "message boundary",
+      "era": "2026 DOM security",
+      "securityNote": "postMessage bugs often come from trusting event shape, source, or origin checks. This probe maps descriptor behavior.",
+      "tags": ["postmessage", "messageevent", "origin", "descriptors"],
+      "test": {
+        "timeout": 2000,
+        "enumData": "var data = ['data', 'origin', 'source', 'ports', 'lastEventId', 'isTrusted'];",
+        "userScript": "function test(field) {\n  try {\n    var event = new MessageEvent('message', { data: 'payload', origin: location.origin, source: window });\n    var before = event[field];\n    var writable = true;\n    try { event[field] = 'dom-lab'; } catch (error) { writable = false; }\n    var descriptor = Object.getOwnPropertyDescriptor(MessageEvent.prototype, field) || Object.getOwnPropertyDescriptor(Event.prototype, field);\n    addInfo(field, JSON.stringify({ before: String(before), after: String(event[field]), writable: writable, configurable: !!(descriptor && descriptor.configurable) }));\n  } catch (error) {\n    addError(field, error.name + ': ' + error.message);\n  }\n}"
+      },
+      "results": {
+        "columns": ["Field", "Descriptor"],
+        "browsers": {}
+      }
+    },
+    {
+      "id": "url-canonicalization-traps",
+      "name": "URL canonicalization traps",
+      "description": "Feeds suspicious but inert URL strings into the browser URL parser and records normalization behavior.",
+      "type": "FUZZER",
+      "owner": "DOM Lab",
+      "created": "2026-06-28T00:00:00.000Z",
+      "viewCount": 0,
+      "favorites": 0,
+      "risk": "allowlist bypass",
+      "era": "2026 DOM security",
+      "securityNote": "URL allowlists fail when app code and browser navigation disagree about host, path, username, or scheme normalization.",
+      "tags": ["url", "canonicalization", "open-redirect", "allowlist"],
+      "test": {
+        "timeout": 2000,
+        "fuzzData": "https://example.com@evil.test/path\nhttps://example.com%2eevil.test/\nhttps://example.com./admin\nhttps:example.com/path\n//example.com/%2f%2e%2e/admin\nhttp://[::ffff:127.0.0.1]/\nhttps://xn--pple-43d.example/",
+        "userScript": "function test(payload) {\n  try {\n    var url = new URL(payload, 'https://base.example/root/');\n    addInfo(payload, JSON.stringify({ href: url.href, protocol: url.protocol, username: url.username, hostname: url.hostname, pathname: url.pathname }));\n  } catch (error) {\n    addError(payload, error.name + ': ' + error.message);\n  }\n}"
+      },
+      "results": {
+        "columns": ["Input", "Parsed URL"],
+        "browsers": {}
+      }
+    },
+    {
+      "id": "parser-inertness-matrix",
+      "name": "Parser inertness matrix",
+      "description": "Compares how inert parsing surfaces preserve scripts, event handler attributes, templates, SVG, and MathML.",
+      "type": "FUZZER",
+      "owner": "DOM Lab",
+      "created": "2026-06-28T00:00:00.000Z",
+      "viewCount": 0,
+      "favorites": 0,
+      "risk": "markup confusion",
+      "era": "2026 DOM security",
+      "securityNote": "Sanitizers, preview renderers, and import pipelines often parse markup in one context and later move nodes into another.",
+      "tags": ["parser", "html", "svg", "mathml", "xss"],
+      "test": {
+        "timeout": 2000,
+        "fuzzData": "<svg><script>1</script></svg>\n<math><mtext><img src=x onerror=1></mtext></math>\n<table><tr><td>x</table>\n<template shadowrootmode=\"open\"><img src=x onerror=1></template>\n<form><input name=action value=clobbered></form>",
+        "userScript": "function test(payload) {\n  try {\n    var doc = new DOMParser().parseFromString(payload, 'text/html');\n    var first = doc.body.firstElementChild;\n    addInfo(payload, JSON.stringify({ first: first ? first.tagName.toLowerCase() : 'none', scripts: doc.scripts.length, handlers: doc.querySelectorAll('[onerror],[onclick],[onload]').length, templates: doc.querySelectorAll('template').length }));\n  } catch (error) {\n    addError(payload, error.name + ': ' + error.message);\n  }\n}"
+      },
+      "results": {
+        "columns": ["Payload", "Parsed shape"],
+        "browsers": {}
+      }
+    },
+    {
+      "id": "declarative-shadow-dom",
+      "name": "Declarative Shadow DOM parsing",
+      "description": "Checks parser behavior for declarative shadow roots and related template attributes.",
+      "type": "FUZZER",
+      "owner": "DOM Lab",
+      "created": "2026-06-28T00:00:00.000Z",
+      "viewCount": 0,
+      "favorites": 0,
+      "risk": "component boundary",
+      "era": "2026 DOM security",
+      "securityNote": "Declarative Shadow DOM changes how server-rendered components and sanitizers need to reason about hidden subtree boundaries.",
+      "tags": ["shadow-dom", "template", "components", "parser"],
+      "test": {
+        "timeout": 2000,
+        "fuzzData": "<div><template shadowrootmode=\"open\"><span id=a>open</span></template></div>\n<div><template shadowrootmode=\"closed\"><span id=b>closed</span></template></div>\n<template shadowrootdelegatesfocus shadowrootmode=\"open\"><button>focus</button></template>\n<template shadowrootclonable shadowrootmode=\"open\"><slot></slot></template>",
+        "userScript": "function test(payload) {\n  try {\n    var doc = new DOMParser().parseFromString(payload, 'text/html');\n    var template = doc.querySelector('template');\n    var attrs = template ? Array.from(template.attributes).map(function(a) { return a.name + '=' + a.value; }).join(',') : 'no template';\n    addInfo(payload, JSON.stringify({ templates: doc.querySelectorAll('template').length, attrs: attrs, hostChildren: doc.body.firstElementChild ? doc.body.firstElementChild.childElementCount : 0 }));\n  } catch (error) {\n    addError(payload, error.name + ': ' + error.message);\n  }\n}"
+      },
+      "results": {
+        "columns": ["Payload", "Shadow parse"],
+        "browsers": {}
+      }
+    },
+    {
+      "id": "cross-origin-isolation-state",
+      "name": "Isolation and capability state",
+      "description": "Detects APIs gated by cross-origin isolation, secure contexts, or permission policy.",
+      "type": "ENUM_FUNCTION",
+      "owner": "DOM Lab",
+      "created": "2026-06-28T00:00:00.000Z",
+      "viewCount": 0,
+      "favorites": 0,
+      "risk": "isolation boundary",
+      "era": "2026 DOM security",
+      "securityNote": "High-resolution timers, SharedArrayBuffer, and related APIs depend on isolation headers and permissions that are easy to misconfigure.",
+      "tags": ["coop", "coep", "isolation", "permissions-policy"],
+      "test": {
+        "timeout": 2000,
+        "enumData": "var data = ['isSecureContext', 'crossOriginIsolated', 'SharedArrayBuffer', 'performance.measureUserAgentSpecificMemory', 'Atomics.waitAsync', 'credentialless'];",
+        "userScript": "function test(feature) {\n  try {\n    var value;\n    if (feature === 'isSecureContext') value = window.isSecureContext;\n    if (feature === 'crossOriginIsolated') value = window.crossOriginIsolated;\n    if (feature === 'SharedArrayBuffer') value = typeof SharedArrayBuffer;\n    if (feature === 'performance.measureUserAgentSpecificMemory') value = typeof performance.measureUserAgentSpecificMemory;\n    if (feature === 'Atomics.waitAsync') value = typeof Atomics.waitAsync;\n    if (feature === 'credentialless') value = 'credentialless' in HTMLIFrameElement.prototype;\n    addInfo(feature, String(value));\n  } catch (error) {\n    addError(feature, error.name + ': ' + error.message);\n  }\n}"
+      },
+      "results": {
+        "columns": ["Feature", "State"],
+        "browsers": {}
+      }
+    },
+    {
+      "id": "storage-partitioning-probe",
+      "name": "Storage partitioning probe",
+      "description": "Checks storage, cache, and access APIs that reveal privacy partitioning and third-party boundary behavior.",
+      "type": "ENUM_FUNCTION",
+      "owner": "DOM Lab",
+      "created": "2026-06-28T00:00:00.000Z",
+      "viewCount": 0,
+      "favorites": 0,
+      "risk": "privacy boundary",
+      "era": "2026 DOM security",
+      "securityNote": "Storage partitioning affects CSRF assumptions, tracking defenses, embedded widgets, and cache-based bug classes.",
+      "tags": ["storage", "partitioning", "privacy", "cookies"],
+      "test": {
+        "timeout": 3000,
+        "enumData": "var data = ['localStorage', 'sessionStorage', 'indexedDB', 'caches', 'document.hasStorageAccess', 'document.requestStorageAccess', 'cookieStore', 'BroadcastChannel'];",
+        "userScript": "async function test(api) {\n  try {\n    if (api === 'localStorage' || api === 'sessionStorage') {\n      window[api].setItem('__dom_lab_probe__', '1');\n      window[api].removeItem('__dom_lab_probe__');\n      addSuccess(api, 'read/write available');\n      return;\n    }\n    if (api === 'document.hasStorageAccess') {\n      addInfo(api, typeof document.hasStorageAccess === 'function' ? String(await document.hasStorageAccess()) : 'missing');\n      return;\n    }\n    addInfo(api, api.split('.').reduce(function(obj, part) { return obj && obj[part]; }, window) ? 'exposed' : 'missing');\n  } catch (error) {\n    addInfo(api, 'blocked: ' + error.name + ': ' + error.message);\n  }\n}"
+      },
+      "results": {
+        "columns": ["API", "Observation"],
+        "browsers": {}
+      }
+    },
+    {
+      "id": "cookie-prefix-boundaries",
+      "name": "Cookie prefix boundary check",
+      "description": "Attempts harmless writes for modern cookie prefixes and records whether the browser accepts, rejects, or blocks access.",
+      "type": "ENUM_FUNCTION",
+      "owner": "DOM Lab",
+      "created": "2026-06-28T00:00:00.000Z",
+      "viewCount": 0,
+      "favorites": 0,
+      "risk": "session hardening",
+      "era": "2026 DOM security",
+      "securityNote": "__Host and __Secure prefix rules are only useful when apps deploy them correctly and browsers enforce the expected constraints.",
+      "tags": ["cookies", "prefixes", "session", "hardening"],
+      "test": {
+        "timeout": 2000,
+        "enumData": "var data = ['plain_probe', '__Secure_probe', '__Host_probe', '__Http_probe'];",
+        "userScript": "function test(name) {\n  try {\n    var before = document.cookie;\n    document.cookie = name + '=1; SameSite=Lax; path=/';\n    var after = document.cookie;\n    document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/';\n    addInfo(name, JSON.stringify({ beforeLength: before.length, accepted: after.indexOf(name + '=') !== -1, afterLength: after.length }));\n  } catch (error) {\n    addInfo(name, 'blocked: ' + error.name + ': ' + error.message);\n  }\n}"
+      },
+      "results": {
+        "columns": ["Cookie", "Observation"],
+        "browsers": {}
+      }
+    },
+    {
+      "id": "navigation-api-surfaces",
+      "name": "Navigation API and URL state",
+      "description": "Checks modern navigation primitives that can reshape routing, history, and URL validation assumptions.",
+      "type": "ENUM_FUNCTION",
+      "owner": "DOM Lab",
+      "created": "2026-06-28T00:00:00.000Z",
+      "viewCount": 0,
+      "favorites": 0,
+      "risk": "router confusion",
+      "era": "2026 DOM security",
+      "securityNote": "Client routers and security filters increasingly interact with Navigation API, URLPattern, BFCache, and history state.",
+      "tags": ["navigation", "urlpattern", "history", "routing"],
+      "test": {
+        "timeout": 2000,
+        "enumData": "var data = ['navigation', 'URLPattern', 'history.scrollRestoration', 'pageswap', 'pagereveal', 'document.prerendering'];",
+        "userScript": "function test(feature) {\n  try {\n    var value;\n    if (feature === 'navigation') value = typeof window.navigation;\n    if (feature === 'URLPattern') value = typeof window.URLPattern;\n    if (feature === 'history.scrollRestoration') value = history.scrollRestoration;\n    if (feature === 'pageswap') value = 'onpageswap' in window;\n    if (feature === 'pagereveal') value = 'onpagereveal' in window;\n    if (feature === 'document.prerendering') value = document.prerendering === true;\n    addInfo(feature, String(value));\n  } catch (error) {\n    addError(feature, error.name + ': ' + error.message);\n  }\n}"
+      },
+      "results": {
+        "columns": ["Feature", "State"],
+        "browsers": {}
+      }
+    },
+    {
+      "id": "capability-api-inventory",
+      "name": "Capability API inventory",
+      "description": "Surveys powerful APIs that should be permission-gated, secure-context-gated, or policy-gated.",
+      "type": "ENUM_FUNCTION",
+      "owner": "DOM Lab",
+      "created": "2026-06-28T00:00:00.000Z",
+      "viewCount": 0,
+      "favorites": 0,
+      "risk": "permission surface",
+      "era": "2026 DOM security",
+      "securityNote": "Unexpected API exposure is often the first clue in permission-policy, secure-context, or embedding bugs.",
+      "tags": ["permissions", "powerful-apis", "feature-detect", "policy"],
+      "test": {
+        "timeout": 2500,
+        "enumData": "var data = ['navigator.clipboard', 'navigator.credentials', 'navigator.usb', 'navigator.serial', 'navigator.hid', 'showOpenFilePicker', 'EyeDropper', 'BarcodeDetector', 'PaymentRequest'];",
+        "userScript": "function test(api) {\n  try {\n    var value = api.split('.').reduce(function(obj, part) { return obj && obj[part]; }, window);\n    addInfo(api, value ? Object.prototype.toString.call(value) : 'missing');\n  } catch (error) {\n    addError(api, error.name + ': ' + error.message);\n  }\n}"
+      },
+      "results": {
+        "columns": ["API", "Exposure"],
+        "browsers": {}
+      }
+    },
+    {
+      "id": "cssom-injection-surfaces",
+      "name": "CSSOM injection surfaces",
+      "description": "Exercises CSS parsing APIs that can matter for style injection, selector confusion, and data exposure classes.",
+      "type": "FUZZER",
+      "owner": "DOM Lab",
+      "created": "2026-06-28T00:00:00.000Z",
+      "viewCount": 0,
+      "favorites": 0,
+      "risk": "css boundary",
+      "era": "2026 DOM security",
+      "securityNote": "CSS injection is not JavaScript execution, but it still matters for UI redress, data-dependent styling, and policy bypasses.",
+      "tags": ["cssom", "selectors", "style", "injection"],
+      "test": {
+        "timeout": 2000,
+        "fuzzData": "a[href^=\"https://\"] { outline: 1px solid red }\n@property --probe { syntax: \"<color>\"; inherits: false; initial-value: red; }\n:has(input[name=\"csrf\"]) { color: red }\n@scope (.probe) { a { color: blue } }\n@container style(--x: y) { div { color: green } }",
+        "userScript": "function test(rule) {\n  try {\n    var sheet = new CSSStyleSheet();\n    sheet.replaceSync(rule);\n    addInfo(rule, JSON.stringify({ rules: sheet.cssRules.length, first: sheet.cssRules[0] ? sheet.cssRules[0].constructor.name : 'none' }));\n  } catch (error) {\n    addError(rule, error.name + ': ' + error.message);\n  }\n}"
+      },
+      "results": {
+        "columns": ["Rule", "Parse result"],
+        "browsers": {}
+      }
+    },
+    {
+      "id": "prototype-pollution-dom-gadgets",
+      "name": "Prototype pollution gadget survey",
+      "description": "Checks whether selected DOM-facing option bags inherit values that app code may accidentally trust.",
+      "type": "ENUM_FUNCTION",
+      "owner": "DOM Lab",
+      "created": "2026-06-28T00:00:00.000Z",
+      "viewCount": 0,
+      "favorites": 0,
+      "risk": "gadget hunting",
+      "era": "2026 DOM security",
+      "securityNote": "Prototype pollution becomes exploitable when option bags and DOM APIs consume inherited values in surprising ways.",
+      "tags": ["prototype-pollution", "gadgets", "options", "dom"],
+      "test": {
+        "timeout": 2000,
+        "enumData": "var data = ['RequestInit.method', 'MessageEventInit.origin', 'DOMParser options', 'structuredClone transfer', 'URLSearchParams object'];",
+        "userScript": "function test(caseName) {\n  var carrier = Object.create({ method: 'POST', origin: 'https://polluted.example', transfer: [] });\n  try {\n    var result = 'not applicable';\n    if (caseName === 'RequestInit.method') result = new Request('about:blank', carrier).method;\n    if (caseName === 'MessageEventInit.origin') result = new MessageEvent('message', carrier).origin;\n    if (caseName === 'DOMParser options') result = new DOMParser().parseFromString('<p>x</p>', 'text/html').body.textContent;\n    if (caseName === 'structuredClone transfer') result = typeof structuredClone === 'function' ? Object.prototype.toString.call(structuredClone({ ok: true }, carrier)) : 'missing';\n    if (caseName === 'URLSearchParams object') result = new URLSearchParams(Object.create({ a: 'polluted' })).toString() || 'empty';\n    addInfo(caseName, result);\n  } catch (error) {\n    addError(caseName, error.name + ': ' + error.message);\n  }\n}"
+      },
+      "results": {
+        "columns": ["Case", "Observation"],
+        "browsers": {}
+      }
+    },
+    {
+      "id": "structured-clone-brand-checks",
+      "name": "Structured clone brand checks",
+      "description": "Tests how structuredClone handles modern platform objects and where cloning boundaries throw.",
+      "type": "ENUM_FUNCTION",
+      "owner": "DOM Lab",
+      "created": "2026-06-28T00:00:00.000Z",
+      "viewCount": 0,
+      "favorites": 0,
+      "risk": "message serialization",
+      "era": "2026 DOM security",
+      "securityNote": "postMessage, workers, IndexedDB, and caches all lean on structured cloning. Brand checks are security boundaries.",
+      "tags": ["structured-clone", "postmessage", "serialization", "brand-check"],
+      "test": {
+        "timeout": 2500,
+        "enumData": "var data = ['URL', 'DOMException', 'Error', 'ReadableStream', 'AbortSignal', 'CryptoKey placeholder', 'HTMLElement'];",
+        "userScript": "function test(kind) {\n  try {\n    var value;\n    if (kind === 'URL') value = new URL('https://example.test/a');\n    if (kind === 'DOMException') value = new DOMException('x', 'DataError');\n    if (kind === 'Error') value = new Error('x');\n    if (kind === 'ReadableStream') value = new ReadableStream();\n    if (kind === 'AbortSignal') value = new AbortController().signal;\n    if (kind === 'CryptoKey placeholder') value = { note: 'requires async crypto.subtle key generation' };\n    if (kind === 'HTMLElement') value = document.createElement('div');\n    var clone = structuredClone(value);\n    addInfo(kind, Object.prototype.toString.call(clone));\n  } catch (error) {\n    addError(kind, error.name + ': ' + error.message);\n  }\n}"
+      },
+      "results": {
+        "columns": ["Value", "Clone result"],
+        "browsers": {}
+      }
+    },
+    {
+      "id": "wasm-and-compile-boundaries",
+      "name": "Wasm and compile boundaries",
+      "description": "Checks WebAssembly parser availability and compile behavior for minimal byte sequences.",
+      "type": "FUZZER",
+      "owner": "DOM Lab",
+      "created": "2026-06-28T00:00:00.000Z",
+      "viewCount": 0,
+      "favorites": 0,
+      "risk": "compile surface",
+      "era": "2026 DOM security",
+      "securityNote": "Wasm availability intersects with CSP, cross-origin isolation, and JIT hardening decisions.",
+      "tags": ["wasm", "csp", "jit", "compile"],
+      "test": {
+        "timeout": 2500,
+        "fuzzData": "0061736d01000000\n0061736d01000000010501600000\n00000000\n0061736d02000000",
+        "userScript": "function test(hex) {\n  try {\n    var bytes = new Uint8Array(hex.match(/../g).map(function(part) { return parseInt(part, 16); }));\n    addInfo(hex, JSON.stringify({ wasm: typeof WebAssembly, valid: WebAssembly.validate(bytes) }));\n  } catch (error) {\n    addError(hex, error.name + ': ' + error.message);\n  }\n}"
+      },
+      "results": {
+        "columns": ["Bytes", "Validation"],
+        "browsers": {}
+      }
+    },
+    {
+      "id": "scheduler-and-timing",
+      "name": "Scheduler and timing primitives",
+      "description": "Inventories modern scheduling APIs that affect race windows, XS-Leak timing, and task ordering.",
+      "type": "ENUM_FUNCTION",
+      "owner": "DOM Lab",
+      "created": "2026-06-28T00:00:00.000Z",
+      "viewCount": 0,
+      "favorites": 0,
+      "risk": "timing side-channel",
+      "era": "2026 DOM security",
+      "securityNote": "Task ordering and timer precision still matter for race-condition bugs and cross-site leak research.",
+      "tags": ["scheduler", "timing", "xs-leaks", "tasks"],
+      "test": {
+        "timeout": 2500,
+        "enumData": "var data = ['scheduler.postTask', 'scheduler.yield', 'requestIdleCallback', 'queueMicrotask', 'PerformanceObserver', 'Atomics.waitAsync'];",
+        "userScript": "async function test(api) {\n  try {\n    var value = api.split('.').reduce(function(obj, part) { return obj && obj[part]; }, window);\n    if (api === 'queueMicrotask') value = window.queueMicrotask;\n    if (api === 'PerformanceObserver') value = window.PerformanceObserver;\n    addInfo(api, value ? Object.prototype.toString.call(value) : 'missing');\n  } catch (error) {\n    addError(api, error.name + ': ' + error.message);\n  }\n}"
+      },
+      "results": {
+        "columns": ["Primitive", "Exposure"],
+        "browsers": {}
+      }
+    },
+    {
+      "id": "importmap-module-boundaries",
+      "name": "Import map and module boundaries",
+      "description": "Checks module-era features that influence script resolution and supply-chain assumptions.",
+      "type": "ENUM_FUNCTION",
+      "owner": "DOM Lab",
+      "created": "2026-06-28T00:00:00.000Z",
+      "viewCount": 0,
+      "favorites": 0,
+      "risk": "script resolution",
+      "era": "2026 DOM security",
+      "securityNote": "Import maps, speculation rules, and modulepreload can change where code comes from and how security scanners reason about script entrypoints.",
+      "tags": ["modules", "importmap", "speculation-rules", "supply-chain"],
+      "test": {
+        "timeout": 2000,
+        "enumData": "var data = ['HTMLScriptElement.supports importmap', 'HTMLScriptElement.supports speculationrules', 'modulepreload link', 'nomodule', 'import.meta unavailable'];",
+        "userScript": "function test(feature) {\n  try {\n    var result;\n    if (feature === 'HTMLScriptElement.supports importmap') result = !!(HTMLScriptElement.supports && HTMLScriptElement.supports('importmap'));\n    if (feature === 'HTMLScriptElement.supports speculationrules') result = !!(HTMLScriptElement.supports && HTMLScriptElement.supports('speculationrules'));\n    if (feature === 'modulepreload link') { var link = document.createElement('link'); link.rel = 'modulepreload'; result = link.relList && link.relList.supports ? link.relList.supports('modulepreload') : link.rel; }\n    if (feature === 'nomodule') { var script = document.createElement('script'); result = 'noModule' in script; }\n    if (feature === 'import.meta unavailable') result = 'classic script probe';\n    addInfo(feature, String(result));\n  } catch (error) {\n    addError(feature, error.name + ': ' + error.message);\n  }\n}"
+      },
+      "results": {
+        "columns": ["Feature", "Observation"],
+        "browsers": {}
+      }
+    }
+  ]
+}

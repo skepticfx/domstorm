@@ -1,2 +1,0 @@
-var DOMSTORM = {};
-var x = {};

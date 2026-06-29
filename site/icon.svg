@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="DOM Lab">
+  <rect width="256" height="256" rx="48" fill="#151614"/>
+  <path fill="#f7f5ed" d="M56 72h56c37 0 64 23 64 56s-27 56-64 56H56V72Zm38 34v44h17c16 0 27-9 27-22s-11-22-27-22H94Z"/>
+  <path fill="#58d6a3" d="M181 70h28v116h-28z"/>
+  <path fill="#ff7a59" d="M45 199h166v18H45z"/>
+</svg>

@@ -1,0 +1,18 @@
+{
+  "name": "DOM Lab",
+  "short_name": "DOM Lab",
+  "description": "Catalog and run browser behavior experiments.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f7f5ed",
+  "theme_color": "#151614",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -1,48 +1,25 @@
 {
-  "name": "DomStorm",
-  "version": "0.0.9",
+  "name": "dom-lab",
+  "version": "1.0.0",
   "private": true,
-  "dependencies": {
-    "body-parser": "1.19.0",
-    "connect-mongo": "3.0.0",
-    "cookie-parser": "1.4.4",
-    "ejs": "2.5.5",
-    "express": "4.16.3",
-    "express-session": "1.15.6",
-    "mongoose": "5.9.25",
-    "mongoose-findorcreate": "0.1.2",
-    "morgan": "1.9.1",
-    "passport": "0.2.2",
-    "passport-twitter": "1.0.4",
-    "serve-favicon": "2.5.0"
-  },
+  "type": "module",
+  "description": "A fast Cloudflare Workers app for cataloging and running DOM behavior experiments.",
   "scripts": {
-    "start": "node server.js"
-  },
-  "description": "A dashboard for interesting DOM tricks/techniques.",
-  "main": "server.js",
-  "devDependencies": {},
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/skepticfx/domstorm"
+    "check": "node scripts/validate.mjs",
+    "dev": "wrangler dev",
+    "dry-run": "wrangler deploy --dry-run",
+    "deploy": "wrangler deploy"
   },
   "keywords": [
-    "domstorm",
-    "security",
-    "xss",
-    "testing",
     "dom",
-    "js-testing",
-    "unit-testing",
-    "w3c",
-    "testharness",
-    "specs",
-    "tricks"
+    "security",
+    "browser-testing",
+    "cloudflare-workers"
   ],
-  "author": "Ahamed Nafeez <ahamed.nafeez@gmail.com> (http://blog.skepticfx.com/)",
+  "author": "Ahamed Nafeez <ahamed.nafeez@gmail.com>",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/skepticfx/domstorm/issues"
+  "devDependencies": {
+    "wrangler": "^4.23.0"
   },
-  "homepage": "https://github.com/skepticfx/domstorm"
+  "homepage": "https://dom-lab.skepticfx.com"
 }

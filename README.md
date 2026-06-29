@@ -1,52 +1,80 @@
-![logo](https://raw.github.com/skepticfx/Dom-Storm/master/public/imgs/dom-storm-logo.png)
+# DOM Lab
 
-### A dashboard for interesting DOM tricks/techniques.
+DOM Lab is a Cloudflare Workers app for cataloging and running modern browser security experiments.
 
-### Try https://domstorm.skepticfx.com
+Live app: https://dom-lab.skepticfx.com
 
-#### Installation
-* Clone Domstorm, `git clone https://github.com/skepticfx/domstorm`
+DOM Lab focuses on the 2026 browser attack surface: DOM sinks, parser differentials, isolation primitives, capability APIs, storage boundaries, URL canonicalization, message channels, and weird corners where security bugs tend to hide.
 
-* Install `nodejs` and then, `npm install`
+## What Is Included
 
-* Configure `config.js` to add your MongoDB URL with authentication details.
+- Cloudflare Worker edge shell.
+- Static assets served from `site/`.
+- Seed security experiments stored in `site/data/modules.json`.
+- Local-first custom experiments and run results stored in the browser.
+- Sandboxed iframe execution for experiment runs.
+- A small service worker for offline-friendly repeat visits.
 
-* Run Domstorm, `node server.js --noauth`, to run in NoAuth mode.
+## Security Probe Catalog
 
-* Head over to, `http://localhost:8080` and start storming the DOM.
+The seed catalog includes probes for:
 
-* Something went wrong? Raise an [issue in the Github Repo] (https://github.com/skepticfx/domstorm/issues/new)
+- Trusted Types and DOM sink coverage.
+- Sanitizer and safe HTML API availability.
+- DOM clobbering and named property lookup.
+- Window, realm, and WindowProxy entrypoints.
+- postMessage and MessageEvent shape.
+- URL canonicalization and allowlist bypass traps.
+- HTML, SVG, MathML, template, and Declarative Shadow DOM parsing.
+- Cross-origin isolation and capability-gated APIs.
+- Storage partitioning, cookie prefixes, and privacy boundaries.
+- Navigation API, URLPattern, BFCache-related surfaces, and router assumptions.
+- Permission-gated capability APIs such as clipboard, credentials, USB, serial, HID, file picker, and payment.
+- CSSOM parsing surfaces including `:has`, `@property`, `@scope`, and container queries.
+- Prototype pollution gadget hunting in DOM-facing option bags.
+- Structured clone brand checks.
+- WebAssembly validation boundaries.
+- Scheduler and timing primitives for race and XS-Leak research.
+- Import maps, speculation rules, modulepreload, and module-era script resolution.
 
-### What can DomStorm be used for?
-One can know the answers for,
+The examples are designed to expose browser behavior and portability traps without shipping exploit chains.
 
-* What are the different ways of accessing a [Window Object], in a given browser?
+## Commands
 
-* What properties of the postMessage API can be overridden and changed?
+```sh
+npm install
+npm run check
+npm run dev
+npm run dry-run
+npm run deploy
+```
 
-* Does XMLHttpRequest follow the Same-Origin-Policy on redirects?
+## Experiment API
 
-* Does a certain DOM security bug in Firefox be replicated in other browsers?
+Experiments define a `function test(data)` in JavaScript. The runner provides:
 
-* And many more interesting questions, where your imagination is the only limit !
+- `addSuccess(...values)`
+- `addInfo(...values)`
+- `addError(...values)`
+- `addResult(...values)`
 
-###### Features
-* Enum Functions (Need a better name) - Ask questions on the DOM.
+Enum experiments provide JavaScript that defines a `data` array. Fuzzer experiments provide one payload per line.
 
-* Fuzzer Modules (WIP)
+## Project Layout
 
-* TestHarness.js from W3C test suites for dedicated Spec tests.
+```txt
+src/worker.js              Cloudflare Worker shell and API routes
+site/                      Static frontend deployed as Workers assets
+site/app.js                Local-first SPA and sandboxed runner
+site/data/modules.json     Seed security probe catalog
+scripts/validate.mjs       Rebrand, catalog, and Worker asset validation
+wrangler.jsonc             Worker name, assets, and custom domain config
+```
 
-###### Milestones
-* [Pre-Alpha Version](https://github.com/skepticfx/Dom-Storm/issues?milestone=1&state=open)
+## Deployment
 
-###### Framework
+Wrangler deploys the Worker named `dom-lab` and attaches the custom domain:
 
-* Create and run modules, to test DOM and JS behaviour.
-
-###### Kudos to
-
-* Icons by iconmonstr - http://iconmonstr.com/
-* Browser Logos - https://github.com/paulirish/browser-logos
-* Detect User Agent - detect.js - https://github.com/darcyclarke/Detect.js
-* Flatly,  BootStrap Theme - http://bootswatch.com/flatly/
+```txt
+dom-lab.skepticfx.com
+```

@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#151614">
+    <meta name="description" content="DOM Lab catalogs and runs browser behavior experiments at the edge.">
+    <title>DOM Lab</title>
+    <link rel="manifest" href="/manifest.webmanifest">
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <a class="skip-link" href="#app">Skip to app</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="DOM Lab home">
+        <span class="brand-mark" aria-hidden="true">DL</span>
+        <span>
+          <strong>DOM Lab</strong>
+          <small>browser behavior experiments</small>
+        </span>
+      </a>
+      <nav class="nav" aria-label="Primary">
+        <a href="/modules" data-nav="modules">Experiments</a>
+        <a href="/new" data-nav="new">New</a>
+        <a href="/about" data-nav="about">About</a>
+      </nav>
+    </header>
+
+    <main id="app" class="app-shell" tabindex="-1">
+      <section class="loading-panel" aria-live="polite">
+        <div class="loading-orbit" aria-hidden="true"></div>
+        <p>Loading DOM Lab...</p>
+      </section>
+    </main>
+
+    <template id="module-card-template">
+      <article class="module-card">
+        <a class="module-link" href="#">
+          <span class="module-kind"></span>
+          <h2></h2>
+          <p></p>
+        </a>
+        <div class="tag-row"></div>
+      </article>
+    </template>
+
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>
